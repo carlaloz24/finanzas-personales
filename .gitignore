@@ -1,0 +1,30 @@
+# Data files — NEVER push financial data
+*.xlsx
+*.csv
+*.json
+!app/manifest.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temp
+*.tmp
+*.bak
+
+# Zip
+*.zip
+
+# Local dev
+node_modules/
+.claude/
+
+# Personal data
+capturas/
