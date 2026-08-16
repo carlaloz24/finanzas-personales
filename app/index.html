@@ -120,9 +120,9 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .nav-item svg{width:22px;height:22px;stroke-width:1.8}
 
 /* MODALS */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);touch-action:none}
 .modal-overlay.open{display:flex;align-items:flex-end;animation:fadeIn .15s}
-.modal{background:var(--bg-card);border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:16px 20px calc(20px + var(--safe-b));overscroll-behavior:contain}
+.modal{background:var(--bg-card);border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:16px 20px calc(20px + var(--safe-b));overscroll-behavior:contain;touch-action:pan-y}
 .modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px}
 .modal-title{font-weight:600;font-size:18px;letter-spacing:-0.02em;text-align:center;margin-bottom:20px}
 
@@ -437,7 +437,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <div class="modal-handle"></div>
     <div class="modal-title" id="goal-modal-title">Nuevo objetivo</div>
     <div class="field"><label class="field-label">Nombre</label><input type="text" id="goal-name" placeholder="Ej: Fondo emergencia"></div>
-    <div class="field"><label class="field-label">Cantidad objetivo (€)</label><input type="number" id="goal-target" step="0.01" inputmode="decimal"></div>
+    <div class="field"><label class="field-label">Cantidad objetivo (€)</label><input type="text" id="goal-target" inputmode="decimal" placeholder="0,00"></div>
     <div class="field"><label class="field-label">Fecha límite</label><input type="date" id="goal-deadline"></div>
     <div class="field">
       <label class="field-label">Plazo</label>
@@ -518,6 +518,7 @@ const fmtC=n=>{
 const fmtD=d=>{if(!d)return'';const p=d.split('-');return`${p[2]}/${p[1]}/${p[0]}`};
 const fmtDShort=d=>{if(!d)return'';const p=d.split('-');return`${parseInt(p[2])} ${MONTHS[parseInt(p[1])-1].slice(0,3).toLowerCase()}`};
 const parseAmount=s=>{if(!s)return 0;const n=parseFloat(s.replace(/\./g,'').replace(',','.'));return isNaN(n)?0:n};
+const fmtInput=n=>{if(n==null||n===''||isNaN(n))return'';const abs=Math.abs(n);const parts=abs.toFixed(2).split('.');const int=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');return`${n<0?'-':''}${int},${parts[1]}`};
 const today=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const getVM=id=>{const btn=document.getElementById(id);if(!btn)return{m:new Date().getMonth(),y:new Date().getFullYear(),all:false};if(btn.dataset.val==='all')return{m:null,y:null,all:true};const m=parseInt(btn.dataset.m);const y=parseInt(btn.dataset.y);if(isNaN(m)||isNaN(y))return{m:new Date().getMonth(),y:new Date().getFullYear(),all:false};return{m,y,all:false}};
 const round2=n=>Math.round(n*100)/100;
@@ -833,7 +834,7 @@ async function renderCartera(){
   CONFIG.banks.forEach(b=>{
     const v=vals.bancos?.[b]??'';
     if(v)totalLiq+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${b}</div><input type="number" step="0.01" inputmode="decimal" placeholder="0,00" class="val-input" data-g="bancos" data-k="${b}" value="${v}"></div>`;
+    html+=`<div class="val-row"><div class="val-label">${b}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="bancos" data-k="${b}" value="${v?fmtInput(v):''}"></div>`;
   });
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total liquidez</div><div class="val-total">${fmtC(totalLiq)}</div></div></div>`;
 
@@ -843,7 +844,7 @@ async function renderCartera(){
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_aportado?.[t]??'';
     if(v)totalAp+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="number" step="0.01" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_aportado" data-k="${t}" value="${v}"></div>`;
+    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_aportado" data-k="${t}" value="${v?fmtInput(v):''}"></div>`;
   });
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total aportado</div><div class="val-total">${fmtC(totalAp)}</div></div></div>`;
 
@@ -854,7 +855,7 @@ async function renderCartera(){
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_valor_real?.[t]??'';
     if(v)totalReal+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="number" step="0.01" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_valor_real" data-k="${t}" value="${v}"></div>`;
+    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_valor_real" data-k="${t}" value="${v?fmtInput(v):''}"></div>`;
   });
   const rentPct=totalAp>0?round2(((totalReal-totalAp)/totalAp)*100):0;
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total valor mercado</div><div class="val-total">${fmtC(totalReal)}</div></div>`;
@@ -896,8 +897,8 @@ async function saveCarteraValues(){
 
   document.querySelectorAll('#cart-content .val-input').forEach(inp=>{
     const g=inp.dataset.g,k=inp.dataset.k;
-    const v=parseFloat(inp.value);
-    existing[g][k]=isNaN(v)?0:round2(v);
+    const v=parseAmount(inp.value);
+    existing[g][k]=round2(v);
   });
   await dbPutTS('values',existing);
   toast('Valores guardados correctamente');
@@ -986,12 +987,12 @@ function openBudgetModal(){
     let html=`<div class="sec-label">Ingresos previstos</div>`;
     CONFIG.inc_categories.forEach(cat=>{
       const v=budget.ingresos?.[cat]||'';
-      html+=`<div class="field"><label class="field-label">${cat}</label><input type="number" step="0.01" inputmode="decimal" data-bg="ingresos" data-bk="${cat}" value="${v}"></div>`;
+      html+=`<div class="field"><label class="field-label">${cat}</label><input type="text" inputmode="decimal" placeholder="0,00" data-bg="ingresos" data-bk="${cat}" value="${v?fmtInput(v):''}"></div>`;
     });
     html+=`<div class="sec-label">Gastos previstos</div>`;
     CONFIG.exp_categories.forEach(cat=>{
       const v=budget.gastos?.[cat]||'';
-      html+=`<div class="field"><label class="field-label">${cat}</label><input type="number" step="0.01" inputmode="decimal" data-bg="gastos" data-bk="${cat}" value="${v}"></div>`;
+      html+=`<div class="field"><label class="field-label">${cat}</label><input type="text" inputmode="decimal" placeholder="0,00" data-bg="gastos" data-bk="${cat}" value="${v?fmtInput(v):''}"></div>`;
     });
     document.getElementById('budget-fields').innerHTML=html;
     openModal('budget-modal');
@@ -1003,8 +1004,8 @@ async function saveBudget(){
   const data={id:`${y}-${m}`,ingresos:{},gastos:{}};
   document.querySelectorAll('#budget-fields input').forEach(inp=>{
     const g=inp.dataset.bg,k=inp.dataset.bk;
-    const v=parseFloat(inp.value);
-    if(!isNaN(v)&&v>0)data[g][k]=round2(v);
+    const v=parseAmount(inp.value);
+    if(v>0)data[g][k]=round2(v);
   });
   await dbPutTS('budget',data);
   closeModal('budget-modal');
@@ -1052,7 +1053,7 @@ async function renderGoals(){
 function openGoalModal(goal){
   document.getElementById('goal-modal-title').textContent=goal?'Editar objetivo':'Nuevo objetivo';
   document.getElementById('goal-name').value=goal?.name||'';
-  document.getElementById('goal-target').value=goal?.target||'';
+  document.getElementById('goal-target').value=goal?.target?fmtInput(goal.target):'';
   document.getElementById('goal-deadline').value=goal?.deadline||'';
   document.getElementById('goal-id').value=goal?.id||'';
   goalTypeVal=goal?.type||'corto';
@@ -1069,7 +1070,7 @@ function selGoalType(t){
 
 async function saveGoal(){
   const name=document.getElementById('goal-name').value.trim();
-  const target=parseFloat(document.getElementById('goal-target').value);
+  const target=parseAmount(document.getElementById('goal-target').value);
   if(!name||!target){toast('Completa nombre y cantidad');return}
   const goal={
     id:document.getElementById('goal-id').value||uuid(),
@@ -1236,8 +1237,21 @@ async function saveConfig(){
 }
 
 // ═══════ MODALS ═══════
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open')}
+let lockedScrollY=0;
+function openModal(id){
+  document.getElementById(id).classList.add('open');
+  lockedScrollY=window.scrollY;
+  document.body.style.position='fixed';
+  document.body.style.top=`-${lockedScrollY}px`;
+  document.body.style.width='100%';
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('open');
+  document.body.style.position='';
+  document.body.style.top='';
+  document.body.style.width='';
+  window.scrollTo(0,lockedScrollY);
+}
 document.querySelectorAll('.modal-overlay').forEach(m=>{
   m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)});
 });
