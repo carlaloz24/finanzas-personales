@@ -41,7 +41,7 @@ function initGoogleAuth(){
 function handleAuthResponse(resp){
   if(resp.error){
     console.error('Auth error:',resp.error);
-    updateSyncStatus('error','Error de autenticacion');
+    updateSyncStatus('error','Error de autenticación');
     return;
   }
   gdToken=resp.access_token;
@@ -55,7 +55,7 @@ function handleAuthResponse(resp){
 function gdSignIn(){
   if(!isGdConfigured()){openModal('gd-setup-modal');return}
   if(!gdTokenClient)initGoogleAuth();
-  if(!gdTokenClient){toast('Google no cargado. Comprueba tu conexion.');return}
+  if(!gdTokenClient){toast('Google no cargado. Comprueba tu conexión.');return}
   gdTokenClient.requestAccessToken({prompt:''});
 }
 
@@ -270,9 +270,9 @@ async function gatherSyncData(){
 }
 
 async function performSync(manual=false){
-  if(syncInProgress){if(manual)toast('Sincronizacion en progreso...');return}
+  if(syncInProgress){if(manual)toast('Sincronización en progreso...');return}
   if(!isGdConnected()){if(manual)toast('Conecta Google Drive primero');return}
-  if(!navigator.onLine){if(manual)toast('Sin conexion');return}
+  if(!navigator.onLine){if(manual)toast('Sin conexión');return}
 
   syncInProgress=true;
   updateSyncStatus('syncing');
@@ -291,7 +291,7 @@ async function performSync(manual=false){
       await writeAllToIDB(localData);
       updateSyncStatus('synced');
       localStorage.setItem('last_sync_time',new Date().toISOString());
-      if(manual)toast('Primera sincronizacion completada');
+      if(manual)toast('Primera sincronización completada');
       return;
     }
     syncFileId=existing.id;
@@ -360,8 +360,8 @@ async function performSync(manual=false){
   }catch(e){
     console.error('Sync error:',e);
     if(e.message==='NO_AUTH'){
-      updateSyncStatus('error','Sesion expirada');
-      if(manual)toast('Sesion expirada. Reconecta Google Drive.');
+      updateSyncStatus('error','Sesión expirada');
+      if(manual)toast('Sesión expirada. Reconecta Google Drive.');
     }else{
       updateSyncStatus('error',e.message);
       if(manual)toast('Error de sync: '+e.message);
@@ -415,7 +415,7 @@ function updateSyncStatus(status,detail){
     syncing:{icon:'↻',color:'var(--text2)',text:'Sincronizando...'},
     pending:{icon:'●',color:'#f59e0b',text:'Pendiente'},
     error:{icon:'●',color:'var(--negative)',text:'Error'},
-    offline:{icon:'●',color:'var(--text3)',text:'Sin conexion'},
+    offline:{icon:'●',color:'var(--text3)',text:'Sin conexión'},
     conflicts:{icon:'⚠',color:'#f59e0b',text:`${detail} conflicto${detail>1?'s':''}`}
   }[status]||{icon:'',color:'var(--text3)',text:''};
   el.innerHTML=`<span style="color:${cfg.color};font-size:8px;margin-right:4px">${cfg.icon}</span><span style="font-size:11px;color:${cfg.color};font-weight:500">${cfg.text}</span>`;
@@ -432,7 +432,7 @@ function updateSyncUI(){
   if(footer){
     if(on){
       const ls=localStorage.getItem('last_sync_time');
-      footer.innerHTML=`Finanzas v2.1 — Sincronizado con Google Drive.<br>Ultimo sync: ${ls?timeSince(new Date(ls)):'nunca'}`;
+      footer.innerHTML=`Finanzas v2.1 — Sincronizado con Google Drive.<br>Último sync: ${ls?timeSince(new Date(ls)):'nunca'}`;
     }else{
       footer.innerHTML='Finanzas v2.1 — Tus datos viven en este dispositivo.<br>Conecta Google Drive para sincronizar.';
     }
@@ -444,7 +444,7 @@ function timeSince(d){
   if(s<60)return'hace un momento';
   const m=Math.floor(s/60);if(m<60)return`hace ${m} min`;
   const h=Math.floor(m/60);if(h<24)return`hace ${h}h`;
-  return`hace ${Math.floor(h/24)} dia${Math.floor(h/24)>1?'s':''}`;
+  return`hace ${Math.floor(h/24)} día${Math.floor(h/24)>1?'s':''}`;
 }
 
 function refreshCurrentView(){

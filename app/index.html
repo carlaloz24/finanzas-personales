@@ -473,11 +473,11 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <ol class="gd-setup-steps">
       <li>Ve a <strong>console.cloud.google.com</strong></li>
       <li>Crea un nuevo proyecto (ej: "Finanzas")</li>
-      <li>En el menu lateral: <strong>APIs y servicios &rarr; Biblioteca</strong> &rarr; busca y activa <strong>Google Drive API</strong></li>
+      <li>En el menú lateral: <strong>APIs y servicios &rarr; Biblioteca</strong> &rarr; busca y activa <strong>Google Drive API</strong></li>
       <li>Ve a <strong>Credenciales &rarr; Crear credenciales &rarr; ID de cliente OAuth</strong></li>
-      <li>Tipo: <strong>Aplicacion web</strong></li>
-      <li>En "Origenes de JavaScript autorizados" anade la URL donde alojas la app (ej: <code>https://tuusuario.github.io</code>)</li>
-      <li>Copia el <strong>Client ID</strong> y pegalo aqui abajo</li>
+      <li>Tipo: <strong>Aplicación web</strong></li>
+      <li>En "Orígenes de JavaScript autorizados" añade la URL donde alojas la app (ej: <code>https://tuusuario.github.io</code>)</li>
+      <li>Copia el <strong>Client ID</strong> y pégalo aquí abajo</li>
     </ol>
     <div class="field">
       <label class="field-label">Client ID de Google</label>
@@ -946,37 +946,31 @@ async function renderBudget(){
   const budget=await dbGet('budget','main')||{};
   const txs=(await dbByIdx('transactions','month_year',[m,y])).filter(t=>!t.deleted);
 
-  const realInc={},realExp={};
+  const realExp={};
+  let totalReal=0;
   txs.forEach(t=>{
-    if(t.type==='ingreso'){const c=t.category||'Otros';realInc[c]=(realInc[c]||0)+t.amount}
-    if(t.type==='gasto'){const c=t.category||'Otros';realExp[c]=(realExp[c]||0)+t.amount}
+    if(t.type==='gasto'){const c=t.category||'Otros';realExp[c]=(realExp[c]||0)+t.amount;totalReal+=t.amount}
   });
+  totalReal=round2(totalReal);
+  const totalBudget=budget.total||0;
 
   let html=`<div class="cart-hint">El límite de cada categoría es fijo — se mantiene mes a mes hasta que lo cambies tú. Solo se reinicia lo gastado.</div>`;
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Ingresos</div><span class="link" onclick="openBudgetModal()">Editar</span></div>`;
-  CONFIG.inc_categories.forEach(cat=>{
-    const planned=budget.ingresos?.[cat]||0;
-    const real=round2(realInc[cat]||0);
-    const pct=planned>0?Math.min(Math.round((real/planned)*100),100):0;
-    html+=`<div class="budget-item"><div class="budget-top"><div class="budget-cat">${cat}</div><div class="budget-nums"><span>${fmtC(real)}</span> / ${fmtC(planned)}</div></div><div class="prog-bar"><div class="prog-fill green" style="width:${pct}%"></div></div></div>`;
-  });
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Presupuesto</div><span class="link" onclick="openBudgetModal()">Editar</span></div>`;
 
-  html+=`<div class="sec-label" style="margin-top:20px">Gastos</div>`;
-  let totalPlanned=0,totalReal=0;
+  if(totalBudget>0){
+    const totalOver=totalReal>totalBudget;
+    const totalPct=Math.min(Math.round((totalReal/totalBudget)*100),150);
+    html+=`<div class="budget-item"><div class="budget-top"><div class="budget-cat" style="font-weight:700">Total mensual</div><div class="budget-nums"><span style="${totalOver?'color:var(--negative);font-weight:600':'font-weight:400;color:var(--text2)'}">${fmtC(totalReal)}</span> / <span style="font-weight:700;color:var(--text)">${fmtC(totalBudget)}</span></div></div><div class="prog-bar"><div class="prog-fill ${totalOver?'red':'accent'}" style="width:${Math.min(totalPct,100)}%"></div></div></div>`;
+  }
+
+  html+=`<div class="sec-label" style="margin-top:20px">Categorías</div>`;
   CONFIG.exp_categories.forEach(cat=>{
     const planned=budget.gastos?.[cat]||0;
     const real=round2(realExp[cat]||0);
-    totalPlanned+=planned;totalReal+=real;
     const pct=planned>0?Math.min(Math.round((real/planned)*100),150):0;
     const over=real>planned&&planned>0;
-    html+=`<div class="budget-item"><div class="budget-top"><div class="budget-cat">${cat}</div><div class="budget-nums"><span${over?' style="color:var(--negative)"':''}>${fmtC(real)}</span> / ${fmtC(planned)}</div></div><div class="prog-bar"><div class="prog-fill ${over?'red':'accent'}" style="width:${Math.min(pct,100)}%"></div></div></div>`;
+    html+=`<div class="budget-item"><div class="budget-top"><div class="budget-cat">${cat}</div><div class="budget-nums"><span style="${over?'color:var(--negative);font-weight:600':'font-weight:400;color:var(--text2)'}">${fmtC(real)}</span> / <span style="font-weight:700;color:var(--text)">${fmtC(planned)}</span></div></div><div class="prog-bar"><div class="prog-fill ${over?'red':'accent'}" style="width:${Math.min(pct,100)}%"></div></div></div>`;
   });
-
-  if(totalPlanned>0){
-    const totalPct=Math.round((totalReal/totalPlanned)*100);
-    const over=totalReal>totalPlanned;
-    html+=`<div style="padding:16px 0;border-top:2px solid var(--border);margin-top:8px"><div class="budget-top"><div class="budget-cat" style="font-weight:700">Total gastos</div><div class="budget-nums"><span${over?' style="color:var(--negative);font-weight:700"':' style="font-weight:700"'}>${fmtC(totalReal)}</span> / ${fmtC(totalPlanned)} (${totalPct}%)</div></div></div>`;
-  }
 
   document.getElementById('plan-content').innerHTML=html;
 }
@@ -984,12 +978,8 @@ async function renderBudget(){
 function openBudgetModal(){
   dbGet('budget','main').then(budget=>{
     budget=budget||{};
-    let html=`<div class="sec-label">Ingresos previstos</div>`;
-    CONFIG.inc_categories.forEach(cat=>{
-      const v=budget.ingresos?.[cat]||'';
-      html+=`<div class="field"><label class="field-label">${cat}</label><input type="text" inputmode="decimal" placeholder="0,00" data-bg="ingresos" data-bk="${cat}" value="${v?fmtInput(v):''}"></div>`;
-    });
-    html+=`<div class="sec-label">Gastos previstos</div>`;
+    let html=`<div class="field"><label class="field-label">Presupuesto total mensual (€)</label><input type="text" inputmode="decimal" placeholder="0,00" id="budget-total-input" value="${budget.total?fmtInput(budget.total):''}"></div>`;
+    html+=`<div class="sec-label" style="margin-top:16px">Límite por categoría</div>`;
     CONFIG.exp_categories.forEach(cat=>{
       const v=budget.gastos?.[cat]||'';
       html+=`<div class="field"><label class="field-label">${cat}</label><input type="text" inputmode="decimal" placeholder="0,00" data-bg="gastos" data-bk="${cat}" value="${v?fmtInput(v):''}"></div>`;
@@ -1000,8 +990,10 @@ function openBudgetModal(){
 }
 
 async function saveBudget(){
-  const data={id:'main',ingresos:{},gastos:{}};
-  document.querySelectorAll('#budget-fields input').forEach(inp=>{
+  const data={id:'main',gastos:{}};
+  const totalInp=document.getElementById('budget-total-input');
+  data.total=totalInp?round2(parseAmount(totalInp.value)):0;
+  document.querySelectorAll('#budget-fields input[data-bg]').forEach(inp=>{
     const g=inp.dataset.bg,k=inp.dataset.bk;
     const v=parseAmount(inp.value);
     if(v>0)data[g][k]=round2(v);
