@@ -1,4 +1,4 @@
-const CACHE = 'finanzas-v7';
+const CACHE = 'finanzas-v8';
 const ASSETS = [
   './index.html',
   './sync.js',
