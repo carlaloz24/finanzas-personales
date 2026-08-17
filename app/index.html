@@ -943,7 +943,7 @@ async function renderPlan(){
 
 async function renderBudget(){
   const{m,y}=getVM('plan-month');
-  const budget=await dbGet('budget',`${y}-${m}`)||{};
+  const budget=await dbGet('budget','main')||{};
   const txs=(await dbByIdx('transactions','month_year',[m,y])).filter(t=>!t.deleted);
 
   const realInc={},realExp={};
@@ -952,7 +952,8 @@ async function renderBudget(){
     if(t.type==='gasto'){const c=t.category||'Otros';realExp[c]=(realExp[c]||0)+t.amount}
   });
 
-  let html=`<div class="sec-header"><div class="sec-label" style="margin:0">Ingresos</div><span class="link" onclick="openBudgetModal()">Editar</span></div>`;
+  let html=`<div class="cart-hint">El límite de cada categoría es fijo — se mantiene mes a mes hasta que lo cambies tú. Solo se reinicia lo gastado.</div>`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Ingresos</div><span class="link" onclick="openBudgetModal()">Editar</span></div>`;
   CONFIG.inc_categories.forEach(cat=>{
     const planned=budget.ingresos?.[cat]||0;
     const real=round2(realInc[cat]||0);
@@ -981,8 +982,7 @@ async function renderBudget(){
 }
 
 function openBudgetModal(){
-  const{m,y}=getVM('plan-month');
-  dbGet('budget',`${y}-${m}`).then(budget=>{
+  dbGet('budget','main').then(budget=>{
     budget=budget||{};
     let html=`<div class="sec-label">Ingresos previstos</div>`;
     CONFIG.inc_categories.forEach(cat=>{
@@ -1000,8 +1000,7 @@ function openBudgetModal(){
 }
 
 async function saveBudget(){
-  const{m,y}=getVM('plan-month');
-  const data={id:`${y}-${m}`,ingresos:{},gastos:{}};
+  const data={id:'main',ingresos:{},gastos:{}};
   document.querySelectorAll('#budget-fields input').forEach(inp=>{
     const g=inp.dataset.bg,k=inp.dataset.bk;
     const v=parseAmount(inp.value);

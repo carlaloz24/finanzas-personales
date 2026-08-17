@@ -126,7 +126,7 @@ def generate_month_excel(year, month, data, output_path):
     values = next((v for v in data.get("values", []) if v.get("id") == val_id), {})
 
     # Get budget for this month
-    budget = next((b for b in data.get("budgets", []) if b.get("id") == val_id), {})
+    budget = next((b for b in data.get("budgets", []) if b.get("id") == "main"), {})
 
     wb = openpyxl.Workbook()
     month_name = MONTHS[month] if 0 <= month < 12 else f"Mes {month}"
