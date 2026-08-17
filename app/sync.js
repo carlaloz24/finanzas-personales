@@ -18,7 +18,8 @@ let syncFileId=null,syncFolderId=null;
 
 // ═══════ CLIENT ID MANAGEMENT ═══════
 
-function getGdClientId(){return localStorage.getItem('gd_client_id')||''}
+const DEFAULT_GD_CLIENT_ID='965651146742-3i5s8l107rquqjfh3qbitit8s3hsji05.apps.googleusercontent.com';
+function getGdClientId(){return localStorage.getItem('gd_client_id')||DEFAULT_GD_CLIENT_ID}
 function setGdClientId(id){localStorage.setItem('gd_client_id',id.trim())}
 function isGdConfigured(){return!!getGdClientId()}
 
