@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#f5f5eb">
 <link rel="manifest" href="./manifest.json">
-<title>Finanzas</title>
+<title>Fivvo</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 @font-face{font-family:'Saans';src:url('./fonts/Saans-TRIAL-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
@@ -60,7 +60,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .mp-all-btn.selected{background:var(--text);color:var(--bg)}
 
 /* SECTION LABEL */
-.sec-label{font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text2);margin:24px 0 10px}
+.sec-label{font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#14140f;margin:24px 0 10px;background:#beff50;display:inline-block;padding:3px 10px;border-radius:20px}
 .sec-header{display:flex;justify-content:space-between;align-items:center}
 .sec-header .link{font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;text-decoration:none}
 .sec-header .link:hover{color:var(--text)}
@@ -158,8 +158,9 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .val-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
 .val-row:last-child{border-bottom:none}
 .val-label{font-weight:500;font-size:14px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:12px}
-.val-input{width:120px;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:15px;font-weight:500;text-align:right;background:var(--bg-input);color:var(--text);outline:none}
+.val-input{width:120px;padding:8px 12px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:15px;font-weight:500;text-align:right;background:var(--bg-input);color:var(--text);outline:none;transition:all .15s}
 .val-input:focus{border-color:var(--text2)}
+.val-input[readonly]{border-color:transparent;background:transparent;color:var(--text);pointer-events:none}
 .val-total{font-weight:700;font-size:17px;color:var(--text)}
 
 /* BUDGET ROWS */
@@ -217,11 +218,12 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .legend-label{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .legend-val{color:var(--text2);font-weight:600;font-size:12px;flex-shrink:0}
 .legend-amt{color:var(--text3);font-size:11px;flex-shrink:0;margin-left:4px}
-.legend-below{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;text-align:left;margin-top:4px}
-.legend-below .legend-item{padding:5px 0;flex-wrap:wrap}
-.legend-below .legend-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:12px;line-height:1.3}
-.legend-below .legend-val{font-size:11px}
-.legend-below .legend-amt{margin-left:0;width:100%;padding-left:18px;font-size:10px}
+.legend-below{display:flex;flex-direction:column;gap:0;text-align:left;margin-top:8px}
+.legend-below .legend-item{padding:10px 0;border-bottom:1px solid var(--border)}
+.legend-below .legend-item:last-child{border-bottom:none}
+.legend-below .legend-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:13px;line-height:1.3}
+.legend-below .legend-val{font-size:12px}
+.legend-below .legend-amt{font-size:11px}
 
 .monthly-bars{display:flex;align-items:flex-end;gap:6px;height:170px;padding:24px 8px 12px;background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border)}
 .mb-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;gap:6px}
@@ -282,15 +284,10 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 <!-- ═══ DASHBOARD ═══ -->
 <div id="screen-dashboard" class="screen active">
   <div class="header">
-    <div style="display:flex;align-items:center;gap:10px"><h1>Finanzas</h1><div class="sync-status" id="sync-status" onclick="showSyncDetails()"></div></div>
+    <div style="display:flex;align-items:center;gap:10px"><div style="display:flex;align-items:center;gap:8px"><svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="100" cy="100" r="100" fill="#beff50"/><g transform="translate(100,100)" fill="#14140f"><ellipse rx="4" ry="26" transform="rotate(0) translate(0,-44)"/><ellipse rx="5" ry="27" transform="rotate(30) translate(0,-43)"/><ellipse rx="6" ry="28" transform="rotate(60) translate(0,-42)"/><ellipse rx="8" ry="26" transform="rotate(90) translate(0,-42)"/><ellipse rx="10" ry="24" transform="rotate(120) translate(0,-42)"/><ellipse rx="12" ry="22" transform="rotate(150) translate(0,-40)"/><ellipse rx="13" ry="20" transform="rotate(180) translate(0,-40)"/><ellipse rx="12" ry="22" transform="rotate(210) translate(0,-40)"/><ellipse rx="10" ry="24" transform="rotate(240) translate(0,-42)"/><ellipse rx="8" ry="26" transform="rotate(270) translate(0,-42)"/><ellipse rx="6" ry="28" transform="rotate(300) translate(0,-43)"/><ellipse rx="5" ry="27" transform="rotate(330) translate(0,-44)"/></g></svg><h1>Fivvo</h1></div><div class="sync-status" id="sync-status" onclick="showSyncDetails()"></div></div>
     <button class="mp-btn" id="dash-month" data-has-all="true" onclick="openMonthPicker(this)"></button>
   </div>
   <div id="dash-kpis"></div>
-  <div class="sec-header">
-    <div class="sec-label" style="margin-bottom:0">Últimos movimientos</div>
-    <span class="link" onclick="nav('history')">Ver todo</span>
-  </div>
-  <div id="dash-recent"></div>
 </div>
 
 <!-- ═══ HISTORIAL ═══ -->
@@ -351,7 +348,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
   <div class="set-group">
     <div class="set-item" onclick="openConfigModal()"><span class="label">Categorías, bancos y fondos</span><span class="arrow">→</span></div>
   </div>
-  <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:32px">Finanzas v2.1 — Tus datos viven en este dispositivo.<br>Conecta Google Drive para sincronizar.</p>
+  <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:32px">Fivvo v2.1 — Tus datos viven en este dispositivo.<br>Conecta Google Drive para sincronizar.</p>
 </div>
 
 <!-- ═══ MONTH PICKER ═══ -->
@@ -494,7 +491,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <p style="font-size:14px;color:var(--text2);margin-bottom:12px">Para sincronizar necesitas crear un proyecto en Google Cloud (gratis). Sigue estos pasos:</p>
     <ol class="gd-setup-steps">
       <li>Ve a <strong>console.cloud.google.com</strong></li>
-      <li>Crea un nuevo proyecto (ej: "Finanzas")</li>
+      <li>Crea un nuevo proyecto (ej: "Fivvo")</li>
       <li>En el menú lateral: <strong>APIs y servicios &rarr; Biblioteca</strong> &rarr; busca y activa <strong>Google Drive API</strong></li>
       <li>Ve a <strong>Credenciales &rarr; Crear credenciales &rarr; ID de cliente OAuth</strong></li>
       <li>Tipo: <strong>Aplicación web</strong></li>
@@ -566,6 +563,12 @@ const today=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMont
 const getVM=id=>{const btn=document.getElementById(id);if(!btn)return{m:new Date().getMonth(),y:new Date().getFullYear(),all:false};if(btn.dataset.val==='all')return{m:null,y:null,all:true};const m=parseInt(btn.dataset.m);const y=parseInt(btn.dataset.y);if(isNaN(m)||isNaN(y))return{m:new Date().getMonth(),y:new Date().getFullYear(),all:false};return{m,y,all:false}};
 const round2=n=>Math.round(n*100)/100;
 
+function savingsGauge(rate){
+  const clamped=Math.max(0,Math.min(rate,100));
+  const angle=-90+(clamped/100)*180;
+  const color=rate>=30?'var(--positive)':rate>=10?'#f59e0b':'var(--negative)';
+  return`<div style="display:flex;align-items:center;gap:10px"><svg viewBox="0 0 80 44" width="60" height="33" style="flex-shrink:0"><path d="M8 40 A32 32 0 0 1 72 40" fill="none" stroke="var(--border)" stroke-width="7" stroke-linecap="round"/><path d="M8 40 A32 32 0 0 1 72 40" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${clamped*1.005} 999" style="transition:stroke-dasharray .6s"/><line x1="40" y1="40" x2="${40+24*Math.cos(angle*Math.PI/180)}" y2="${40+24*Math.sin(angle*Math.PI/180)}" stroke="var(--text)" stroke-width="2" stroke-linecap="round" style="transition:all .6s"/><circle cx="40" cy="40" r="3" fill="var(--text)"/></svg><div class="kpi-value" style="font-size:20px">${rate.toFixed(1)}%</div></div>`;
+}
 const CHART_COLORS=['#f97316','#3b82f6','#ec4899','#14b8a6','#6b7280','#a855f7','#6366f1','#06b6d4','#f59e0b','#ef4444','#84cc16','#8b5cf6'];
 const INV_COLORS=['#3b82f6','#14b8a6','#f59e0b','#ec4899','#6366f1','#06b6d4','#84cc16','#f97316'];
 
@@ -788,9 +791,9 @@ async function renderDashboard(){
       <div class="kpi"><div class="kpi-label">Ingresos</div><div class="kpi-value pos">${fmtC(income)}</div></div>
       <div class="kpi"><div class="kpi-label">Gastos</div><div class="kpi-value neg">${fmtC(expenses)}</div></div>
       <div class="kpi"><div class="kpi-label">Balance</div><div class="kpi-value ${balance>=0?'pos':'neg'}">${fmtC(balance)}</div></div>
-      <div class="kpi"><div class="kpi-label">Ahorro</div><div class="kpi-value">${savingsRate.toFixed(1)}%</div></div>
       <div class="kpi"><div class="kpi-label">Invertido (mes)</div><div class="kpi-value inv">${fmtC(invested)}</div></div>
       <div class="kpi"><div class="kpi-label">Patrimonio</div><div class="kpi-value">${fmtC(patrimonio)}</div><div class="kpi-sub">Liquidez ${fmtC(liquidez)}</div></div>
+      <div class="kpi"><div class="kpi-label">Tasa de ahorro</div>${savingsGauge(savingsRate)}</div>
     </div>
   `;
 
@@ -801,7 +804,7 @@ async function renderDashboard(){
   kpisHTML+=`<div class="sec-label">Ingresos vs Gastos (6 meses)</div><div class="chart-section" id="dash-monthly-bars"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
 
   if(patDonutData.length>0){
-    kpisHTML+=`<div class="sec-label">Composición patrimonio</div><div class="chart-section">${donutChart(patDonutData,fmtC(patrimonio))}</div>`;
+    kpisHTML+=`<div class="sec-label">Composición patrimonio</div><div class="chart-section">${donutChart(patDonutData,fmtC(patrimonio),160,true)}</div>`;
   }
 
   kpisHTML+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="dash-pat-chart"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
@@ -813,12 +816,6 @@ async function renderDashboard(){
   monthlyBarsHTML(cm,cy).then(html=>{const el=document.getElementById('dash-monthly-bars');if(el)el.innerHTML=html});
   patrimonioChartHTML(cm,cy).then(html=>{const el=document.getElementById('dash-pat-chart');if(el)el.innerHTML=html});
 
-  const recent=txs.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
-  if(recent.length===0){
-    document.getElementById('dash-recent').innerHTML='<div class="tx-empty">Sin movimientos</div>';
-  }else{
-    document.getElementById('dash-recent').innerHTML='<div class="tx-list">'+recent.map(t=>txItemHTML(t,false)).join('')+'</div>';
-  }
 }
 
 function txItemHTML(t,deletable=true){
@@ -866,50 +863,49 @@ async function renderHistory(){
 function setHistFilter(f){histFilter=f;renderHistory()}
 
 // ═══════ CARTERA ═══════
+let carteraEditing=false;
 async function renderCartera(){
   const{m,y}=getVM('cart-month');
   const vals=await dbGet('values',`${y}-${m}`)||{};
   const txs=(await dbByIdx('transactions','month_year',[m,y])).filter(t=>!t.deleted);
-
-  let investedMonth=0;
-  txs.filter(t=>t.type==='inversion').forEach(t=>investedMonth+=t.amount);
+  const ro=carteraEditing?'':'readonly';
 
   let html='';
 
-  html+=`<div class="cart-hint">Introduce los saldos de tus cuentas e inversiones a final de mes. Míralo en la app de tu banco y apúntalo aquí.</div>`;
-
   // Liquidez
-  html+=`<div class="sec-label">Liquidez — Saldos bancarios</div><div class="val-section">`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Liquidez — Saldos bancarios</div><span class="link" onclick="openConfigModal()">Editar bancos</span></div><div class="val-section">`;
   let totalLiq=0;
   CONFIG.banks.forEach(b=>{
     const v=vals.bancos?.[b]??'';
     if(v)totalLiq+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${b}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="bancos" data-k="${b}" value="${v?fmtInput(v):''}"></div>`;
+    html+=`<div class="val-row"><div class="val-label">${b}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="bancos" data-k="${b}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
   });
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total liquidez</div><div class="val-total">${fmtC(totalLiq)}</div></div></div>`;
 
   // Inversiones aportado
-  html+=`<div class="sec-label">Inversiones — Dinero aportado</div><div class="cart-hint" style="margin-top:0">Cuánto dinero has metido en total en cada fondo (sin contar ganancias ni pérdidas).</div><div class="val-section">`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Dinero aportado</div><span class="link" onclick="openConfigModal()">Editar fondos</span></div><div class="cart-hint" style="margin-top:0">Cuánto dinero has metido en total en cada fondo.</div><div class="val-section">`;
   let totalAp=0;
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_aportado?.[t]??'';
     if(v)totalAp+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_aportado" data-k="${t}" value="${v?fmtInput(v):''}"></div>`;
+    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_aportado" data-k="${t}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
   });
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total aportado</div><div class="val-total">${fmtC(totalAp)}</div></div></div>`;
 
   // Inversiones valor real
   const hasYahoo=Object.keys(CONFIG.yahoo_symbols||{}).length>0;
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Valor de mercado</div>${hasYahoo?'<span class="link" onclick="fetchYahooQuotes()">Actualizar</span>':''}</div><div class="cart-hint">Lo que valen hoy tus fondos/acciones.${hasYahoo?' Pulsa Actualizar para obtener precios automáticamente.':' Míralo en MyInvestor u otra plataforma.'}</div><div class="val-section">`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Valor de mercado</div>${hasYahoo?'<span class="link" onclick="fetchYahooQuotes()">Actualizar ▸</span>':''}</div><div class="cart-hint">Pulsa Actualizar para estimar el valor según la variación diaria del fondo.</div><div class="val-section">`;
   let totalReal=0;
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_valor_real?.[t]??'';
     if(v)totalReal+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_valor_real" data-k="${t}" value="${v?fmtInput(v):''}"></div>`;
+    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_valor_real" data-k="${t}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
   });
   const rentPct=totalAp>0?round2(((totalReal-totalAp)/totalAp)*100):0;
+  const ganancia=round2(totalReal-totalAp);
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total valor mercado</div><div class="val-total">${fmtC(totalReal)}</div></div>`;
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Rentabilidad</div><div class="val-total ${rentPct>=0?'':'neg'}" style="color:${rentPct>=0?'var(--positive)':'var(--negative)'}">${rentPct>=0?'+':''}${rentPct.toFixed(2)}%</div></div></div>`;
+  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Ganancia / Pérdida</div><div class="val-total" style="color:${ganancia>=0?'var(--positive)':'var(--negative)'}">${ganancia>=0?'+':''}${fmtC(ganancia)}</div></div>`;
+  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Rentabilidad</div><div class="val-total" style="color:${rentPct>=0?'var(--positive)':'var(--negative)'}">${rentPct>=0?'+':''}${rentPct.toFixed(2)}%</div></div></div>`;
 
   // Patrimonio
   const patrimonio=round2(totalLiq+totalReal);
@@ -935,13 +931,35 @@ async function renderCartera(){
   // Patrimonio evolution chart placeholder (async)
   html+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="cart-pat-chart"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
 
-  html+=`<button class="btn-primary" style="margin-top:16px" onclick="saveCarteraValues()">Guardar valores</button>`;
+  if(carteraEditing){
+    html+=`<button class="btn-primary btn-accent" style="margin-top:16px" onclick="saveCarteraValues()">Guardar valores</button>`;
+    html+=`<button class="btn-secondary" onclick="cancelCarteraEdit()">Cancelar</button>`;
+  }else{
+    html+=`<button class="btn-primary" style="margin-top:16px" onclick="startCarteraEdit()">Editar valores</button>`;
+  }
 
   document.getElementById('cart-content').innerHTML=html;
-
-  // Render async patrimonio chart
   patrimonioChartHTML(m,y).then(h=>{const el=document.getElementById('cart-pat-chart');if(el)el.innerHTML=h});
 }
+
+function startCarteraEdit(){
+  carteraEditing=true;
+  document.querySelectorAll('#cart-content .val-input').forEach(inp=>{
+    inp.removeAttribute('readonly');
+    if(inp.value==='—')inp.value='';
+  });
+  const btns=document.querySelector('#cart-content .btn-primary');
+  if(btns){
+    btns.textContent='Guardar valores';
+    btns.classList.add('btn-accent');
+    btns.setAttribute('onclick','saveCarteraValues()');
+    const cancel=document.createElement('button');
+    cancel.className='btn-secondary';cancel.textContent='Cancelar';
+    cancel.setAttribute('onclick','cancelCarteraEdit()');
+    btns.parentNode.insertBefore(cancel,btns.nextSibling);
+  }
+}
+function cancelCarteraEdit(){carteraEditing=false;renderCartera()}
 
 async function saveCarteraValues(){
   const{m,y}=getVM('cart-month');
@@ -956,19 +974,23 @@ async function saveCarteraValues(){
     existing[g][k]=round2(v);
   });
   await dbPutTS('values',existing);
-  toast('Valores guardados correctamente');
+  toast('Valores guardados');
+  carteraEditing=false;
   if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
   const btn=document.querySelector('#cart-content .btn-primary');
-  if(btn){btn.textContent='Guardado';btn.style.background='var(--positive)';setTimeout(()=>renderCartera(),1200);}
+  if(btn){btn.textContent='Guardado ✓';btn.style.background='var(--positive)';setTimeout(()=>renderCartera(),800);}
   else renderCartera();
 }
 
+let yahooChanges={};
 async function fetchYahooQuotes(){
   const syms=CONFIG.yahoo_symbols||{};
   const entries=Object.entries(syms).filter(([name])=>CONFIG.inv_types.includes(name));
   if(entries.length===0){toast('No hay símbolos Yahoo configurados');return}
   toast('Consultando precios...');
   let updated=0,errors=[];
+  yahooChanges={};
+  document.querySelectorAll('.val-input[data-g="inv_valor_real"]').forEach(i=>i.removeAttribute('readonly'));
   const proxies=['https://api.allorigins.win/raw?url=','https://corsproxy.io/?url='];
   for(const[name,symbol]of entries){
     let found=false;
@@ -980,18 +1002,58 @@ async function fetchYahooQuotes(){
         if(!r.ok)continue;
         const j=await r.json();
         const meta=j.chart?.result?.[0]?.meta;
-        const closes=j.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
-        const price=meta?.regularMarketPrice||(closes&&closes.length>0?closes[closes.length-1]:null);
-        if(price!=null&&!isNaN(price)){
-          const inp=document.querySelector(`.val-input[data-g="inv_valor_real"][data-k="${CSS.escape(name)}"]`);
-          if(inp){inp.value=fmtInput(round2(price));updated++;found=true}
+        const curPrice=meta?.regularMarketPrice;
+        const prevClose=meta?.chartPreviousClose;
+        if(curPrice!=null&&prevClose!=null&&prevClose>0){
+          const changePct=round2(((curPrice-prevClose)/prevClose)*100);
+          yahooChanges[name]={changePct,curPrice,prevClose};
+          const apInp=document.querySelector(`.val-input[data-g="inv_aportado"][data-k="${CSS.escape(name)}"]`);
+          const realInp=document.querySelector(`.val-input[data-g="inv_valor_real"][data-k="${CSS.escape(name)}"]`);
+          const aportado=apInp?parseAmount(apInp.value):0;
+          const savedReal=realInp?parseAmount(realInp.value):0;
+          const base=savedReal>0?savedReal:aportado;
+          if(base>0){
+            const estimated=round2(base*(1+changePct/100));
+            if(realInp)realInp.value=fmtInput(estimated);
+          }
+          updated++;found=true;
         }
       }catch(e){/* try next proxy */}
     }
     if(!found)errors.push(name);
   }
-  if(updated>0)toast(`${updated} precio${updated>1?'s':''} actualizado${updated>1?'s':''}`);
+  if(updated>0){
+    // Auto-save estimated values
+    const{m:cm,y:cy}=getVM('cart-month');
+    const existing=await dbGet('values',`${cy}-${cm}`)||{id:`${cy}-${cm}`};
+    existing.inv_valor_real=existing.inv_valor_real||{};
+    document.querySelectorAll('.val-input[data-g="inv_valor_real"]').forEach(inp=>{
+      const k=inp.dataset.k;
+      const v=parseAmount(inp.value);
+      if(v>0)existing.inv_valor_real[k]=round2(v);
+    });
+    await dbPutTS('values',existing);
+    if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
+    toast(`${updated} fondo${updated>1?'s':''} actualizado${updated>1?'s':''} y guardado`);
+    updateYahooBadges();
+    setTimeout(()=>renderCartera(),1500);
+  }
   if(errors.length>0)setTimeout(()=>toast(`Error en: ${errors.join(', ')}`),updated>0?2400:0);
+}
+function updateYahooBadges(){
+  document.querySelectorAll('.yahoo-badge').forEach(el=>el.remove());
+  Object.entries(yahooChanges).forEach(([name,data])=>{
+    const row=document.querySelector(`.val-input[data-g="inv_valor_real"][data-k="${CSS.escape(name)}"]`);
+    if(!row)return;
+    const parent=row.closest('.val-row');
+    if(!parent)return;
+    const badge=document.createElement('span');
+    badge.className='yahoo-badge';
+    badge.style.cssText=`font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:8px;white-space:nowrap;${data.changePct>=0?'color:var(--positive);background:rgba(34,197,94,0.1)':'color:var(--negative);background:rgba(239,68,68,0.08)'}`;
+    badge.textContent=`${data.changePct>=0?'+':''}${data.changePct.toFixed(2)}%`;
+    const label=parent.querySelector('.val-label');
+    if(label)label.appendChild(badge);
+  });
 }
 
 // ═══════ PLAN (PRESUPUESTO + OBJETIVOS) ═══════
@@ -1359,7 +1421,7 @@ async function shareBackup(){
   const name=`finanzas_backup_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.json`;
   const file=new File([JSON.stringify(data,null,2)],name,{type:'application/json'});
   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-    try{await navigator.share({files:[file],title:'Backup Finanzas'});toast('Backup compartido')}catch(e){if(e.name!=='AbortError')exportBackup()}
+    try{await navigator.share({files:[file],title:'Backup Fivvo'});toast('Backup compartido')}catch(e){if(e.name!=='AbortError')exportBackup()}
   }else{
     exportBackup();
   }
