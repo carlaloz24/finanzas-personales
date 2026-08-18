@@ -485,7 +485,7 @@ function renderConflictList(conflicts,syncData,revisionId){
   const el=document.getElementById('conflict-list');
   if(!el)return;
   if(conflicts.length===0){el.innerHTML='<div class="tx-empty">No hay conflictos pendientes</div>';return}
-  const storeLabels={transactions:'Transaccion',values:'Valores',budgets:'Presupuesto',goals:'Objetivo',config:'Configuracion'};
+  const storeLabels={transactions:'Transacción',values:'Valores',budgets:'Presupuesto',goals:'Objetivo',config:'Configuración'};
   let html='';
   conflicts.forEach((c,i)=>{
     const desc=conflictDesc(c);

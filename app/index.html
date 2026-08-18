@@ -120,11 +120,12 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .nav-item svg{width:22px;height:22px;stroke-width:1.8}
 
 /* MODALS */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);touch-action:none}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);touch-action:none;overscroll-behavior:none}
 .modal-overlay.open{display:flex;align-items:flex-end;animation:fadeIn .15s}
-.modal{background:var(--bg-card);border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:16px 20px calc(20px + var(--safe-b));overscroll-behavior:contain;touch-action:pan-y}
-.modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px}
+.modal{background:var(--bg-card);border-radius:var(--r-lg) var(--r-lg) 0 0;width:100%;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 20px calc(20px + var(--safe-b));overscroll-behavior:contain;touch-action:pan-y}
+.modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px;touch-action:none}
 .modal-title{font-weight:600;font-size:18px;letter-spacing:-0.02em;text-align:center;margin-bottom:20px}
+.modal input[type="date"]{max-width:200px}
 
 /* TYPE TABS */
 .type-tabs{display:flex;gap:6px;margin-bottom:20px}
@@ -206,6 +207,8 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 /* CHARTS */
 .chart-section{margin:20px 0}
 .chart-donut-wrap{display:flex;align-items:center;gap:20px;padding:16px;background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border)}
+.chart-donut-vertical{padding:16px;background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border);text-align:center}
+.chart-donut-vertical .donut-svg{margin:0 auto 16px}
 .donut-svg{width:140px;height:140px;flex-shrink:0}
 .donut-svg text{font-family:var(--font)}
 .legend{flex:1;min-width:0}
@@ -214,12 +217,18 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .legend-label{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .legend-val{color:var(--text2);font-weight:600;font-size:12px;flex-shrink:0}
 .legend-amt{color:var(--text3);font-size:11px;flex-shrink:0;margin-left:4px}
+.legend-below{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;text-align:left;margin-top:4px}
+.legend-below .legend-item{padding:5px 0;flex-wrap:wrap}
+.legend-below .legend-label{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:12px;line-height:1.3}
+.legend-below .legend-val{font-size:11px}
+.legend-below .legend-amt{margin-left:0;width:100%;padding-left:18px;font-size:10px}
 
-.monthly-bars{display:flex;align-items:flex-end;gap:6px;height:140px;padding:12px 8px;background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border)}
+.monthly-bars{display:flex;align-items:flex-end;gap:6px;height:170px;padding:24px 8px 12px;background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border)}
 .mb-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;gap:6px}
 .mb-bars{flex:1;display:flex;gap:3px;align-items:flex-end;width:100%}
-.mb-bar{flex:1;border-radius:4px 4px 0 0;min-height:2px;transition:height .4s ease}
+.mb-bar{flex:1;border-radius:6px 6px 0 0;min-height:2px;transition:height .4s ease;position:relative;display:flex;align-items:flex-start;justify-content:center}
 .mb-bar.inc{background:var(--positive)}.mb-bar.exp{background:var(--negative)}
+.mb-val{font-size:8px;font-weight:600;color:var(--text2);position:absolute;top:-14px;white-space:nowrap}
 .mb-label{font-size:10px;color:var(--text3);font-weight:500}
 .mb-legend{display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:12px;color:var(--text2)}
 .mb-legend span{display:inline-flex;align-items:center;gap:4px;font-weight:500}
@@ -243,6 +252,19 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .gd-setup-steps{font-size:13px;color:var(--text2);line-height:1.6;margin:12px 0}
 .gd-setup-steps li{margin-bottom:8px}
 .gd-setup-steps code{background:var(--bg-section);padding:2px 6px;border-radius:4px;font-size:12px}
+
+/* DCA RULES */
+.dca-rule{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);gap:12px}
+.dca-rule:last-child{border-bottom:none}
+.dca-icon{width:36px;height:36px;border-radius:var(--r-sm);background:rgba(124,110,246,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.dca-info{flex:1;min-width:0}
+.dca-fund{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dca-detail{font-size:12px;color:var(--text2)}
+.dca-amount{font-weight:600;font-size:15px;color:var(--invest);flex-shrink:0}
+.dca-actions{display:flex;gap:6px;flex-shrink:0}
+.dca-btn{background:none;border:1px solid var(--border-strong);border-radius:var(--r-sm);width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2)}
+.dca-btn:active{background:var(--bg-section)}
+.dca-btn.del{color:var(--negative);border-color:rgba(239,68,68,0.3)}
 
 /* RESPONSIVE */
 @media(min-width:600px){
@@ -327,7 +349,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
   </div>
   <div class="sec-label">Configuración</div>
   <div class="set-group">
-    <div class="set-item" onclick="openConfigModal()"><span class="label">Categorías y bancos</span><span class="arrow">→</span></div>
+    <div class="set-item" onclick="openConfigModal()"><span class="label">Categorías, bancos y fondos</span><span class="arrow">→</span></div>
   </div>
   <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:32px">Finanzas v2.1 — Tus datos viven en este dispositivo.<br>Conecta Google Drive para sincronizar.</p>
 </div>
@@ -488,20 +510,41 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
   </div>
 </div>
 
+<!-- ═══ DCA MODAL ═══ -->
+<div class="modal-overlay" id="dca-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="dca-modal-title">Nueva aportación automática</div>
+    <div class="field"><label class="field-label">Cantidad (€)</label><input type="text" inputmode="decimal" id="dca-amount" placeholder="0,00" autocomplete="off"></div>
+    <div class="field"><label class="field-label">Día del mes</label><input type="number" id="dca-day" min="1" max="28" placeholder="15" autocomplete="off"></div>
+    <div class="field">
+      <label class="field-label">Fondo / Tipo de inversión</label>
+      <select id="dca-fund"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">Plataforma / Broker</label>
+      <select id="dca-platform"></select>
+    </div>
+    <input type="hidden" id="dca-edit-id">
+    <button class="btn-primary" onclick="saveDCA()">Guardar</button>
+    <button class="btn-secondary" onclick="closeModal('dca-modal')">Cancelar</button>
+  </div>
+</div>
+
 <!-- ═══ TOAST ═══ -->
 <div id="toast"></div>
 </div>
 
 <script>
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const CAT_ICONS={Comida:'🛒',Ocio:'🎮',Ropa:'👕',Viajes:'✈️',Transporte:'🚗',Belleza:'💅',Formacion:'📚',Suscripciones:'📺',Eventos:'🎉',Regalos:'🎁',Otros:'📌',Nomina:'💰','Trabajo extra':'🔧','Ventas online':'📦'};
+const CAT_ICONS={Comida:'🛒',Ocio:'🎮',Ropa:'👕',Viajes:'✈️',Transporte:'🚗',Belleza:'💅','Formación':'📚',Formacion:'📚',Suscripciones:'📺',Eventos:'🎉',Regalos:'🎁',Otros:'📌','Nómina':'💰',Nomina:'💰','Trabajo extra':'🔧','Ventas online':'📦'};
 const DEFAULT_CONFIG={
   banks:["Banco Santander","Revolut","OpenBank","MyInvestor","Efectivo"],
   platforms:["MyInvestor"],
   inv_types:["Fidelity MSCI World P-ACC-EUR","Vanguard Small-Cap EUR Acc","Vanguard Emerging Mkts EUR Acc","Nueva Expresion Textil (NEXTIL)"],
   yahoo_symbols:{"Fidelity MSCI World P-ACC-EUR":"0P0001CLDK.F","Vanguard Small-Cap EUR Acc":"0P0000XR9M.F","Vanguard Emerging Mkts EUR Acc":"0P00012I6A.F","Nueva Expresion Textil (NEXTIL)":"NXT.MC"},
-  inc_categories:["Nomina","Trabajo extra","Ventas online","Otros"],
-  exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Formacion","Suscripciones","Eventos","Regalos","Otros"]
+  inc_categories:["Nómina","Trabajo extra","Ventas online","Otros"],
+  exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Formación","Suscripciones","Eventos","Regalos","Otros"]
 };
 
 let DB,CONFIG={...DEFAULT_CONFIG},currentScreen='dashboard',currentType='gasto',selectedCat=null,selectedBank=null,deleteTarget=null,planTab='budget',goalTypeVal='corto';
@@ -526,23 +569,29 @@ const round2=n=>Math.round(n*100)/100;
 const CHART_COLORS=['#f97316','#3b82f6','#ec4899','#14b8a6','#6b7280','#a855f7','#6366f1','#06b6d4','#f59e0b','#ef4444','#84cc16','#8b5cf6'];
 const INV_COLORS=['#3b82f6','#14b8a6','#f59e0b','#ec4899','#6366f1','#06b6d4','#84cc16','#f97316'];
 
-function donutChart(data,centerText,size=140){
+function donutChart(data,centerText,size=160,legendBelow=false){
   const filtered=data.filter(d=>d.value>0);
   const total=filtered.reduce((s,d)=>s+d.value,0);
   if(total===0)return'<div class="tx-empty" style="padding:20px">Sin datos</div>';
-  const r=size/2-14;const c=2*Math.PI*r;let offset=0;
+  const r=size/2-18;const c=2*Math.PI*r;let offset=0;
   let circles='';
   filtered.forEach(d=>{
     const pct=d.value/total;const dash=pct*c;
-    circles+=`<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${d.color}" stroke-width="18" stroke-dasharray="${dash.toFixed(2)} ${(c-dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${size/2} ${size/2})" stroke-linecap="butt"/>`;
+    circles+=`<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${d.color}" stroke-width="22" stroke-dasharray="${dash.toFixed(2)} ${(c-dash).toFixed(2)}" stroke-dashoffset="${(-offset).toFixed(2)}" transform="rotate(-90 ${size/2} ${size/2})" stroke-linecap="round" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.08))"/>`;
     offset+=dash;
   });
   const center=centerText||fmtC(total);
+  const cLen=center.length;
+  const fontSize=cLen>14?11:cLen>10?13:cLen>7?15:18;
   let legend=filtered.map(d=>{
     const pct=Math.round((d.value/total)*100);
     return`<div class="legend-item"><span class="legend-dot" style="background:${d.color}"></span><span class="legend-label">${d.name}</span><span class="legend-val">${pct}%</span><span class="legend-amt">${fmtC(d.value)}</span></div>`;
   }).join('');
-  return`<div class="chart-donut-wrap"><svg viewBox="0 0 ${size} ${size}" class="donut-svg">${circles}<text x="${size/2}" y="${size/2-6}" text-anchor="middle" font-size="16" font-weight="700" fill="var(--text)">${center}</text><text x="${size/2}" y="${size/2+12}" text-anchor="middle" font-size="10" fill="var(--text3)">total</text></svg><div class="legend">${legend}</div></div>`;
+  const svgHTML=`<svg viewBox="0 0 ${size} ${size}" class="donut-svg" style="width:${legendBelow?'140px':size+'px'};height:${legendBelow?'140px':size+'px'}">${circles}<text x="${size/2}" y="${size/2-4}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="var(--text)">${center}</text><text x="${size/2}" y="${size/2+13}" text-anchor="middle" font-size="10" fill="var(--text3)">total</text></svg>`;
+  if(legendBelow){
+    return`<div class="chart-donut-vertical">${svgHTML}<div class="legend-below">${legend}</div></div>`;
+  }
+  return`<div class="chart-donut-wrap">${svgHTML}<div class="legend">${legend}</div></div>`;
 }
 
 async function monthlyBarsHTML(currentM,currentY,months=6){
@@ -556,11 +605,12 @@ async function monthlyBarsHTML(currentM,currentY,months=6){
     pts.push({label:MONTHS[mm].slice(0,3),inc:round2(inc),exp:round2(exp)});
   }
   const maxVal=Math.max(...pts.flatMap(p=>[p.inc,p.exp]),1);
+  const fmtShort=n=>n>=1000?(n/1000).toFixed(1).replace('.',',')+'k':Math.round(n).toString();
   let bars='';
   pts.forEach(p=>{
     const hI=Math.max(2,Math.round((p.inc/maxVal)*100));
     const hE=Math.max(2,Math.round((p.exp/maxVal)*100));
-    bars+=`<div class="mb-col"><div class="mb-bars"><div class="mb-bar inc" style="height:${hI}%"></div><div class="mb-bar exp" style="height:${hE}%"></div></div><div class="mb-label">${p.label}</div></div>`;
+    bars+=`<div class="mb-col"><div class="mb-bars"><div class="mb-bar inc" style="height:${hI}%" title="${fmtC(p.inc)}"><span class="mb-val">${p.inc>0?fmtShort(p.inc):''}</span></div><div class="mb-bar exp" style="height:${hE}%" title="${fmtC(p.exp)}"><span class="mb-val">${p.exp>0?fmtShort(p.exp):''}</span></div></div><div class="mb-label">${p.label}</div></div>`;
   });
   return`<div class="monthly-bars">${bars}</div><div class="mb-legend"><span><div class="dot" style="background:var(--positive)"></div>Ingresos</span><span><div class="dot" style="background:var(--negative)"></div>Gastos</span></div>`;
 }
@@ -745,7 +795,7 @@ async function renderDashboard(){
   `;
 
   if(expDonutData.length>0){
-    kpisHTML+=`<div class="sec-label">Gastos por categoría</div><div class="chart-section">${donutChart(expDonutData)}</div>`;
+    kpisHTML+=`<div class="sec-label">Gastos por categoría</div><div class="chart-section">${donutChart(expDonutData,null,160,true)}</div>`;
   }
 
   kpisHTML+=`<div class="sec-label">Ingresos vs Gastos (6 meses)</div><div class="chart-section" id="dash-monthly-bars"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
@@ -877,6 +927,11 @@ async function renderCartera(){
     html+=`<div class="sec-label">Distribución cartera</div><div class="chart-section">${donutChart(invDonutData,fmtC(totalReal))}</div>`;
   }
 
+  // DCA section
+  const dcaRules=await getDCAConfig();
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Aportaciones automáticas (DCA)</div><span class="link" onclick="openDCAModal()">+ Añadir</span></div>`;
+  html+=`<div style="margin-bottom:16px">${renderDCARules(dcaRules)}</div>`;
+
   // Patrimonio evolution chart placeholder (async)
   html+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="cart-pat-chart"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
 
@@ -914,20 +969,29 @@ async function fetchYahooQuotes(){
   if(entries.length===0){toast('No hay símbolos Yahoo configurados');return}
   toast('Consultando precios...');
   let updated=0,errors=[];
+  const proxies=['https://api.allorigins.win/raw?url=','https://corsproxy.io/?url='];
   for(const[name,symbol]of entries){
-    try{
-      const target=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
-      const r=await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`);
-      const j=await r.json();
-      const price=j.chart?.result?.[0]?.meta?.regularMarketPrice;
-      if(price!=null){
-        const inp=document.querySelector(`.val-input[data-g="inv_valor_real"][data-k="${CSS.escape(name)}"]`);
-        if(inp){inp.value=round2(price);updated++}
-      }else{errors.push(name)}
-    }catch(e){errors.push(name)}
+    let found=false;
+    for(const proxy of proxies){
+      if(found)break;
+      try{
+        const target=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
+        const r=await fetch(proxy+encodeURIComponent(target),{signal:AbortSignal.timeout(8000)});
+        if(!r.ok)continue;
+        const j=await r.json();
+        const meta=j.chart?.result?.[0]?.meta;
+        const closes=j.chart?.result?.[0]?.indicators?.quote?.[0]?.close;
+        const price=meta?.regularMarketPrice||(closes&&closes.length>0?closes[closes.length-1]:null);
+        if(price!=null&&!isNaN(price)){
+          const inp=document.querySelector(`.val-input[data-g="inv_valor_real"][data-k="${CSS.escape(name)}"]`);
+          if(inp){inp.value=fmtInput(round2(price));updated++;found=true}
+        }
+      }catch(e){/* try next proxy */}
+    }
+    if(!found)errors.push(name);
   }
   if(updated>0)toast(`${updated} precio${updated>1?'s':''} actualizado${updated>1?'s':''}`);
-  if(errors.length>0)toast(`Error en: ${errors.join(', ')}`);
+  if(errors.length>0)setTimeout(()=>toast(`Error en: ${errors.join(', ')}`),updated>0?2400:0);
 }
 
 // ═══════ PLAN (PRESUPUESTO + OBJETIVOS) ═══════
@@ -1085,7 +1149,16 @@ async function editGoal(id){
 
 // ═══════ ADD TRANSACTION ═══════
 function openAddModal(){
-  currentType='gasto';selectedCat=null;selectedBank=null;
+  if(currentScreen==='history'){
+    if(histFilter==='ingreso')currentType='ingreso';
+    else if(histFilter==='inversion')currentType='inversion';
+    else currentType='gasto';
+  }else if(currentScreen==='cartera'){
+    currentType='inversion';
+  }else{
+    currentType='gasto';
+  }
+  selectedCat=null;selectedBank=null;
   document.getElementById('add-amount').value='';
   document.getElementById('add-desc').value='';
   document.getElementById('add-date').value=today();
@@ -1246,6 +1319,16 @@ function closeModal(id){
 }
 document.querySelectorAll('.modal-overlay').forEach(m=>{
   m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)});
+  m.addEventListener('touchmove',e=>{
+    const modal=m.querySelector('.modal');
+    if(!modal||!modal.contains(e.target)){e.preventDefault();return}
+    if(modal.scrollHeight<=modal.clientHeight){e.preventDefault();return}
+    const top=modal.scrollTop,max=modal.scrollHeight-modal.clientHeight;
+    if((top<=0&&e.touches[0].clientY>e.touches[0].clientY)||(top>=max))return;
+  },{passive:false});
+});
+document.querySelectorAll('.modal-handle').forEach(h=>{
+  h.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 });
 
 // ═══════ BACKUP / EXPORT ═══════
@@ -1359,6 +1442,92 @@ function showSyncDetails(){
   }
 }
 
+// ═══════ DCA AUTOMATION ═══════
+async function getDCAConfig(){
+  const cfg=await dbGet('config','main');
+  return cfg?.dca_rules||[];
+}
+async function saveDCAConfig(rules){
+  const cfg=await dbGet('config','main')||{id:'main',...CONFIG};
+  cfg.dca_rules=rules;
+  await dbPutTS('config',cfg);
+}
+
+function openDCAModal(rule){
+  document.getElementById('dca-modal-title').textContent=rule?'Editar aportación automática':'Nueva aportación automática';
+  document.getElementById('dca-amount').value=rule?.amount?fmtInput(rule.amount):'';
+  document.getElementById('dca-day').value=rule?.day||15;
+  document.getElementById('dca-edit-id').value=rule?.id||'';
+  const fundSel=document.getElementById('dca-fund');
+  fundSel.innerHTML=CONFIG.inv_types.map(t=>`<option value="${t}"${rule?.fund===t?' selected':''}>${t}</option>`).join('');
+  const platSel=document.getElementById('dca-platform');
+  platSel.innerHTML=CONFIG.platforms.map(p=>`<option value="${p}"${rule?.platform===p?' selected':''}>${p}</option>`).join('');
+  openModal('dca-modal');
+}
+
+async function saveDCA(){
+  const amount=parseAmount(document.getElementById('dca-amount').value);
+  const day=parseInt(document.getElementById('dca-day').value);
+  const fund=document.getElementById('dca-fund').value;
+  const platform=document.getElementById('dca-platform').value;
+  if(!amount||amount<=0){toast('Introduce una cantidad');return}
+  if(!day||day<1||day>28){toast('Día debe ser entre 1 y 28');return}
+  const editId=document.getElementById('dca-edit-id').value;
+  const rules=await getDCAConfig();
+  if(editId){
+    const idx=rules.findIndex(r=>r.id===editId);
+    if(idx>=0)rules[idx]={...rules[idx],amount:round2(amount),day,fund,platform};
+  }else{
+    rules.push({id:uuid(),amount:round2(amount),day,fund,platform,active:true});
+  }
+  await saveDCAConfig(rules);
+  closeModal('dca-modal');
+  toast('Aportación automática guardada');
+  if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
+  renderCartera();
+}
+
+async function deleteDCA(id){
+  const rules=(await getDCAConfig()).filter(r=>r.id!==id);
+  await saveDCAConfig(rules);
+  toast('Aportación eliminada');
+  if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
+  renderCartera();
+}
+
+async function runDCACheck(){
+  const rules=await getDCAConfig();
+  if(rules.length===0)return;
+  const now=new Date();
+  const todayDay=now.getDate();
+  const m=now.getMonth();
+  const y=now.getFullYear();
+  for(const rule of rules){
+    if(!rule.active||todayDay<rule.day)continue;
+    const dcaTag=`dca-${rule.id}-${y}-${m}`;
+    const existing=await dbGet('transactions',dcaTag);
+    if(existing)continue;
+    const dateStr=`${y}-${String(m+1).padStart(2,'0')}-${String(rule.day).padStart(2,'0')}`;
+    const tx={
+      id:dcaTag,type:'inversion',date:dateStr,amount:rule.amount,
+      month:m,year:y,category:rule.fund,tipo_inv:rule.fund,
+      platform:rule.platform,bank:'',
+      description:`DCA automático`
+    };
+    await dbPutTS('transactions',tx);
+  }
+}
+
+function renderDCARules(rules){
+  if(!rules||rules.length===0)return`<div style="font-size:13px;color:var(--text3);padding:8px 0">Sin aportaciones automáticas configuradas.</div>`;
+  return rules.map(r=>`<div class="dca-rule">
+    <div class="dca-icon">📅</div>
+    <div class="dca-info"><div class="dca-fund">${r.fund}</div><div class="dca-detail">Día ${r.day} · ${r.platform}</div></div>
+    <div class="dca-amount">${fmtC(r.amount)}</div>
+    <div class="dca-actions"><button class="dca-btn" onclick="openDCAModal(${JSON.stringify(r).replace(/"/g,'&quot;')})">✎</button><button class="dca-btn del" onclick="deleteDCA('${r.id}')">✕</button></div>
+  </div>`).join('');
+}
+
 // ═══════ INIT ═══════
 async function init(){
   DB=await openDatabase();
@@ -1370,12 +1539,14 @@ async function init(){
     CONFIG.yahoo_symbols=saved.yahoo_symbols||DEFAULT_CONFIG.yahoo_symbols;
     CONFIG.inc_categories=saved.inc_categories||DEFAULT_CONFIG.inc_categories;
     CONFIG.exp_categories=saved.exp_categories||DEFAULT_CONFIG.exp_categories;
+    CONFIG.dca_rules=saved.dca_rules||[];
   }
   initMonthBtns();
   renderDashboard();
   if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
   if(typeof migrateDataModel==='function')await migrateDataModel();
   if(typeof initSync==='function')initSync();
+  runDCACheck();
 }
 </script>
 <script src="./sync.js"></script>

@@ -1,4 +1,4 @@
-const CACHE = 'finanzas-v8';
+const CACHE = 'finanzas-v9';
 const ASSETS = [
   './index.html',
   './sync.js',
@@ -25,7 +25,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = e.request.url;
-  if (url.includes('googleapis.com') || url.includes('accounts.google.com') || url.includes('finance.yahoo.com') || url.includes('allorigins.win')) {
+  if (url.includes('googleapis.com') || url.includes('accounts.google.com') || url.includes('finance.yahoo.com') || url.includes('allorigins.win') || url.includes('corsproxy.io')) {
     e.respondWith(fetch(e.request));
     return;
   }
