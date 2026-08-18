@@ -9,10 +9,16 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='44' fill='%23beff50'/%3E%3Cg transform='translate(100,100)' fill='%2314140f'%3E%3Cellipse rx='4' ry='26' transform='rotate(0) translate(0,-44)'/%3E%3Cellipse rx='5' ry='27' transform='rotate(30) translate(0,-43)'/%3E%3Cellipse rx='6' ry='28' transform='rotate(60) translate(0,-42)'/%3E%3Cellipse rx='8' ry='26' transform='rotate(90) translate(0,-42)'/%3E%3Cellipse rx='10' ry='24' transform='rotate(120) translate(0,-42)'/%3E%3Cellipse rx='12' ry='22' transform='rotate(150) translate(0,-40)'/%3E%3Cellipse rx='13' ry='20' transform='rotate(180) translate(0,-40)'/%3E%3Cellipse rx='12' ry='22' transform='rotate(210) translate(0,-40)'/%3E%3Cellipse rx='10' ry='24' transform='rotate(240) translate(0,-42)'/%3E%3Cellipse rx='8' ry='26' transform='rotate(270) translate(0,-42)'/%3E%3Cellipse rx='6' ry='28' transform='rotate(300) translate(0,-43)'/%3E%3Cellipse rx='5' ry='27' transform='rotate(330) translate(0,-44)'/%3E%3C/g%3E%3C/svg%3E",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

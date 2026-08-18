@@ -7,6 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#f5f5eb">
 <link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <title>Fivvo</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -60,7 +61,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .mp-all-btn.selected{background:var(--text);color:var(--bg)}
 
 /* SECTION LABEL */
-.sec-label{font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#14140f;margin:24px 0 10px;background:#beff50;display:inline-block;padding:3px 10px;border-radius:20px}
+.sec-label{font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#14140f;margin:24px 0 14px;background:#beff50;display:inline-block;padding:3px 10px;border-radius:20px}
 .sec-header{display:flex;justify-content:space-between;align-items:center}
 .sec-header .link{font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;text-decoration:none}
 .sec-header .link:hover{color:var(--text)}
@@ -538,8 +539,8 @@ const CAT_ICONS={Comida:'🛒',Ocio:'🎮',Ropa:'👕',Viajes:'✈️',Transport
 const DEFAULT_CONFIG={
   banks:["Banco Santander","Revolut","OpenBank","MyInvestor","Efectivo"],
   platforms:["MyInvestor"],
-  inv_types:["Fidelity MSCI World P-ACC-EUR","Vanguard Small-Cap EUR Acc","Vanguard Emerging Mkts EUR Acc","Nueva Expresion Textil (NEXTIL)"],
-  yahoo_symbols:{"Fidelity MSCI World P-ACC-EUR":"0P0001CLDK.F","Vanguard Small-Cap EUR Acc":"0P0000XR9M.F","Vanguard Emerging Mkts EUR Acc":"0P00012I6A.F","Nueva Expresion Textil (NEXTIL)":"NXT.MC"},
+  inv_types:["Fidelity MSCI World P-ACC-EUR","Vanguard Small-Cap EUR Acc","Vanguard Emerging Mkts EUR Acc","Nueva Expresión Textil (NEXTIL)"],
+  yahoo_symbols:{"Fidelity MSCI World P-ACC-EUR":"0P0001CLDK.F","Vanguard Small-Cap EUR Acc":"0P0000XR9M.F","Vanguard Emerging Mkts EUR Acc":"0P00012I6A.F","Nueva Expresión Textil (NEXTIL)":"NXT.MC"},
   inc_categories:["Nómina","Trabajo extra","Ventas online","Otros"],
   exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Formación","Suscripciones","Eventos","Regalos","Otros"]
 };
@@ -808,6 +809,44 @@ async function renderDashboard(){
   }
 
   kpisHTML+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="dash-pat-chart"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
+
+  // Investment performance
+  if(vals&&vals.inv_aportado){
+    const invPerf=[];
+    const aportado=vals.inv_aportado||{};
+    const real=vals.inv_valor_real||{};
+    Object.keys(aportado).forEach(fund=>{
+      const a=aportado[fund]||0;
+      const r=real[fund]||0;
+      if(a>0){
+        const gain=round2(r-a);
+        const pct=round2((gain/a)*100);
+        invPerf.push({fund,aportado:a,real:r,gain,pct});
+      }
+    });
+    if(invPerf.length>0){
+      let perfHTML='<div class="sec-label">Rendimiento inversiones</div>';
+      invPerf.forEach(p=>{
+        const color=p.gain>=0?'var(--positive)':'var(--negative)';
+        const sign=p.gain>=0?'+':'';
+        const barW=Math.min(Math.abs(p.pct),100);
+        const name=p.fund.length>25?p.fund.substring(0,23)+'…':p.fund;
+        perfHTML+=`<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:500">${name}</span>
+            <span style="font-size:13px;font-weight:600;color:${color}">${sign}${fmtC(p.gain)} (${sign}${p.pct.toFixed(1).replace('.',',')}%)</span>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+            <div style="height:100%;width:${barW}%;background:${color};border-radius:2px"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text3)">
+            <span>Aportado: ${fmtC(p.aportado)}</span><span>Valor: ${fmtC(p.real)}</span>
+          </div>
+        </div>`;
+      });
+      kpisHTML+=perfHTML;
+    }
+  }
 
   document.getElementById('dash-kpis').innerHTML=kpisHTML;
 
@@ -1591,16 +1630,42 @@ function renderDCARules(rules){
 }
 
 // ═══════ INIT ═══════
+function fixTildes(arr){
+  const map={'Formacion':'Formación','Nomina':'Nómina','Nueva Expresion Textil (NEXTIL)':'Nueva Expresión Textil (NEXTIL)'};
+  return arr.map(c=>map[c]||c);
+}
+async function migrateTildes(){
+  const cfg=await dbGet('config','main');
+  if(!cfg)return;
+  let changed=false;
+  ['inc_categories','exp_categories','inv_types'].forEach(k=>{
+    if(!cfg[k])return;
+    const fixed=fixTildes(cfg[k]);
+    if(JSON.stringify(fixed)!==JSON.stringify(cfg[k])){cfg[k]=fixed;changed=true}
+  });
+  if(cfg.yahoo_symbols){
+    const newSyms={};
+    Object.entries(cfg.yahoo_symbols).forEach(([k,v])=>{const fk=fixTildes([k])[0];newSyms[fk]=v;if(fk!==k)changed=true});
+    if(changed)cfg.yahoo_symbols=newSyms;
+  }
+  if(changed)await dbPut('config',{...cfg,id:'main'});
+  const txs=await dbAll('transactions');
+  for(const tx of txs){
+    const fc=fixTildes([tx.category])[0];
+    if(fc!==tx.category){tx.category=fc;tx.updated_at=new Date().toISOString();await dbPut('transactions',tx)}
+  }
+}
 async function init(){
   DB=await openDatabase();
+  await migrateTildes();
   const saved=await dbGet('config','main');
   if(saved){
     CONFIG.banks=saved.banks||DEFAULT_CONFIG.banks;
     CONFIG.platforms=saved.platforms||DEFAULT_CONFIG.platforms;
     CONFIG.inv_types=saved.inv_types||DEFAULT_CONFIG.inv_types;
     CONFIG.yahoo_symbols=saved.yahoo_symbols||DEFAULT_CONFIG.yahoo_symbols;
-    CONFIG.inc_categories=saved.inc_categories||DEFAULT_CONFIG.inc_categories;
-    CONFIG.exp_categories=saved.exp_categories||DEFAULT_CONFIG.exp_categories;
+    CONFIG.inc_categories=fixTildes(saved.inc_categories||DEFAULT_CONFIG.inc_categories);
+    CONFIG.exp_categories=fixTildes(saved.exp_categories||DEFAULT_CONFIG.exp_categories);
     CONFIG.dca_rules=saved.dca_rules||[];
   }
   initMonthBtns();

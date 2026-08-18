@@ -433,9 +433,9 @@ function updateSyncUI(){
   if(footer){
     if(on){
       const ls=localStorage.getItem('last_sync_time');
-      footer.innerHTML=`Finanzas v2.1 — Sincronizado con Google Drive.<br>Último sync: ${ls?timeSince(new Date(ls)):'nunca'}`;
+      footer.innerHTML=`Fivvo v2.1 — Sincronizado con Google Drive.<br>Último sync: ${ls?timeSince(new Date(ls)):'nunca'}`;
     }else{
-      footer.innerHTML='Finanzas v2.1 — Tus datos viven en este dispositivo.<br>Conecta Google Drive para sincronizar.';
+      footer.innerHTML='Fivvo v2.1 — Tus datos viven en este dispositivo.<br>Conecta Google Drive para sincronizar.';
     }
   }
 }
