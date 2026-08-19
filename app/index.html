@@ -148,6 +148,18 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .field input:focus,.field textarea:focus{border-color:var(--text2)}
 .field textarea{resize:vertical;min-height:80px}
 
+/* CSV IMPORT REVIEW */
+.imp-row{padding:12px 0;border-bottom:1px solid var(--border)}
+.imp-row.imp-dup{opacity:.55}
+.imp-row-top{display:flex;align-items:center;gap:10px}
+.imp-check{flex-shrink:0;display:flex}
+.imp-check input{width:20px;height:20px;accent-color:var(--text)}
+.imp-row-info{flex:1;min-width:0}
+.imp-row-desc{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imp-row-date{font-size:11px;color:var(--text3);margin-top:2px}
+.imp-row-amount{font-weight:600;font-size:14px;flex-shrink:0}
+.imp-row-cat{width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:13px;background:var(--bg-input);color:var(--text);outline:none}
+
 /* PROGRESS BAR */
 .prog-bar{height:6px;background:var(--bg-section);border-radius:3px;overflow:hidden;margin-top:6px}
 .prog-fill{height:100%;border-radius:3px;transition:width .4s ease}
@@ -339,6 +351,8 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <div class="set-item" onclick="shareBackup()"><span class="label">Compartir backup</span><span class="arrow">→</span></div>
     <div class="set-item" onclick="document.getElementById('import-file').click()"><span class="label">Importar backup</span><span class="arrow">→</span></div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this.files[0])">
+    <div class="set-item" onclick="document.getElementById('import-csv-file').click()"><span class="label">Importar movimientos (CSV Santander)</span><span class="arrow">→</span></div>
+    <input type="file" id="import-csv-file" accept=".csv,.txt" style="display:none" onchange="handleCSVFile(this.files[0])">
   </div>
   <div class="sec-label">Exportar</div>
   <div class="set-group">
@@ -437,6 +451,18 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <div class="field"><label class="field-label">Categorías de gastos</label><textarea id="cfg-expcat" rows="6"></textarea></div>
     <button class="btn-primary" onclick="saveConfig()">Guardar configuración</button>
     <button class="btn-secondary" onclick="closeModal('config-modal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ═══ CSV IMPORT MODAL ═══ -->
+<div class="modal-overlay" id="csv-import-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Revisar importación</div>
+    <div id="csv-import-summary" style="font-size:13px;color:var(--text2);margin-bottom:14px"></div>
+    <div id="csv-import-list"></div>
+    <button class="btn-primary" onclick="confirmCSVImport()">Importar seleccionados</button>
+    <button class="btn-secondary" onclick="closeModal('csv-import-modal')">Cancelar</button>
   </div>
 </div>
 
@@ -1532,6 +1558,213 @@ async function exportCSVAll(){
 function downloadBlob(blob,name){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+}
+
+// ═══════ IMPORTAR CSV SANTANDER ═══════
+let csvImportRows=[];
+
+function readCSVText(file){
+  return new Promise((resolve,reject)=>{
+    const r1=new FileReader();
+    r1.onerror=()=>reject(new Error('No se pudo leer el archivo'));
+    r1.onload=()=>{
+      const text=r1.result;
+      if(text.indexOf('�')>=0||/Ã.|Â./.test(text.slice(0,3000))){
+        const r2=new FileReader();
+        r2.onload=()=>resolve(r2.result);
+        r2.onerror=()=>resolve(text);
+        r2.readAsText(file,'windows-1252');
+      }else{
+        resolve(text);
+      }
+    };
+    r1.readAsText(file,'utf-8');
+  });
+}
+
+function parseCSVLine(line,delim){
+  const out=[];let cur='';let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){
+      if(inQ&&line[i+1]==='"'){cur+='"';i++}
+      else inQ=!inQ;
+    }else if(ch===delim&&!inQ){
+      out.push(cur);cur='';
+    }else{
+      cur+=ch;
+    }
+  }
+  out.push(cur);
+  return out.map(s=>s.trim().replace(/^"|"$/g,''));
+}
+
+function parseSpanishDate(s){
+  const m=s.trim().match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+  if(!m)return null;
+  let[,d,mo,y]=m;
+  if(y.length===2)y='20'+y;
+  d=d.padStart(2,'0');mo=mo.padStart(2,'0');
+  return `${y}-${mo}-${d}`;
+}
+
+function parseSantanderCSV(text){
+  const lines=text.split(/\r\n|\n|\r/).filter(l=>l.trim().length>0);
+  if(lines.length===0)return[];
+  const delim=lines.some(l=>l.includes(';'))?';':',';
+  const headerIdx=lines.findIndex(l=>/concepto/i.test(l)&&/importe/i.test(l));
+  let colMap,startIdx;
+  if(headerIdx>=0){
+    const headers=parseCSVLine(lines[headerIdx],delim).map(h=>h.toLowerCase());
+    colMap={
+      fecha:headers.findIndex(h=>h.includes('fecha oper')||h==='fecha'),
+      concepto:headers.findIndex(h=>h.includes('concepto')),
+      importe:headers.findIndex(h=>h.includes('importe'))
+    };
+    startIdx=headerIdx+1;
+  }else{
+    colMap={fecha:0,concepto:2,importe:3};
+    startIdx=0;
+  }
+  const rows=[];
+  for(let i=startIdx;i<lines.length;i++){
+    const cols=parseCSVLine(lines[i],delim);
+    if(cols.length<3)continue;
+    const fechaRaw=colMap.fecha>=0?(cols[colMap.fecha]||''):'';
+    const concepto=colMap.concepto>=0?(cols[colMap.concepto]||''):'';
+    const importeRaw=colMap.importe>=0?(cols[colMap.importe]||''):'';
+    if(!fechaRaw||!concepto||!importeRaw)continue;
+    const date=parseSpanishDate(fechaRaw);
+    const amount=parseAmount(importeRaw.replace(/[€\s]/g,''));
+    if(!date||!amount)continue;
+    rows.push({date,concepto,amount});
+  }
+  return rows;
+}
+
+function isTransferConcepto(concepto){return /TRANSFERENCIA/i.test(concepto)}
+
+function guessExpenseCategory(concepto){
+  const c=concepto.toUpperCase();
+  const rules=[
+    [/CARREFOUR|MERCADONA|LIDL|D[IÍ]A\b|ALCAMPO|EROSKI|AHORRAMAS|CONSUM|SUPERMERCADO|FRUTER|CARNICER|PANADER|MCDONALD|BURGER|\bKFC\b|TELEPIZZA|RESTAURANTE|CAFETER/,'Comida'],
+    [/NETFLIX|SPOTIFY|\bHBO\b|DISNEY|PRIME VIDEO|YOUTUBE PREMIUM|ICLOUD|APPLE\.COM/,'Suscripciones'],
+    [/\bZARA\b|H&M|PRIMARK|MANGO|PULL&BEAR|BERSHKA|STRADIVARIUS|DECATHLON/,'Ropa'],
+    [/RENFE|UBER|CABIFY|\bMETRO\b|\bEMT\b|REPSOL|CEPSA|GASOLINERA|PARKING|\bBP\b|\bSHELL\b/,'Transporte'],
+    [/FARMACIA|PRIMOR|DRUNI|PERFUMER/,'Belleza'],
+    [/\bCINE\b|CINEMA|TEATRO|CONCIERTO/,'Ocio']
+  ];
+  for(const[re,cat]of rules){if(re.test(c)&&CONFIG.exp_categories.includes(cat))return cat}
+  return '';
+}
+function guessIncomeCategory(concepto){
+  if(/N[OÓ]MINA/i.test(concepto)&&CONFIG.inc_categories.includes('Nómina'))return 'Nómina';
+  return '';
+}
+
+function cleanDescription(concepto){
+  const c=concepto.trim();
+  let m=c.match(/BIZUM (?:DE|A FAVOR DE)\s+(.+?)\s+CONCEPTO[:\s]+(.+)/i);
+  if(m){
+    const sender=m[1].trim(),note=m[2].trim();
+    return note?`${sender} — ${note}`:sender;
+  }
+  m=c.match(/PAGO (?:MOVIL |CON TARJETA )?EN\s+(.+?)(?:,|$)/i);
+  if(m)return m[1].trim();
+  m=c.match(/COMPRA (?:EN |TARJETA )?(.+?)(?:,|$)/i);
+  if(m)return m[1].trim();
+  return c.length>60?c.slice(0,60)+'…':c;
+}
+
+async function handleCSVFile(file){
+  if(!file)return;
+  try{
+    const text=await readCSVText(file);
+    const rawRows=parseSantanderCSV(text);
+    if(rawRows.length===0){toast('No se encontraron movimientos válidos en el archivo');document.getElementById('import-csv-file').value='';return}
+    await prepareCSVImport(rawRows);
+  }catch(e){toast('Error al leer el CSV: '+e.message)}
+  document.getElementById('import-csv-file').value='';
+}
+
+async function prepareCSVImport(rawRows){
+  const existing=(await dbAll('transactions')).filter(t=>!t.deleted);
+  const existingSet=new Set(existing.map(t=>`${t.date}|${t.amount.toFixed(2)}|${t.type}`));
+
+  csvImportRows=[];
+  let ignoredTransfers=0;
+  rawRows.forEach((r,idx)=>{
+    if(isTransferConcepto(r.concepto)){ignoredTransfers++;return}
+    const type=r.amount<0?'gasto':'ingreso';
+    const amount=round2(Math.abs(r.amount));
+    const sig=`${r.date}|${amount.toFixed(2)}|${type}`;
+    const dup=existingSet.has(sig);
+    const category=type==='gasto'?guessExpenseCategory(r.concepto):guessIncomeCategory(r.concepto);
+    csvImportRows.push({_id:idx,date:r.date,type,amount,description:cleanDescription(r.concepto),category,dup,checked:!dup});
+  });
+  csvImportRows.sort((a,b)=>a.date.localeCompare(b.date));
+  renderCSVImportList(ignoredTransfers);
+  openModal('csv-import-modal');
+}
+
+function renderCSVImportList(ignoredTransfers){
+  const dupCount=csvImportRows.filter(r=>r.dup).length;
+  let summary=`${csvImportRows.length} movimiento${csvImportRows.length===1?'':'s'} detectado${csvImportRows.length===1?'':'s'}`;
+  if(ignoredTransfers>0)summary+=` · ${ignoredTransfers} transferencia${ignoredTransfers===1?'':'s'} ignorada${ignoredTransfers===1?'':'s'}`;
+  if(dupCount>0)summary+=` · ${dupCount} posible${dupCount===1?'':'s'} duplicado${dupCount===1?'':'s'} (sin marcar)`;
+  document.getElementById('csv-import-summary').textContent=summary;
+
+  if(csvImportRows.length===0){
+    document.getElementById('csv-import-list').innerHTML='<div class="tx-empty">No hay movimientos para importar</div>';
+    return;
+  }
+
+  document.getElementById('csv-import-list').innerHTML=csvImportRows.map(r=>{
+    const cats=r.type==='gasto'?CONFIG.exp_categories:CONFIG.inc_categories;
+    const catOpts=cats.map(c=>`<option value="${c.replace(/"/g,'&quot;')}" ${r.category===c?'selected':''}>${c}</option>`).join('');
+    const sign=r.type==='gasto'?'-':'+';
+    const color=r.type==='gasto'?'var(--negative)':'var(--positive)';
+    return`<div class="imp-row ${r.dup?'imp-dup':''}">
+      <div class="imp-row-top">
+        <label class="imp-check"><input type="checkbox" ${r.checked?'checked':''} onchange="toggleCSVRow(${r._id},this.checked)"></label>
+        <div class="imp-row-info">
+          <div class="imp-row-desc">${r.description}</div>
+          <div class="imp-row-date">${fmtDShort(r.date)}${r.dup?' · posible duplicado':''}</div>
+        </div>
+        <div class="imp-row-amount" style="color:${color}">${sign}${fmtC(r.amount)}</div>
+      </div>
+      <select class="imp-row-cat" onchange="setCSVRowCategory(${r._id},this.value)">
+        <option value="">Sin categoría</option>
+        ${catOpts}
+      </select>
+    </div>`;
+  }).join('');
+}
+
+function toggleCSVRow(id,checked){const r=csvImportRows.find(x=>x._id===id);if(r)r.checked=checked}
+function setCSVRowCategory(id,cat){const r=csvImportRows.find(x=>x._id===id);if(r)r.category=cat}
+
+async function confirmCSVImport(){
+  const toImport=csvImportRows.filter(r=>r.checked);
+  if(toImport.length===0){toast('No hay movimientos seleccionados');return}
+  const missingCat=toImport.filter(r=>!r.category);
+  if(missingCat.length>0){toast(`Asigna categoría a ${missingCat.length} movimiento${missingCat.length===1?'':'s'}`);return}
+
+  for(const r of toImport){
+    const dp=r.date.split('-');
+    const tx={
+      id:uuid(),type:r.type,date:r.date,amount:r.amount,
+      month:parseInt(dp[1])-1,year:parseInt(dp[0]),
+      category:r.category,bank:'Banco Santander',tipo_inv:'',platform:'',
+      description:r.description
+    };
+    await dbPutTS('transactions',tx);
+  }
+  closeModal('csv-import-modal');
+  toast(`${toImport.length} movimiento${toImport.length===1?'':'s'} importado${toImport.length===1?'':'s'}`);
+  if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
+  if(currentScreen==='dashboard')renderDashboard();
+  else if(currentScreen==='history')renderHistory();
 }
 
 // ═══════ SYNC DETAILS ═══════
