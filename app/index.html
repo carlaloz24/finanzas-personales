@@ -61,9 +61,9 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .mp-all-btn.selected{background:var(--text);color:var(--bg)}
 
 /* SECTION LABEL */
-.sec-label{font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#14140f;margin:24px 0 14px;background:#beff50;display:inline-block;padding:3px 10px;border-radius:20px}
+.sec-label{font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#14140f;margin:24px 0 10px -2px;background:#beff50;display:inline-block;padding:3px 10px;border-radius:20px}
 .sec-header{display:flex;justify-content:space-between;align-items:center}
-.sec-header .link{font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;text-decoration:none}
+.sec-header .link{font-size:14px;font-weight:500;color:var(--text2);cursor:pointer;text-decoration:none;padding:6px 4px;margin:-6px -4px}
 .sec-header .link:hover{color:var(--text)}
 
 /* KPI CARDS */
@@ -166,7 +166,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .prog-fill.green{background:var(--positive)}.prog-fill.accent{background:var(--accent)}.prog-fill.red{background:var(--negative)}.prog-fill.purple{background:var(--invest)}
 
 /* VALUE ROWS */
-.cart-hint{font-size:12px;color:var(--text3);margin:0 0 12px;line-height:1.4}
+.cart-hint{font-size:12px;color:var(--text3);margin:6px 0 12px;line-height:1.4}
 .val-section{margin-bottom:24px}
 .val-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
 .val-row:last-child{border-bottom:none}
@@ -249,17 +249,21 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .mb-legend span{display:inline-flex;align-items:center;gap:4px;font-weight:500}
 .mb-legend .dot{width:8px;height:8px;border-radius:50%}
 
-.patrimonio-chart{background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border);padding:16px}
-.patrimonio-bars{display:flex;align-items:flex-end;gap:4px;height:130px}
-.pb-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
-.pb-stack{flex:1;display:flex;flex-direction:column;justify-content:flex-end;width:100%;gap:1px}
-.pb-seg{width:100%;border-radius:3px;min-height:0;transition:height .4s ease}
-.pb-seg.liq{background:var(--accent)}.pb-seg.inv{background:var(--invest)}
-.pb-val{font-size:9px;color:var(--text2);font-weight:600;white-space:nowrap}
-.pb-label{font-size:10px;color:var(--text3);font-weight:500}
-.pb-legend{display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:12px;color:var(--text2);font-weight:500}
-.pb-legend span{display:inline-flex;align-items:center;gap:4px}
-.pb-legend .dot{width:8px;height:8px;border-radius:50%}
+.patrimonio-line-chart{background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border);padding:16px}
+.pl-range-tabs{display:flex;gap:4px;background:var(--bg-section);border-radius:var(--r-pill);padding:3px;margin-bottom:14px}
+.pl-range-tab{flex:1;text-align:center;padding:7px 10px;border-radius:var(--r-pill);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;color:var(--text2)}
+.pl-range-tab.active{background:var(--bg-card);color:var(--text);box-shadow:var(--shadow)}
+
+.perf-row{padding:12px 0;border-bottom:1px solid var(--border)}
+.perf-row:last-child{border-bottom:none}
+.perf-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.perf-name{font-size:14px;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.perf-pct{font-size:14px;font-weight:600;flex-shrink:0}
+.perf-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.perf-bar-tag{font-size:10px;color:var(--text3);width:56px;flex-shrink:0}
+.perf-bar-track{flex:1;height:8px;background:var(--bg-section);border-radius:4px;overflow:hidden}
+.perf-bar-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.perf-bar-num{font-size:11px;color:var(--text2);width:74px;text-align:right;flex-shrink:0}
 
 /* SYNC STATUS */
 .sync-status{display:none;align-items:center;cursor:pointer;padding:4px 10px;border-radius:var(--r-pill);background:var(--bg-card);border:1px solid var(--border)}
@@ -277,7 +281,7 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
 .dca-detail{font-size:12px;color:var(--text2)}
 .dca-amount{font-weight:600;font-size:15px;color:var(--invest);flex-shrink:0}
 .dca-actions{display:flex;gap:6px;flex-shrink:0}
-.dca-btn{background:none;border:1px solid var(--border-strong);border-radius:var(--r-sm);width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text2)}
+.dca-btn{background:none;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--text2)}
 .dca-btn:active{background:var(--bg-section)}
 .dca-btn.del{color:var(--negative);border-color:rgba(239,68,68,0.3)}
 
@@ -445,7 +449,8 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <div class="modal-title">Configuración</div>
     <div class="field"><label class="field-label">Bancos / Cuentas <span style="font-weight:400;text-transform:none;letter-spacing:0">(uno por línea)</span></label><textarea id="cfg-banks" rows="4"></textarea></div>
     <div class="field"><label class="field-label">Plataformas de inversión</label><textarea id="cfg-platforms" rows="2"></textarea></div>
-    <div class="field"><label class="field-label">Tipos de inversión</label><textarea id="cfg-invtypes" rows="4"></textarea></div>
+    <div class="field"><label class="field-label">Tipos de inversión</label><textarea id="cfg-invtypes" rows="4" onblur="renderAssetTypeFields()"></textarea></div>
+    <div class="field"><label class="field-label">Tipo de activo por fondo <span style="font-weight:400;text-transform:none;letter-spacing:0">(para el gráfico de distribución)</span></label><div id="cfg-assettypes"></div></div>
     <div class="field"><label class="field-label">Símbolos Yahoo Finance <span style="font-weight:400;text-transform:none;letter-spacing:0">(nombre = símbolo, uno por línea)</span></label><textarea id="cfg-yahoo" rows="4" placeholder="Fidelity MSCI World P-ACC-EUR = 0P0001CLDK.F"></textarea></div>
     <div class="field"><label class="field-label">Categorías de ingresos</label><textarea id="cfg-inccat" rows="3"></textarea></div>
     <div class="field"><label class="field-label">Categorías de gastos</label><textarea id="cfg-expcat" rows="6"></textarea></div>
@@ -568,8 +573,10 @@ const DEFAULT_CONFIG={
   inv_types:["Fidelity MSCI World P-ACC-EUR","Vanguard Small-Cap EUR Acc","Vanguard Emerging Mkts EUR Acc","Nueva Expresión Textil (NEXTIL)"],
   yahoo_symbols:{"Fidelity MSCI World P-ACC-EUR":"0P0001CLDK.F","Vanguard Small-Cap EUR Acc":"0P0000XR9M.F","Vanguard Emerging Mkts EUR Acc":"0P00012I6A.F","Nueva Expresión Textil (NEXTIL)":"NXT.MC"},
   inc_categories:["Nómina","Trabajo extra","Ventas online","Otros"],
-  exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Formación","Suscripciones","Eventos","Regalos","Otros"]
+  exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Formación","Suscripciones","Eventos","Regalos","Otros"],
+  inv_asset_types:{"Fidelity MSCI World P-ACC-EUR":"Indexado","Vanguard Small-Cap EUR Acc":"Indexado","Vanguard Emerging Mkts EUR Acc":"Indexado","Nueva Expresión Textil (NEXTIL)":"Acciones"}
 };
+const ASSET_TYPES=['Indexado','Acciones','Liquidez','Monetario','Cuenta remunerada','Oro','Cripto (BTC)','Otros'];
 
 let DB,CONFIG={...DEFAULT_CONFIG},currentScreen='dashboard',currentType='gasto',selectedCat=null,selectedBank=null,deleteTarget=null,planTab='budget',goalTypeVal='corto';
 
@@ -592,7 +599,7 @@ const round2=n=>Math.round(n*100)/100;
 
 function savingsGauge(rate){
   const clamped=Math.max(0,Math.min(rate,100));
-  const angle=-90+(clamped/100)*180;
+  const angle=180+(clamped/100)*180;
   const color=rate>=30?'var(--positive)':rate>=10?'#f59e0b':'var(--negative)';
   return`<div style="display:flex;align-items:center;gap:10px"><svg viewBox="0 0 80 44" width="60" height="33" style="flex-shrink:0"><path d="M8 40 A32 32 0 0 1 72 40" fill="none" stroke="var(--border)" stroke-width="7" stroke-linecap="round"/><path d="M8 40 A32 32 0 0 1 72 40" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${clamped*1.005} 999" style="transition:stroke-dasharray .6s"/><line x1="40" y1="40" x2="${40+24*Math.cos(angle*Math.PI/180)}" y2="${40+24*Math.sin(angle*Math.PI/180)}" stroke="var(--text)" stroke-width="2" stroke-linecap="round" style="transition:all .6s"/><circle cx="40" cy="40" r="3" fill="var(--text)"/></svg><div class="kpi-value" style="font-size:20px">${rate.toFixed(1)}%</div></div>`;
 }
@@ -645,28 +652,82 @@ async function monthlyBarsHTML(currentM,currentY,months=6){
   return`<div class="monthly-bars">${bars}</div><div class="mb-legend"><span><div class="dot" style="background:var(--positive)"></div>Ingresos</span><span><div class="dot" style="background:var(--negative)"></div>Gastos</span></div>`;
 }
 
-async function patrimonioChartHTML(currentM,currentY,months=6){
-  const pts=[];
-  for(let i=months-1;i>=0;i--){
-    let mm=currentM-i,yy=currentY;
-    while(mm<0){mm+=12;yy--}
-    const v=await dbGet('values',`${yy}-${mm}`);
+async function getPatrimonioSeries(){
+  const allVals=await dbAll('values');
+  const map={};
+  allVals.forEach(v=>{
+    const parts=(v.id||'').split('-');
+    const y=parseInt(parts[0]),m=parseInt(parts[1]);
+    if(isNaN(y)||isNaN(m))return;
     let liq=0,inv=0;
-    if(v){
-      if(v.bancos)Object.values(v.bancos).forEach(x=>liq+=x||0);
-      if(v.inv_valor_real)Object.values(v.inv_valor_real).forEach(x=>inv+=x||0);
-    }
-    pts.push({label:MONTHS[mm].slice(0,3),liq:round2(liq),inv:round2(inv),total:round2(liq+inv)});
-  }
-  const maxVal=Math.max(...pts.map(p=>p.total),1);
-  let bars='';
-  pts.forEach(p=>{
-    const hL=p.total>0?Math.max(1,Math.round((p.liq/maxVal)*100)):0;
-    const hI=p.total>0?Math.max(1,Math.round((p.inv/maxVal)*100)):0;
-    bars+=`<div class="pb-col"><div class="pb-val">${p.total>0?fmtC(p.total):''}</div><div class="pb-stack"><div class="pb-seg inv" style="height:${hI}%"></div><div class="pb-seg liq" style="height:${hL}%"></div></div><div class="pb-label">${p.label}</div></div>`;
+    if(v.bancos)Object.values(v.bancos).forEach(x=>liq+=x||0);
+    if(v.inv_valor_real)Object.values(v.inv_valor_real).forEach(x=>inv+=x||0);
+    map[`${y}-${m}`]={y,m,liq:round2(liq),inv:round2(inv),total:round2(liq+inv)};
   });
-  return`<div class="patrimonio-chart"><div class="patrimonio-bars">${bars}</div><div class="pb-legend"><span><div class="dot" style="background:var(--accent)"></div>Liquidez</span><span><div class="dot" style="background:var(--invest)"></div>Inversiones</span></div></div>`;
+  const keys=Object.keys(map);
+  if(keys.length===0)return[];
+  let minY=Infinity,minM=0,maxY=-Infinity,maxM=0;
+  keys.forEach(k=>{
+    const{y,m}=map[k];
+    if(y<minY||(y===minY&&m<minM)){minY=y;minM=m}
+    if(y>maxY||(y===maxY&&m>maxM)){maxY=y;maxM=m}
+  });
+  const now=new Date();
+  if(maxY<now.getFullYear()||(maxY===now.getFullYear()&&maxM<now.getMonth())){maxY=now.getFullYear();maxM=now.getMonth()}
+  const series=[];
+  let y=minY,m=minM;
+  while(y<maxY||(y===maxY&&m<=maxM)){
+    series.push(map[`${y}-${m}`]||{y,m,liq:0,inv:0,total:0});
+    m++;if(m>11){m=0;y++}
+  }
+  return series;
 }
+
+function patrimonioLineSVG(series){
+  if(series.length===0)return'<div class="tx-empty" style="padding:20px">Sin datos históricos todavía</div>';
+  const w=320,h=140,padL=6,padR=6,padT=14,padB=18;
+  const maxVal=Math.max(...series.map(p=>p.total),1);
+  const stepX=series.length>1?(w-padL-padR)/(series.length-1):0;
+  const scaleY=v=>h-padB-((v/maxVal))*(h-padT-padB);
+  const pts=series.map((p,i)=>[padL+i*stepX,scaleY(p.total)]);
+  const pathD='M'+pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' L');
+  const areaD=pathD+` L${pts[pts.length-1][0].toFixed(1)},${(h-padB).toFixed(1)} L${pts[0][0].toFixed(1)},${(h-padB).toFixed(1)} Z`;
+  const labelIdxs=series.length<=6?series.map((_,i)=>i):[0,Math.floor((series.length-1)/2),series.length-1];
+  let labels='';
+  labelIdxs.forEach(i=>{
+    labels+=`<text x="${pts[i][0].toFixed(1)}" y="${h-4}" font-size="9" fill="var(--text3)" text-anchor="middle">${MONTH_SHORT[series[i].m]} '${String(series[i].y).slice(2)}</text>`;
+  });
+  const last=series[series.length-1];
+  const first=series.find(p=>p.total>0)||series[0];
+  const change=round2(last.total-first.total);
+  const changeColor=change>=0?'var(--positive)':'var(--negative)';
+  return`<div class="patrimonio-line-chart">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+      <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em">${fmtC(last.total)}</div>
+      ${series.length>1?`<div style="font-size:13px;font-weight:600;color:${changeColor}">${change>=0?'+':''}${fmtC(change)}</div>`:''}
+    </div>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:140px" preserveAspectRatio="none">
+      <path d="${areaD}" fill="var(--accent)" opacity="0.15"/>
+      <path d="${pathD}" fill="none" stroke="var(--accent-text)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" style="stroke:#8fce2a"/>
+      ${labels}
+    </svg>
+  </div>`;
+}
+
+let patLineRange=6;
+async function renderPatLineSection(){
+  const wrap=document.getElementById('cart-pat-line-wrap');
+  if(!wrap)return;
+  const series=await getPatrimonioSeries();
+  const sliced=patLineRange==='all'?series:series.slice(-patLineRange);
+  wrap.innerHTML=`<div class="pl-range-tabs">
+      <div class="pl-range-tab${patLineRange===6?' active':''}" onclick="setPatLineRange(6)">6M</div>
+      <div class="pl-range-tab${patLineRange===12?' active':''}" onclick="setPatLineRange(12)">1A</div>
+      <div class="pl-range-tab${patLineRange==='all'?' active':''}" onclick="setPatLineRange('all')">Todo</div>
+    </div>
+    ${patrimonioLineSVG(sliced)}`;
+}
+function setPatLineRange(r){patLineRange=r;renderPatLineSection()}
 
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
 
@@ -808,17 +869,12 @@ async function renderDashboard(){
   txs.filter(t=>t.type==='gasto').forEach(t=>{const c=t.category||'Otros';expByCat[c]=(expByCat[c]||0)+t.amount});
   const expDonutData=Object.entries(expByCat).map(([name,value],i)=>({name,value:round2(value),color:CHART_COLORS[i%CHART_COLORS.length]}));
 
-  // Patrimonio composition donut
-  const patDonutData=[];
-  if(liquidez>0)patDonutData.push({name:'Liquidez',value:liquidez,color:'#beff50'});
-  if(invReal>0)patDonutData.push({name:'Inversiones',value:invReal,color:'#7c6ef6'});
-
   let kpisHTML=`
     <div class="kpi-grid">
       <div class="kpi"><div class="kpi-label">Ingresos</div><div class="kpi-value pos">${fmtC(income)}</div></div>
       <div class="kpi"><div class="kpi-label">Gastos</div><div class="kpi-value neg">${fmtC(expenses)}</div></div>
       <div class="kpi"><div class="kpi-label">Balance</div><div class="kpi-value ${balance>=0?'pos':'neg'}">${fmtC(balance)}</div></div>
-      <div class="kpi"><div class="kpi-label">Invertido (mes)</div><div class="kpi-value inv">${fmtC(invested)}</div></div>
+      <div class="kpi"><div class="kpi-label">Invertido (mes)</div><div class="kpi-value inv">${fmtC(invested)}</div><div class="kpi-sub">Aportado este mes</div></div>
       <div class="kpi"><div class="kpi-label">Patrimonio</div><div class="kpi-value">${fmtC(patrimonio)}</div><div class="kpi-sub">Liquidez ${fmtC(liquidez)}</div></div>
       <div class="kpi"><div class="kpi-label">Tasa de ahorro</div>${savingsGauge(savingsRate)}</div>
     </div>
@@ -830,56 +886,11 @@ async function renderDashboard(){
 
   kpisHTML+=`<div class="sec-label">Ingresos vs Gastos (6 meses)</div><div class="chart-section" id="dash-monthly-bars"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
 
-  if(patDonutData.length>0){
-    kpisHTML+=`<div class="sec-label">Composición patrimonio</div><div class="chart-section">${donutChart(patDonutData,fmtC(patrimonio),160,true)}</div>`;
-  }
-
-  kpisHTML+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="dash-pat-chart"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
-
-  // Investment performance
-  if(vals&&vals.inv_aportado){
-    const invPerf=[];
-    const aportado=vals.inv_aportado||{};
-    const real=vals.inv_valor_real||{};
-    Object.keys(aportado).forEach(fund=>{
-      const a=aportado[fund]||0;
-      const r=real[fund]||0;
-      if(a>0){
-        const gain=round2(r-a);
-        const pct=round2((gain/a)*100);
-        invPerf.push({fund,aportado:a,real:r,gain,pct});
-      }
-    });
-    if(invPerf.length>0){
-      let perfHTML='<div class="sec-label">Rendimiento inversiones</div>';
-      invPerf.forEach(p=>{
-        const color=p.gain>=0?'var(--positive)':'var(--negative)';
-        const sign=p.gain>=0?'+':'';
-        const barW=Math.min(Math.abs(p.pct),100);
-        const name=p.fund.length>25?p.fund.substring(0,23)+'…':p.fund;
-        perfHTML+=`<div style="padding:10px 0;border-bottom:1px solid var(--border)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-size:13px;font-weight:500">${name}</span>
-            <span style="font-size:13px;font-weight:600;color:${color}">${sign}${fmtC(p.gain)} (${sign}${p.pct.toFixed(1).replace('.',',')}%)</span>
-          </div>
-          <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
-            <div style="height:100%;width:${barW}%;background:${color};border-radius:2px"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--text3)">
-            <span>Aportado: ${fmtC(p.aportado)}</span><span>Valor: ${fmtC(p.real)}</span>
-          </div>
-        </div>`;
-      });
-      kpisHTML+=perfHTML;
-    }
-  }
-
   document.getElementById('dash-kpis').innerHTML=kpisHTML;
 
   // Render async charts (use current month as reference when "all")
   const cm=all?new Date().getMonth():m, cy=all?new Date().getFullYear():y;
   monthlyBarsHTML(cm,cy).then(html=>{const el=document.getElementById('dash-monthly-bars');if(el)el.innerHTML=html});
-  patrimonioChartHTML(cm,cy).then(html=>{const el=document.getElementById('dash-pat-chart');if(el)el.innerHTML=html});
 
 }
 
@@ -978,14 +989,58 @@ async function renderCartera(){
     <div class="kpi" style="margin-bottom:12px"><div class="kpi-value" style="font-size:28px">${fmtC(patrimonio)}</div>
     <div class="kpi-sub">Liquidez ${fmtC(totalLiq)} + Inversiones ${fmtC(totalReal)}</div></div>`;
 
-  // Portfolio allocation donut
+  // Composición patrimonio (liquidez vs inversiones)
+  const patDonutData=[];
+  if(totalLiq>0)patDonutData.push({name:'Liquidez',value:totalLiq,color:'#beff50'});
+  if(totalReal>0)patDonutData.push({name:'Inversiones',value:totalReal,color:'#7c6ef6'});
+  if(patDonutData.length>0){
+    html+=`<div class="sec-label">Composición patrimonio</div><div class="chart-section">${donutChart(patDonutData,fmtC(patrimonio),160,true)}</div>`;
+  }
+
+  // Portfolio allocation donut (por fondo)
   const invDonutData=[];
   CONFIG.inv_types.forEach((t,i)=>{
     const v=parseFloat(vals.inv_valor_real?.[t])||0;
     if(v>0)invDonutData.push({name:t.split(' ')[0],value:round2(v),color:INV_COLORS[i%INV_COLORS.length]});
   });
   if(invDonutData.length>0){
-    html+=`<div class="sec-label">Distribución cartera</div><div class="chart-section">${donutChart(invDonutData,fmtC(totalReal))}</div>`;
+    html+=`<div class="sec-label">Distribución por fondo</div><div class="chart-section">${donutChart(invDonutData,fmtC(totalReal))}</div>`;
+  }
+
+  // Portfolio allocation donut (por tipo de activo)
+  const typeMap={};
+  CONFIG.inv_types.forEach(t=>{
+    const v=parseFloat(vals.inv_valor_real?.[t])||0;
+    if(v<=0)return;
+    const type=CONFIG.inv_asset_types?.[t]||'Otros';
+    typeMap[type]=round2((typeMap[type]||0)+v);
+  });
+  const typeDonutData=Object.entries(typeMap).map(([name,value],i)=>({name,value,color:INV_COLORS[i%INV_COLORS.length]}));
+  if(typeDonutData.length>0){
+    html+=`<div class="sec-label">Distribución por tipo de activo</div><div class="chart-section">${donutChart(typeDonutData,fmtC(totalReal),160,true)}</div>`;
+  }
+
+  // Rendimiento por fondo
+  const invPerf=[];
+  CONFIG.inv_types.forEach(t=>{
+    const a=parseFloat(vals.inv_aportado?.[t])||0;
+    const r=parseFloat(vals.inv_valor_real?.[t])||0;
+    if(a>0)invPerf.push({fund:t,aportado:round2(a),real:round2(r),gain:round2(r-a),pct:round2(((r-a)/a)*100)});
+  });
+  if(invPerf.length>0){
+    html+=`<div class="sec-label">Rendimiento por fondo</div>`;
+    invPerf.forEach(p=>{
+      const color=p.gain>=0?'var(--positive)':'var(--negative)';
+      const sign=p.gain>=0?'+':'';
+      const maxV=Math.max(p.aportado,p.real,1);
+      const wAp=Math.max(2,Math.round((p.aportado/maxV)*100));
+      const wReal=Math.max(2,Math.round((p.real/maxV)*100));
+      html+=`<div class="perf-row">
+        <div class="perf-top"><span class="perf-name">${p.fund}</span><span class="perf-pct" style="color:${color}">${sign}${fmtC(p.gain)} (${sign}${p.pct.toFixed(1).replace('.',',')}%)</span></div>
+        <div class="perf-bar-row"><span class="perf-bar-tag">Aportado</span><div class="perf-bar-track"><div class="perf-bar-fill" style="width:${wAp}%;background:var(--text3)"></div></div><span class="perf-bar-num">${fmtC(p.aportado)}</span></div>
+        <div class="perf-bar-row"><span class="perf-bar-tag">Valor hoy</span><div class="perf-bar-track"><div class="perf-bar-fill" style="width:${wReal}%;background:${color}"></div></div><span class="perf-bar-num">${fmtC(p.real)}</span></div>
+      </div>`;
+    });
   }
 
   // DCA section
@@ -993,8 +1048,8 @@ async function renderCartera(){
   html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Aportaciones automáticas (DCA)</div><span class="link" onclick="openDCAModal()">+ Añadir</span></div>`;
   html+=`<div style="margin-bottom:16px">${renderDCARules(dcaRules)}</div>`;
 
-  // Patrimonio evolution chart placeholder (async)
-  html+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="cart-pat-chart"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
+  // Patrimonio evolution line chart (async)
+  html+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="cart-pat-line-wrap"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
 
   if(carteraEditing){
     html+=`<button class="btn-primary btn-accent" style="margin-top:16px" onclick="saveCarteraValues()">Guardar valores</button>`;
@@ -1004,7 +1059,7 @@ async function renderCartera(){
   }
 
   document.getElementById('cart-content').innerHTML=html;
-  patrimonioChartHTML(m,y).then(h=>{const el=document.getElementById('cart-pat-chart');if(el)el.innerHTML=h});
+  renderPatLineSection();
 }
 
 function startCarteraEdit(){
@@ -1401,7 +1456,20 @@ function openConfigModal(){
   document.getElementById('cfg-yahoo').value=Object.entries(CONFIG.yahoo_symbols||{}).map(([k,v])=>`${k} = ${v}`).join('\n');
   document.getElementById('cfg-inccat').value=CONFIG.inc_categories.join('\n');
   document.getElementById('cfg-expcat').value=CONFIG.exp_categories.join('\n');
+  renderAssetTypeFields();
   openModal('config-modal');
+}
+
+function renderAssetTypeFields(){
+  const container=document.getElementById('cfg-assettypes');
+  if(!container)return;
+  const funds=parseLines(document.getElementById('cfg-invtypes').value);
+  if(funds.length===0){container.innerHTML='<div style="font-size:12px;color:var(--text3)">Añade fondos arriba primero.</div>';return}
+  container.innerHTML=funds.map(t=>{
+    const cur=CONFIG.inv_asset_types?.[t]||'Otros';
+    const opts=ASSET_TYPES.map(a=>`<option value="${a}"${a===cur?' selected':''}>${a}</option>`).join('');
+    return`<div style="margin-bottom:10px"><div style="font-size:13px;font-weight:500;margin-bottom:4px">${t}</div><select data-fund="${t.replace(/"/g,'&quot;')}" class="cfg-asset-select">${opts}</select></div>`;
+  }).join('');
 }
 
 function parseLines(val){return val.split('\n').map(s=>s.trim()).filter(Boolean)}
@@ -1422,6 +1490,9 @@ async function saveConfig(){
   CONFIG.yahoo_symbols=parseYahooSymbols(document.getElementById('cfg-yahoo').value);
   CONFIG.inc_categories=parseLines(document.getElementById('cfg-inccat').value);
   CONFIG.exp_categories=parseLines(document.getElementById('cfg-expcat').value);
+  const assetTypes={};
+  document.querySelectorAll('.cfg-asset-select').forEach(sel=>{assetTypes[sel.dataset.fund]=sel.value});
+  CONFIG.inv_asset_types=assetTypes;
   await dbPutTS('config',{id:'main',...CONFIG});
   closeModal('config-modal');
   toast('Configuración guardada');
@@ -2019,6 +2090,7 @@ async function init(){
     CONFIG.yahoo_symbols=saved.yahoo_symbols||DEFAULT_CONFIG.yahoo_symbols;
     CONFIG.inc_categories=fixTildes(saved.inc_categories||DEFAULT_CONFIG.inc_categories);
     CONFIG.exp_categories=fixTildes(saved.exp_categories||DEFAULT_CONFIG.exp_categories);
+    CONFIG.inv_asset_types=saved.inv_asset_types||DEFAULT_CONFIG.inv_asset_types;
     CONFIG.dca_rules=saved.dca_rules||[];
   }
   initMonthBtns();
