@@ -1,10 +1,10 @@
-const CACHE = 'fivvo-v20';
+const CACHE = 'fivvo-v21';
 const ASSETS = [
   './index.html',
   './sync.js',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
+  './icon-192.png?v=2',
+  './icon-512.png?v=2',
   './fonts/Saans-TRIAL-Regular.otf',
   './fonts/Saans-TRIAL-Medium.otf',
   './fonts/Saans-TRIAL-SemiBold.otf',
