@@ -684,9 +684,34 @@ async function getPatrimonioSeries(){
   return series;
 }
 
+let currentPatSeries=[];
+function patInfoHTML(idx){
+  const series=currentPatSeries;
+  const p=series[idx];
+  const isLast=idx===series.length-1;
+  if(isLast){
+    const first=series.find(x=>x.total>0)||series[0];
+    const change=round2(p.total-first.total);
+    const changeColor=change>=0?'var(--positive)':'var(--negative)';
+    return`<div style="display:flex;justify-content:space-between;align-items:baseline">
+      <div><div style="font-size:11px;color:var(--text3);margin-bottom:2px">${MONTHS[p.m]} ${p.y}</div><div style="font-size:24px;font-weight:700;letter-spacing:-0.02em">${fmtC(p.total)}</div></div>
+      ${series.length>1?`<div style="font-size:13px;font-weight:600;color:${changeColor}">${change>=0?'+':''}${fmtC(change)}</div>`:''}
+    </div>`;
+  }
+  return`<div><div style="font-size:11px;color:var(--text3);margin-bottom:2px">${MONTHS[p.m]} ${p.y}</div><div style="font-size:24px;font-weight:700;letter-spacing:-0.02em">${fmtC(p.total)}</div></div>`;
+}
+function selectPatPoint(idx){
+  const info=document.getElementById('pat-line-info');
+  if(info)info.innerHTML=patInfoHTML(idx);
+  document.querySelectorAll('.pl-point').forEach((el,i)=>{
+    el.setAttribute('r',i===idx?'5':'3');
+    el.setAttribute('fill',i===idx?'#8fce2a':'var(--bg-card)');
+  });
+}
+
 function patrimonioLineSVG(series){
   if(series.length===0)return'<div class="tx-empty" style="padding:20px">Sin datos históricos todavía</div>';
-  const w=320,h=140,padL=6,padR=6,padT=14,padB=18;
+  const w=320,h=150,padL=6,padR=6,padT=14,padB=20;
   const maxVal=Math.max(...series.map(p=>p.total),1);
   const stepX=series.length>1?(w-padL-padR)/(series.length-1):0;
   const scaleY=v=>h-padB-((v/maxVal))*(h-padT-padB);
@@ -698,18 +723,25 @@ function patrimonioLineSVG(series){
   labelIdxs.forEach(i=>{
     labels+=`<text x="${pts[i][0].toFixed(1)}" y="${h-4}" font-size="9" fill="var(--text3)" text-anchor="middle">${MONTH_SHORT[series[i].m]} '${String(series[i].y).slice(2)}</text>`;
   });
-  const last=series[series.length-1];
-  const first=series.find(p=>p.total>0)||series[0];
-  const change=round2(last.total-first.total);
-  const changeColor=change>=0?'var(--positive)':'var(--negative)';
+  // Y axis gridlines (0%, 50%, 100% of max)
+  let grid='';
+  [0,0.5,1].forEach(f=>{
+    const gy=scaleY(maxVal*f);
+    grid+=`<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${w-padR}" y2="${gy.toFixed(1)}" stroke="var(--border)" stroke-width="1"/>`;
+  });
+  // Tappable points: invisible larger touch target + small visible dot
+  let points='';
+  pts.forEach((p,i)=>{
+    points+=`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="10" fill="transparent" style="cursor:pointer" onclick="selectPatPoint(${i})"/>`;
+    points+=`<circle class="pl-point" cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="var(--bg-card)" stroke="#8fce2a" stroke-width="2" style="pointer-events:none"/>`;
+  });
   return`<div class="patrimonio-line-chart">
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
-      <div style="font-size:24px;font-weight:700;letter-spacing:-0.02em">${fmtC(last.total)}</div>
-      ${series.length>1?`<div style="font-size:13px;font-weight:600;color:${changeColor}">${change>=0?'+':''}${fmtC(change)}</div>`:''}
-    </div>
-    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:140px" preserveAspectRatio="none">
+    <div id="pat-line-info">${patInfoHTML(series.length-1)}</div>
+    <svg viewBox="0 0 ${w} ${h}" style="width:100%;height:150px;margin-top:8px" preserveAspectRatio="none">
+      ${grid}
       <path d="${areaD}" fill="var(--accent)" opacity="0.15"/>
-      <path d="${pathD}" fill="none" stroke="var(--accent-text)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" style="stroke:#8fce2a"/>
+      <path d="${pathD}" fill="none" stroke="#8fce2a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      ${points}
       ${labels}
     </svg>
   </div>`;
@@ -721,6 +753,7 @@ async function renderPatLineSection(){
   if(!wrap)return;
   const series=await getPatrimonioSeries();
   const sliced=patLineRange==='all'?series:series.slice(-patLineRange);
+  currentPatSeries=sliced;
   wrap.innerHTML=`<div class="pl-range-tabs">
       <div class="pl-range-tab${patLineRange===6?' active':''}" onclick="setPatLineRange(6)">6M</div>
       <div class="pl-range-tab${patLineRange===12?' active':''}" onclick="setPatLineRange(12)">1A</div>
@@ -960,7 +993,7 @@ async function renderCartera(){
   html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total liquidez</div><div class="val-total">${fmtC(totalLiq)}</div></div></div>`;
 
   // Inversiones aportado
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Dinero aportado</div><span class="link" onclick="openConfigModal()">Editar fondos</span></div><div class="cart-hint" style="margin-top:0">Cuánto dinero has metido en total en cada fondo.</div><div class="val-section">`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Dinero aportado</div><span class="link" onclick="openConfigModal()">Editar fondos</span></div><div class="cart-hint">Cuánto dinero has metido en total en cada fondo.</div><div class="val-section">`;
   let totalAp=0;
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_aportado?.[t]??'';
