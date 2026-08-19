@@ -351,8 +351,8 @@ input,textarea,select,button{font-family:var(--font);font-size:15px}
     <div class="set-item" onclick="shareBackup()"><span class="label">Compartir backup</span><span class="arrow">→</span></div>
     <div class="set-item" onclick="document.getElementById('import-file').click()"><span class="label">Importar backup</span><span class="arrow">→</span></div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this.files[0])">
-    <div class="set-item" onclick="document.getElementById('import-csv-file').click()"><span class="label">Importar movimientos (CSV Santander)</span><span class="arrow">→</span></div>
-    <input type="file" id="import-csv-file" accept=".csv,.txt" style="display:none" onchange="handleCSVFile(this.files[0])">
+    <div class="set-item" onclick="document.getElementById('import-csv-file').click()"><span class="label">Importar movimientos Santander (Excel/CSV)</span><span class="arrow">→</span></div>
+    <input type="file" id="import-csv-file" accept=".xlsx,.csv,.txt" style="display:none" onchange="handleCSVFile(this.files[0])">
   </div>
   <div class="sec-label">Exportar</div>
   <div class="set-group">
@@ -1608,14 +1608,24 @@ function parseSpanishDate(s){
   return `${y}-${mo}-${d}`;
 }
 
-function parseSantanderCSV(text){
+function normalizeAmountStr(s){
+  return String(s).replace(/−/g,'-').replace(/[€\s]/g,'');
+}
+
+function matrixFromCSV(text){
   const lines=text.split(/\r\n|\n|\r/).filter(l=>l.trim().length>0);
-  if(lines.length===0)return[];
   const delim=lines.some(l=>l.includes(';'))?';':',';
-  const headerIdx=lines.findIndex(l=>/concepto/i.test(l)&&/importe/i.test(l));
+  return lines.map(l=>parseCSVLine(l,delim));
+}
+
+function extractBankRows(matrix){
+  const headerIdx=matrix.findIndex(row=>{
+    const joined=(row||[]).join(' ').toLowerCase();
+    return joined.includes('concepto')&&joined.includes('importe');
+  });
   let colMap,startIdx;
   if(headerIdx>=0){
-    const headers=parseCSVLine(lines[headerIdx],delim).map(h=>h.toLowerCase());
+    const headers=matrix[headerIdx].map(h=>(h||'').toLowerCase());
     colMap={
       fecha:headers.findIndex(h=>h.includes('fecha oper')||h==='fecha'),
       concepto:headers.findIndex(h=>h.includes('concepto')),
@@ -1627,19 +1637,119 @@ function parseSantanderCSV(text){
     startIdx=0;
   }
   const rows=[];
-  for(let i=startIdx;i<lines.length;i++){
-    const cols=parseCSVLine(lines[i],delim);
+  for(let i=startIdx;i<matrix.length;i++){
+    const cols=matrix[i]||[];
     if(cols.length<3)continue;
     const fechaRaw=colMap.fecha>=0?(cols[colMap.fecha]||''):'';
     const concepto=colMap.concepto>=0?(cols[colMap.concepto]||''):'';
     const importeRaw=colMap.importe>=0?(cols[colMap.importe]||''):'';
     if(!fechaRaw||!concepto||!importeRaw)continue;
     const date=parseSpanishDate(fechaRaw);
-    const amount=parseAmount(importeRaw.replace(/[€\s]/g,''));
+    const amount=parseAmount(normalizeAmountStr(importeRaw));
     if(!date||!amount)continue;
     rows.push({date,concepto,amount});
   }
   return rows;
+}
+
+function parseSantanderCSV(text){
+  return extractBankRows(matrixFromCSV(text));
+}
+
+// ── Lector XLSX nativo (sin librerías externas): ZIP + deflate + XML ──
+function colRefToIndex(ref){
+  const m=(ref||'').match(/^([A-Z]+)/);
+  if(!m)return 0;
+  let col=0;
+  for(const ch of m[1])col=col*26+(ch.charCodeAt(0)-64);
+  return col-1;
+}
+
+function unzipEntries(buf){
+  const dv=new DataView(buf);
+  const bytes=new Uint8Array(buf);
+  let eocd=-1;
+  for(let i=bytes.length-22;i>=0;i--){
+    if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}
+  }
+  if(eocd<0)throw new Error('Archivo XLSX no válido');
+  const cdOffset=dv.getUint32(eocd+16,true);
+  const cdEntries=dv.getUint16(eocd+10,true);
+  const entries={};
+  let p=cdOffset;
+  for(let i=0;i<cdEntries;i++){
+    if(dv.getUint32(p,true)!==0x02014b50)break;
+    const compMethod=dv.getUint16(p+10,true);
+    const compSize=dv.getUint32(p+20,true);
+    const nameLen=dv.getUint16(p+28,true);
+    const extraLen=dv.getUint16(p+30,true);
+    const commentLen=dv.getUint16(p+32,true);
+    const localOffset=dv.getUint32(p+42,true);
+    const name=new TextDecoder().decode(bytes.slice(p+46,p+46+nameLen));
+    entries[name]={compMethod,compSize,localOffset};
+    p+=46+nameLen+extraLen+commentLen;
+  }
+  return{dv,bytes,entries};
+}
+
+async function extractZipEntry(zip,name){
+  const e=zip.entries[name];
+  if(!e)return null;
+  const{dv,bytes}=zip;
+  const lp=e.localOffset;
+  if(dv.getUint32(lp,true)!==0x04034b50)throw new Error('Cabecera ZIP inválida');
+  const nameLen=dv.getUint16(lp+26,true);
+  const extraLen=dv.getUint16(lp+28,true);
+  const dataStart=lp+30+nameLen+extraLen;
+  const compData=bytes.slice(dataStart,dataStart+e.compSize);
+  if(e.compMethod===0)return new TextDecoder('utf-8').decode(compData);
+  if(e.compMethod===8){
+    const ds=new DecompressionStream('deflate-raw');
+    const writer=ds.writable.getWriter();
+    writer.write(compData);writer.close();
+    const ab=await new Response(ds.readable).arrayBuffer();
+    return new TextDecoder('utf-8').decode(ab);
+  }
+  throw new Error('Compresión ZIP no soportada');
+}
+
+async function matrixFromXLSX(file){
+  const buf=await file.arrayBuffer();
+  const zip=unzipEntries(buf);
+  const sheetName=Object.keys(zip.entries).find(n=>/^xl\/worksheets\/sheet1\.xml$/i.test(n))
+    ||Object.keys(zip.entries).find(n=>/^xl\/worksheets\/.*\.xml$/i.test(n));
+  if(!sheetName)throw new Error('No se encontró la hoja de cálculo en el archivo');
+  const sheetXml=await extractZipEntry(zip,sheetName);
+  let sharedStrings=[];
+  const sstXml=await extractZipEntry(zip,'xl/sharedStrings.xml');
+  if(sstXml){
+    const sstDoc=new DOMParser().parseFromString(sstXml,'application/xml');
+    sharedStrings=Array.from(sstDoc.getElementsByTagName('si')).map(si=>
+      Array.from(si.getElementsByTagName('t')).map(t=>t.textContent).join('')
+    );
+  }
+  const doc=new DOMParser().parseFromString(sheetXml,'application/xml');
+  const matrix=[];
+  Array.from(doc.getElementsByTagName('row')).forEach(rowEl=>{
+    const rowArr=[];
+    Array.from(rowEl.getElementsByTagName('c')).forEach(c=>{
+      const idx=colRefToIndex(c.getAttribute('r'));
+      const type=c.getAttribute('t');
+      const vEl=c.getElementsByTagName('v')[0];
+      let val='';
+      if(type==='s'){
+        val=vEl?(sharedStrings[parseInt(vEl.textContent,10)]||''):'';
+      }else if(type==='inlineStr'){
+        const isEl=c.getElementsByTagName('is')[0];
+        val=isEl?Array.from(isEl.getElementsByTagName('t')).map(t=>t.textContent).join(''):'';
+      }else{
+        val=vEl?vEl.textContent:'';
+      }
+      rowArr[idx]=val;
+    });
+    matrix.push(rowArr);
+  });
+  return matrix;
 }
 
 function isTransferConcepto(concepto){return /TRANSFERENCIA/i.test(concepto)}
@@ -1650,6 +1760,7 @@ function guessExpenseCategory(concepto){
     [/CARREFOUR|MERCADONA|LIDL|D[IÍ]A\b|ALCAMPO|EROSKI|AHORRAMAS|CONSUM|SUPERMERCADO|FRUTER|CARNICER|PANADER|MCDONALD|BURGER|\bKFC\b|TELEPIZZA|RESTAURANTE|CAFETER/,'Comida'],
     [/NETFLIX|SPOTIFY|\bHBO\b|DISNEY|PRIME VIDEO|YOUTUBE PREMIUM|ICLOUD|APPLE\.COM/,'Suscripciones'],
     [/\bZARA\b|H&M|PRIMARK|MANGO|PULL&BEAR|BERSHKA|STRADIVARIUS|DECATHLON/,'Ropa'],
+    [/IBERIA|VUELING|RYANAIR|EASYJET|BOOKING\.COM|AIRBNB/,'Viajes'],
     [/RENFE|UBER|CABIFY|\bMETRO\b|\bEMT\b|REPSOL|CEPSA|GASOLINERA|PARKING|\bBP\b|\bSHELL\b/,'Transporte'],
     [/FARMACIA|PRIMOR|DRUNI|PERFUMER/,'Belleza'],
     [/\bCINE\b|CINEMA|TEATRO|CONCIERTO/,'Ocio']
@@ -1667,23 +1778,32 @@ function cleanDescription(concepto){
   let m=c.match(/BIZUM (?:DE|A FAVOR DE)\s+(.+?)\s+CONCEPTO[:\s]+(.+)/i);
   if(m){
     const sender=m[1].trim(),note=m[2].trim();
-    return note?`${sender} — ${note}`:sender;
+    if(!note||/^sin concepto$/i.test(note))return sender;
+    return `${sender} — ${note}`;
   }
+  m=c.match(/COMPRA BIZUM\s+(.+?)\s+\d{1,2}\/\d{1,2}\/\d{2,4}$/i);
+  if(m)return m[1].trim();
   m=c.match(/PAGO (?:MOVIL |CON TARJETA )?EN\s+(.+?)(?:,|$)/i);
   if(m)return m[1].trim();
   m=c.match(/COMPRA (?:EN |TARJETA )?(.+?)(?:,|$)/i);
-  if(m)return m[1].trim();
+  if(m)return m[1].trim().replace(/\s+\d{1,2}\/\d{1,2}\/\d{2,4}$/,'');
   return c.length>60?c.slice(0,60)+'…':c;
 }
 
 async function handleCSVFile(file){
   if(!file)return;
   try{
-    const text=await readCSVText(file);
-    const rawRows=parseSantanderCSV(text);
+    const name=(file.name||'').toLowerCase();
+    let matrix;
+    if(name.endsWith('.xlsx')){
+      matrix=await matrixFromXLSX(file);
+    }else{
+      matrix=matrixFromCSV(await readCSVText(file));
+    }
+    const rawRows=extractBankRows(matrix);
     if(rawRows.length===0){toast('No se encontraron movimientos válidos en el archivo');document.getElementById('import-csv-file').value='';return}
     await prepareCSVImport(rawRows);
-  }catch(e){toast('Error al leer el CSV: '+e.message)}
+  }catch(e){toast('Error al leer el archivo: '+e.message)}
   document.getElementById('import-csv-file').value='';
 }
 
