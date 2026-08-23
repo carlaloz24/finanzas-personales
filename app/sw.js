@@ -1,8 +1,9 @@
-const CACHE = 'fivvo-v23';
+const CACHE = 'fivvo-v24';
 const ASSETS = [
   './index.html',
   './sync.js',
   './manifest.json',
+  './chart.umd.js',
   './icon-192.png?v=2',
   './icon-512.png?v=2',
   './fonts/Saans-TRIAL-Regular.otf',
@@ -27,7 +28,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   const url = e.request.url;
-  if (url.includes('googleapis.com') || url.includes('accounts.google.com') || url.includes('finance.yahoo.com') || url.includes('allorigins.win') || url.includes('corsproxy.io')) {
+  if (url.includes('googleapis.com') || url.includes('accounts.google.com')) {
     e.respondWith(fetch(e.request));
     return;
   }
