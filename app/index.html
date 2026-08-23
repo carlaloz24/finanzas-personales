@@ -563,14 +563,14 @@ input,textarea,select,button{font-family:var(--font);font-size:19px}
 
 <script>
 const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const CAT_ICONS={Comida:'🛒',Ocio:'🎮',Ropa:'👕',Viajes:'✈️',Transporte:'🚗',Belleza:'💅','Formación':'📚',Formacion:'📚',Suscripciones:'📺',Eventos:'🎉',Regalos:'🎁',Otros:'📌','Nómina':'💰',Nomina:'💰','Trabajo extra':'🔧','Ventas online':'📦'};
+const CAT_ICONS={Comida:'🛒',Ocio:'🎮',Ropa:'👕',Viajes:'✈️',Transporte:'🚗',Belleza:'💅','Formación':'📚',Formacion:'📚',Suscripciones:'📺',Eventos:'🎉',Regalos:'🎁',Otros:'📌','Nómina':'💰',Nomina:'💰','Trabajo extra':'🔧','Ventas online':'📦',Bizum:'📲',Devolución:'↩️',Devolucion:'↩️',Salud:'🏥'};
 const DEFAULT_CONFIG={
   banks:["Banco Santander","Revolut","OpenBank","MyInvestor","Efectivo"],
   platforms:["MyInvestor"],
   inv_types:["Fidelity MSCI World P-ACC-EUR","Vanguard Small-Cap EUR Acc","Vanguard Emerging Mkts EUR Acc","Nueva Expresión Textil (NEXTIL)"],
   yahoo_symbols:{"Fidelity MSCI World P-ACC-EUR":"0P0001CLDK.F","Vanguard Small-Cap EUR Acc":"0P0000XR9M.F","Vanguard Emerging Mkts EUR Acc":"0P00012I6A.F","Nueva Expresión Textil (NEXTIL)":"NXT.MC"},
-  inc_categories:["Nómina","Trabajo extra","Ventas online","Otros"],
-  exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Formación","Suscripciones","Eventos","Regalos","Otros"],
+  inc_categories:["Nómina","Trabajo extra","Ventas online","Bizum","Devolución","Otros"],
+  exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Salud","Formación","Suscripciones","Eventos","Regalos","Bizum","Otros"],
   inv_asset_types:{"Fidelity MSCI World P-ACC-EUR":"Indexado","Vanguard Small-Cap EUR Acc":"Indexado","Vanguard Emerging Mkts EUR Acc":"Indexado","Nueva Expresión Textil (NEXTIL)":"Acciones"}
 };
 const ASSET_TYPES=['Indexado','Acciones','Liquidez','Monetario','Cuenta remunerada','Oro','Cripto (BTC)','Otros'];
@@ -2149,9 +2149,29 @@ async function migrateTildes(){
     if(fc!==tx.category){tx.category=fc;tx.updated_at=new Date().toISOString();await dbPut('transactions',tx)}
   }
 }
+async function migrateNewCategories(){
+  const cfg=await dbGet('config','main');
+  if(!cfg)return;
+  let changed=false;
+  const ensureCats=(arr,cats)=>{
+    const a=(arr||[]).slice();
+    cats.forEach(c=>{
+      if(!a.includes(c)){
+        const otrosIdx=a.indexOf('Otros');
+        if(otrosIdx>=0)a.splice(otrosIdx,0,c);else a.push(c);
+        changed=true;
+      }
+    });
+    return a;
+  };
+  if(cfg.inc_categories)cfg.inc_categories=ensureCats(cfg.inc_categories,['Bizum','Devolución']);
+  if(cfg.exp_categories)cfg.exp_categories=ensureCats(cfg.exp_categories,['Salud','Bizum']);
+  if(changed)await dbPut('config',{...cfg,id:'main'});
+}
 async function init(){
   DB=await openDatabase();
   await migrateTildes();
+  await migrateNewCategories();
   const saved=await dbGet('config','main');
   if(saved){
     CONFIG.banks=saved.banks||DEFAULT_CONFIG.banks;
