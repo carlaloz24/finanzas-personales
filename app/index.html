@@ -31,8 +31,8 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden}
-body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
-input,textarea,select,button{font-family:var(--font);font-size:17px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:19px;line-height:1.5;-webkit-font-smoothing:antialiased}
+input,textarea,select,button{font-family:var(--font);font-size:19px}
 
 #app{min-height:100%;padding-bottom:calc(var(--nav-h) + var(--safe-b))}
 .screen{display:none;padding:0 20px 24px;animation:fadeIn .2s}
@@ -152,11 +152,11 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 /* CSV IMPORT REVIEW */
 .imp-row{padding:12px 0;border-bottom:1px solid var(--border)}
 .imp-row.imp-dup{opacity:.55}
-.imp-row-top{display:flex;align-items:center;gap:10px}
+.imp-row-top{display:flex;align-items:flex-start;gap:10px}
 .imp-check{flex-shrink:0;display:flex}
 .imp-check input{width:20px;height:20px;accent-color:var(--text)}
 .imp-row-info{flex:1;min-width:0}
-.imp-row-desc{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imp-row-desc{font-size:14px;font-weight:500;white-space:normal;overflow:visible;line-height:1.35}
 .imp-row-date{font-size:11px;color:var(--text3);margin-top:2px}
 .imp-row-amount{font-weight:600;font-size:14px;flex-shrink:0}
 .imp-row-cat{width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:13px;background:var(--bg-input);color:var(--text);outline:none}
@@ -207,10 +207,6 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 /* TOAST */
 #toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b) + 80px);left:50%;transform:translateX(-50%) translateY(60px);background:var(--bg-dark);color:#fff;padding:10px 22px;border-radius:var(--r-pill);font-size:13px;font-weight:500;opacity:0;transition:all .25s;z-index:300;white-space:nowrap;pointer-events:none}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-
-/* DELETE BANNER */
-.delete-banner{position:fixed;bottom:calc(var(--nav-h) + var(--safe-b));left:0;right:0;background:var(--negative);color:#fff;text-align:center;padding:14px;font-weight:600;font-size:15px;cursor:pointer;z-index:50;transform:translateY(100%);transition:transform .2s}
-.delete-banner.show{transform:translateY(0)}
 
 /* PATRIMONIO CHART (simple bars) */
 .chart-bars{display:flex;align-items:flex-end;gap:4px;height:120px;padding:12px 0}
@@ -282,7 +278,8 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 .dca-detail{font-size:12px;color:var(--text2)}
 .dca-amount{font-weight:600;font-size:15px;color:var(--invest);flex-shrink:0}
 .dca-actions{display:flex;gap:6px;flex-shrink:0}
-.dca-btn{background:none;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--text2)}
+.dca-btn{background:none;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.dca-btn svg{width:20px;height:20px;stroke-width:2}
 .dca-btn:active{background:var(--bg-section)}
 .dca-btn.del{color:var(--negative);border-color:rgba(239,68,68,0.3)}
 
@@ -291,8 +288,6 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
   #app{max-width:480px;margin:0 auto}
   #nav{max-width:480px;left:50%;transform:translateX(-50%)}
   #fab{right:calc(50% - 220px)}
-  .delete-banner{max-width:480px;left:50%;transform:translateX(-50%) translateY(100%)}
-  .delete-banner.show{transform:translateX(-50%) translateY(0)}
 }
 </style>
 </head>
@@ -387,7 +382,6 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 <button id="fab" onclick="openAddModal()">+</button>
 
 <!-- ═══ DELETE BANNER ═══ -->
-<div class="delete-banner" id="del-banner" onclick="confirmDelete()">Eliminar registro</div>
 
 <!-- ═══ BOTTOM NAV ═══ -->
 <nav id="nav">
@@ -438,8 +432,10 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
       <label class="field-label">Fecha</label>
       <input type="date" id="add-date">
     </div>
+    <input type="hidden" id="add-edit-id">
     <button class="btn-primary" onclick="saveTransaction()">Guardar</button>
     <button class="btn-secondary" onclick="closeAddModal()">Cancelar</button>
+    <button class="btn-secondary btn-danger" id="add-delete-btn" style="display:none" onclick="deleteFromEditModal()">Eliminar movimiento</button>
   </div>
 </div>
 
@@ -579,7 +575,7 @@ const DEFAULT_CONFIG={
 };
 const ASSET_TYPES=['Indexado','Acciones','Liquidez','Monetario','Cuenta remunerada','Oro','Cripto (BTC)','Otros'];
 
-let DB,CONFIG={...DEFAULT_CONFIG},currentScreen='dashboard',currentType='gasto',selectedCat=null,selectedBank=null,deleteTarget=null,planTab='budget',goalTypeVal='corto';
+let DB,CONFIG={...DEFAULT_CONFIG},currentScreen='dashboard',currentType='gasto',selectedCat=null,selectedBank=null,editTxId=null,planTab='budget',goalTypeVal='corto';
 
 // ═══════ UTILS ═══════
 const uuid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2,9)}`;
@@ -869,7 +865,6 @@ function nav(screen){
   document.querySelectorAll('.nav-item').forEach(n=>{
     n.classList.toggle('active',n.dataset.screen===screen);
   });
-  hideDeleteBanner();
   const renderers={dashboard:renderDashboard,history:renderHistory,cartera:renderCartera,plan:renderPlan,settings:()=>{}};
   if(renderers[screen])renderers[screen]();
 }
@@ -898,10 +893,24 @@ async function renderDashboard(){
 
   const patrimonio=round2(liquidez+invReal);
 
-  // Expense donut data
+  // Expense donut data (mas a menos)
   const expByCat={};
-  txs.filter(t=>t.type==='gasto').forEach(t=>{const c=t.category||'Otros';expByCat[c]=(expByCat[c]||0)+t.amount});
-  const expDonutData=Object.entries(expByCat).map(([name,value],i)=>({name,value:round2(value),color:CHART_COLORS[i%CHART_COLORS.length]}));
+  txs.filter(t=>t.type==='gasto').forEach(t=>{const c=t.category||'Sin categoría';expByCat[c]=(expByCat[c]||0)+t.amount});
+  const expDonutData=Object.entries(expByCat)
+    .map(([name,value])=>({name,value:round2(value)}))
+    .sort((a,b)=>b.value-a.value)
+    .map((d,i)=>({...d,color:CHART_COLORS[i%CHART_COLORS.length]}));
+
+  // Income donut data (mas a menos)
+  const incByCat={};
+  txs.filter(t=>t.type==='ingreso').forEach(t=>{const c=t.category||'Sin categoría';incByCat[c]=(incByCat[c]||0)+t.amount});
+  const incDonutData=Object.entries(incByCat)
+    .map(([name,value])=>({name,value:round2(value)}))
+    .sort((a,b)=>b.value-a.value)
+    .map((d,i)=>({...d,color:CHART_COLORS[i%CHART_COLORS.length]}));
+
+  // Top 5 gastos individuales del periodo
+  const topGastos=txs.filter(t=>t.type==='gasto').sort((a,b)=>b.amount-a.amount).slice(0,5);
 
   let kpisHTML=`
     <div class="kpi-grid">
@@ -918,6 +927,25 @@ async function renderDashboard(){
     kpisHTML+=`<div class="sec-label">Gastos por categoría</div><div class="chart-section">${donutChart(expDonutData,null,160,true)}</div>`;
   }
 
+  if(incDonutData.length>0){
+    kpisHTML+=`<div class="sec-label">Ingresos por categoría</div><div class="chart-section">${donutChart(incDonutData,null,160,true)}</div>`;
+  }
+
+  if(topGastos.length>0){
+    kpisHTML+=`<div class="sec-label">Mayores gastos</div><div class="chart-section" style="background:var(--bg-card);border-radius:var(--r-md);border:1px solid var(--border);padding:4px 16px">`;
+    topGastos.forEach(t=>{
+      const cat=t.category||'Sin categoría';
+      const icon=CAT_ICONS[cat]||'↓';
+      const desc=t.description||cat;
+      kpisHTML+=`<div class="tx-item" onclick="openEditModal('${t.id}')">
+        <div class="tx-icon gasto">${icon}</div>
+        <div class="tx-info"><div class="tx-cat">${cat}</div><div class="tx-desc">${desc}</div></div>
+        <div class="tx-right"><div class="tx-amount gasto">-${fmtC(t.amount)}</div><div class="tx-date">${fmtDShort(t.date)}</div></div>
+      </div>`;
+    });
+    kpisHTML+=`</div>`;
+  }
+
   kpisHTML+=`<div class="sec-label">Ingresos vs Gastos (6 meses)</div><div class="chart-section" id="dash-monthly-bars"><div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">Cargando...</div></div>`;
 
   document.getElementById('dash-kpis').innerHTML=kpisHTML;
@@ -928,15 +956,16 @@ async function renderDashboard(){
 
 }
 
-function txItemHTML(t,deletable=true){
+function txItemHTML(t,editable=true){
   const cat=t.category||t.tipo_inv||'';
   const icon=t.type==='inversion'?'📈':t.type==='ingreso'?'↑':(CAT_ICONS[cat]||'↓');
   const desc=t.description||(t.type==='inversion'?t.platform:t.bank)||'';
   const sign=t.type==='gasto'?'-':'';
-  const click=deletable?`onclick="toggleDelete('${t.id}')"`:'';
+  const click=editable?`onclick="openEditModal('${t.id}')"`:'';
+  const catHTML=cat?cat:'<span style="color:var(--text3);font-style:italic">Sin categoría</span>';
   return`<div class="tx-item" ${click} id="tx-${t.id}">
     <div class="tx-icon ${t.type}">${icon}</div>
-    <div class="tx-info"><div class="tx-cat">${cat}</div><div class="tx-desc">${desc}</div></div>
+    <div class="tx-info"><div class="tx-cat">${catHTML}</div><div class="tx-desc">${desc}</div></div>
     <div class="tx-right"><div class="tx-amount ${t.type}">${sign}${fmtC(t.amount)}</div><div class="tx-date">${fmtDShort(t.date)}</div></div>
   </div>`;
 }
@@ -1374,13 +1403,31 @@ function openAddModal(){
   }else{
     currentType='gasto';
   }
+  editTxId=null;
   selectedCat=null;selectedBank=null;
   document.getElementById('add-amount').value='';
   document.getElementById('add-desc').value='';
   document.getElementById('add-date').value=today();
+  document.getElementById('add-edit-id').value='';
+  document.getElementById('add-delete-btn').style.display='none';
   updateAddModal();
   openModal('add-modal');
   setTimeout(()=>document.getElementById('add-amount').focus(),200);
+}
+async function openEditModal(id){
+  const tx=await dbGet('transactions',id);
+  if(!tx)return;
+  editTxId=id;
+  currentType=tx.type;
+  selectedCat=tx.category||tx.tipo_inv||null;
+  selectedBank=tx.bank||tx.platform||null;
+  document.getElementById('add-amount').value=fmtInput(tx.amount);
+  document.getElementById('add-desc').value=tx.description||'';
+  document.getElementById('add-date').value=tx.date;
+  document.getElementById('add-edit-id').value=id;
+  document.getElementById('add-delete-btn').style.display='block';
+  updateAddModal();
+  openModal('add-modal');
 }
 function closeAddModal(){closeModal('add-modal')}
 
@@ -1421,14 +1468,14 @@ function updateAddModal(){
   document.getElementById('add-banks').innerHTML=bankHTML;
 }
 
-function pickCat(c){selectedCat=c;updateAddModal()}
+function pickCat(c){selectedCat=selectedCat===c?null:c;updateAddModal()}
 function pickBank(b){selectedBank=b;updateAddModal()}
 
 async function saveTransaction(){
   const amtStr=document.getElementById('add-amount').value;
   const amount=parseAmount(amtStr);
   if(!amount||amount<=0){toast('Introduce un importe');return}
-  if(!selectedCat){toast('Selecciona una categoría');return}
+  if(currentType==='inversion'&&!selectedCat){toast('Selecciona un tipo de inversión');return}
   if(!selectedBank){toast('Selecciona banco/plataforma');return}
 
   const date=document.getElementById('add-date').value;
@@ -1438,48 +1485,38 @@ async function saveTransaction(){
   const year=parseInt(dp[0]);
 
   const tx={
-    id:uuid(),type:currentType,date,amount:round2(amount),
+    id:editTxId||uuid(),type:currentType,date,amount:round2(amount),
     month,year,
     description:document.getElementById('add-desc').value.trim()
   };
   if(currentType==='inversion'){
-    tx.tipo_inv=selectedCat;tx.category=selectedCat;tx.platform=selectedBank;tx.bank='';
+    tx.tipo_inv=selectedCat||'';tx.category=selectedCat||'';tx.platform=selectedBank;tx.bank='';
   }else{
-    tx.category=selectedCat;tx.bank=selectedBank;tx.tipo_inv='';tx.platform='';
+    tx.category=selectedCat||'';tx.bank=selectedBank;tx.tipo_inv='';tx.platform='';
   }
 
   await dbPutTS('transactions',tx);
   closeAddModal();
-  toast('Guardado');
+  toast(editTxId?'Actualizado':'Guardado');
+  editTxId=null;
   if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
   if(currentScreen==='dashboard')renderDashboard();
   else if(currentScreen==='history')renderHistory();
+  else if(currentScreen==='cartera')renderCartera();
 }
 
-// ═══════ DELETE ═══════
-function toggleDelete(id){
-  if(deleteTarget===id){hideDeleteBanner();return}
-  deleteTarget=id;
-  document.querySelectorAll('.tx-item').forEach(el=>el.style.background='');
-  const el=document.getElementById('tx-'+id);
-  if(el)el.style.background='rgba(239,68,68,0.06)';
-  document.getElementById('del-banner').classList.add('show');
-}
-function hideDeleteBanner(){
-  deleteTarget=null;
-  document.getElementById('del-banner').classList.remove('show');
-  document.querySelectorAll('.tx-item').forEach(el=>el.style.background='');
-}
-async function confirmDelete(){
-  if(!deleteTarget)return;
-  const tx=await dbGet('transactions',deleteTarget);
+async function deleteFromEditModal(){
+  if(!editTxId)return;
+  if(!confirm('¿Eliminar este movimiento?'))return;
+  const tx=await dbGet('transactions',editTxId);
   if(tx){tx.deleted=true;tx.updated_at=new Date().toISOString();await dbPut('transactions',tx)}
-  else{await dbDel('transactions',deleteTarget)}
-  hideDeleteBanner();
+  closeAddModal();
+  editTxId=null;
   toast('Eliminado');
   if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
   if(currentScreen==='dashboard')renderDashboard();
   else if(currentScreen==='history')renderHistory();
+  else if(currentScreen==='cartera')renderCartera();
 }
 
 // ═══════ CONFIG ═══════
@@ -1917,25 +1954,25 @@ async function prepareCSVImport(rawRows){
   const existingSet=new Set(existing.map(t=>`${t.date}|${t.amount.toFixed(2)}|${t.type}`));
 
   csvImportRows=[];
-  let ignoredTransfers=0;
   rawRows.forEach((r,idx)=>{
-    if(isTransferConcepto(r.concepto)){ignoredTransfers++;return}
     const type=r.amount<0?'gasto':'ingreso';
     const amount=round2(Math.abs(r.amount));
     const sig=`${r.date}|${amount.toFixed(2)}|${type}`;
     const dup=existingSet.has(sig);
+    const isTransfer=isTransferConcepto(r.concepto);
     const category=type==='gasto'?guessExpenseCategory(r.concepto):guessIncomeCategory(r.concepto);
-    csvImportRows.push({_id:idx,date:r.date,type,amount,description:cleanDescription(r.concepto),category,dup,checked:!dup});
+    csvImportRows.push({_id:idx,date:r.date,type,amount,description:cleanDescription(r.concepto),category,dup,isTransfer,checked:!dup&&!isTransfer});
   });
   csvImportRows.sort((a,b)=>a.date.localeCompare(b.date));
-  renderCSVImportList(ignoredTransfers);
+  renderCSVImportList();
   openModal('csv-import-modal');
 }
 
-function renderCSVImportList(ignoredTransfers){
+function renderCSVImportList(){
   const dupCount=csvImportRows.filter(r=>r.dup).length;
+  const transferCount=csvImportRows.filter(r=>r.isTransfer&&!r.dup).length;
   let summary=`${csvImportRows.length} movimiento${csvImportRows.length===1?'':'s'} detectado${csvImportRows.length===1?'':'s'}`;
-  if(ignoredTransfers>0)summary+=` · ${ignoredTransfers} transferencia${ignoredTransfers===1?'':'s'} ignorada${ignoredTransfers===1?'':'s'}`;
+  if(transferCount>0)summary+=` · ${transferCount} posible${transferCount===1?'':'s'} transferencia${transferCount===1?'':'s'} (sin marcar)`;
   if(dupCount>0)summary+=` · ${dupCount} posible${dupCount===1?'':'s'} duplicado${dupCount===1?'':'s'} (sin marcar)`;
   document.getElementById('csv-import-summary').textContent=summary;
 
@@ -1949,12 +1986,13 @@ function renderCSVImportList(ignoredTransfers){
     const catOpts=cats.map(c=>`<option value="${c.replace(/"/g,'&quot;')}" ${r.category===c?'selected':''}>${c}</option>`).join('');
     const sign=r.type==='gasto'?'-':'+';
     const color=r.type==='gasto'?'var(--negative)':'var(--positive)';
-    return`<div class="imp-row ${r.dup?'imp-dup':''}">
+    const tag=r.dup?' · posible duplicado':(r.isTransfer?' · posible transferencia':'');
+    return`<div class="imp-row ${r.dup||r.isTransfer?'imp-dup':''}">
       <div class="imp-row-top">
         <label class="imp-check"><input type="checkbox" ${r.checked?'checked':''} onchange="toggleCSVRow(${r._id},this.checked)"></label>
         <div class="imp-row-info">
           <div class="imp-row-desc">${r.description}</div>
-          <div class="imp-row-date">${fmtDShort(r.date)}${r.dup?' · posible duplicado':''}</div>
+          <div class="imp-row-date">${fmtDShort(r.date)}${tag}</div>
         </div>
         <div class="imp-row-amount" style="color:${color}">${sign}${fmtC(r.amount)}</div>
       </div>
@@ -1972,8 +2010,6 @@ function setCSVRowCategory(id,cat){const r=csvImportRows.find(x=>x._id===id);if(
 async function confirmCSVImport(){
   const toImport=csvImportRows.filter(r=>r.checked);
   if(toImport.length===0){toast('No hay movimientos seleccionados');return}
-  const missingCat=toImport.filter(r=>!r.category);
-  if(missingCat.length>0){toast(`Asigna categoría a ${missingCat.length} movimiento${missingCat.length===1?'':'s'}`);return}
 
   for(const r of toImport){
     const dp=r.date.split('-');
@@ -2083,7 +2119,7 @@ function renderDCARules(rules){
     <div class="dca-icon">📅</div>
     <div class="dca-info"><div class="dca-fund">${r.fund}</div><div class="dca-detail">Día ${r.day} · ${r.platform}</div></div>
     <div class="dca-amount">${fmtC(r.amount)}</div>
-    <div class="dca-actions"><button class="dca-btn" onclick="openDCAModal(${JSON.stringify(r).replace(/"/g,'&quot;')})">✎</button><button class="dca-btn del" onclick="deleteDCA('${r.id}')">✕</button></div>
+    <div class="dca-actions"><button class="dca-btn" onclick="openDCAModal(${JSON.stringify(r).replace(/"/g,'&quot;')})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button><button class="dca-btn del" onclick="deleteDCA('${r.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
   </div>`).join('');
 }
 
