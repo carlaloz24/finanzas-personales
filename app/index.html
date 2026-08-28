@@ -192,7 +192,15 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--text2);box-shadow:0 0 0 3px rgba(25,25,15,0.05)}
 .field textarea{resize:vertical;min-height:80px}
 .field-hint{font-size:13px;color:var(--text3);margin-top:6px}
-input[type="date"]{width:100%;min-height:50px}
+input[type="date"]{width:100%;min-height:52px}
+/* Selector nativo con apariencia propia (abre la rueda del sistema en móvil) */
+.select-lg{-webkit-appearance:none;appearance:none;min-height:52px;padding-right:40px!important;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L6 6L10.5 1.5' stroke='%236e6e64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+  background-repeat:no-repeat!important;background-position:right 15px center!important}
+.date-quick{display:flex;gap:8px;margin-bottom:10px}
+.date-chip{flex:1;padding:11px 8px;border-radius:var(--r-sm);border:1.5px solid var(--border-strong);background:var(--bg-card);color:var(--text2);font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .2s var(--ease-out),color .2s var(--ease-out),border-color .2s var(--ease-out),transform .16s var(--ease-out)}
+.date-chip:active{transform:scale(0.96)}
+.date-chip.active{background:var(--bg-dark);color:#fff;border-color:var(--bg-dark)}
 
 /* CSV IMPORT REVIEW */
 .imp-row{padding:12px 0;border-bottom:1px solid var(--border)}
@@ -319,6 +327,34 @@ input[type="date"]{width:100%;min-height:50px}
 .dca-btn:active{background:var(--bg-section);transform:scale(0.93)}
 .dca-btn.del{color:var(--negative);border-color:rgba(239,68,68,0.3)}
 
+/* HEADER ACTIONS + BOTÓN ICONO */
+.header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.icon-btn{width:42px;height:42px;flex-shrink:0;border-radius:var(--r-sm);border:1.5px solid var(--border-strong);background:var(--bg-card);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .18s var(--ease-soft),transform .18s var(--ease-out),color .18s var(--ease-soft)}
+.icon-btn svg{width:20px;height:20px;stroke-width:2}
+.icon-btn:active{transform:scale(0.93);background:var(--bg-section)}
+.icon-btn.active{background:var(--bg-dark);border-color:var(--bg-dark);color:var(--accent)}
+
+/* BARRA DE EDICIÓN (sustituye a los botones del final de página) */
+.edit-bar{display:none;position:sticky;top:72px;z-index:6;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--bg-dark);color:#fff;border-radius:var(--r-md);padding:10px 12px 10px 16px;margin-bottom:14px;
+  box-shadow:var(--shadow-lg);animation:editBarIn .3s var(--ease-out)}
+.edit-bar.show{display:flex}
+@keyframes editBarIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.edit-bar-txt{font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edit-bar-actions{display:flex;gap:8px;flex-shrink:0}
+.btn-bar{padding:9px 16px;border-radius:var(--r-pill);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid transparent;transition:transform .18s var(--ease-out),opacity .18s var(--ease-soft)}
+.btn-bar:active{transform:scale(0.95)}
+.btn-bar.ghost{background:transparent;color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.25)}
+.btn-bar.solid{background:var(--accent);color:var(--accent-text)}
+
+/* TARJETAS DE VALORES (mismo lenguaje visual que Movimientos) */
+.val-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:6px}
+.val-card .val-row{padding:13px 14px;border-bottom:1px solid #ebebe9}
+.val-card .val-row:last-child{border-bottom:none}
+.val-card .val-row.total{background:var(--bg-input)}
+.val-summary{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:12px 2px 0;font-size:15px;color:var(--text2)}
+.val-summary b{font-size:17px;color:var(--text);font-weight:700}
+
 /* RESPONSIVE */
 @media(min-width:600px){
   #app{max-width:480px;margin:0 auto}
@@ -353,7 +389,19 @@ input[type="date"]{width:100%;min-height:50px}
 <div id="screen-cartera" class="screen">
   <div class="header">
     <h1>Cartera</h1>
-    <button class="mp-btn" id="cart-month" onclick="openMonthPicker(this)"></button>
+    <div class="header-actions">
+      <button class="mp-btn" id="cart-month" onclick="openMonthPicker(this)"></button>
+      <button class="icon-btn" id="cart-edit-btn" onclick="startCarteraEdit()" aria-label="Editar valores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="edit-bar" id="cart-edit-bar">
+    <span class="edit-bar-txt">Editando</span>
+    <div class="edit-bar-actions">
+      <button class="btn-bar ghost" onclick="cancelCarteraEdit()">Cancelar</button>
+      <button class="btn-bar solid" onclick="saveCarteraValues()">Guardar</button>
+    </div>
   </div>
   <div id="cart-content"></div>
 </div>
@@ -456,17 +504,26 @@ input[type="date"]{width:100%;min-height:50px}
       <input type="text" inputmode="decimal" class="amount-input" id="add-amount" placeholder="0,00" autocomplete="off">
       <div class="amount-currency">EUR</div>
     </div>
-    <div class="field-label" id="cat-label">Categoría</div>
-    <div class="chips" id="add-cats"></div>
-    <div class="field-label" style="margin-top:16px" id="bank-label">Banco</div>
-    <div class="chips" id="add-banks"></div>
-    <div class="field" style="margin-top:16px">
+    <div class="field">
+      <label class="field-label" id="cat-label" for="add-cat-select">Categoría</label>
+      <select id="add-cat-select" class="select-lg" onchange="pickCat(this.value)"></select>
+    </div>
+    <div class="field">
+      <label class="field-label" id="bank-label" for="add-bank-select">Banco</label>
+      <select id="add-bank-select" class="select-lg" onchange="pickBank(this.value)"></select>
+    </div>
+    <div class="field">
       <label class="field-label">Descripción <span style="font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></label>
       <input type="text" id="add-desc" placeholder="Ej: Mercadona, nómina..." autocomplete="off">
     </div>
     <div class="field">
       <label class="field-label">Fecha</label>
-      <input type="date" id="add-date">
+      <div class="date-quick" id="add-date-quick">
+        <button type="button" class="date-chip" onclick="setAddDateQuick(0)">Hoy</button>
+        <button type="button" class="date-chip" onclick="setAddDateQuick(1)">Ayer</button>
+        <button type="button" class="date-chip" onclick="setAddDateQuick(2)">Anteayer</button>
+      </div>
+      <input type="date" id="add-date" lang="es-ES" onchange="syncAddDateQuick()">
     </div>
     <input type="hidden" id="add-edit-id">
     <button class="btn-primary" onclick="saveTransaction()">Guardar</button>
@@ -789,7 +846,8 @@ function renderMonthlyBarsChart(canvasId,pts){
       layout:{padding:{top:4}},
       categoryPercentage:many?0.82:0.68,barPercentage:many?0.92:0.86,
       plugins:{
-        legend:{position:'bottom',labels:{color:chartTextColor()}},
+        // padding alto = más aire entre el punto de "Ingresos" y el de "Gastos"
+        legend:{position:'bottom',labels:{color:chartTextColor(),padding:28,boxWidth:9}},
         tooltip:{callbacks:{
           title:ctx=>`${MONTHS[pts[ctx[0].dataIndex].m]} ${pts[ctx[0].dataIndex].y}`,
           label:ctx=>`${ctx.dataset.label}: ${ctx.dataset.label==='Gastos'?fmtOut(ctx.parsed.y):fmtC(ctx.parsed.y)}`
@@ -825,6 +883,37 @@ function renderAreaLineChart(canvasId,labels,datasets,opts={}){
       scales:{
         y:{beginAtZero:true,border:{display:false},grid:{color:chartGridColor(),drawTicks:false},ticks:{color:chartTextColor(),padding:8,maxTicksLimit:5,font:{size:12},callback:v=>kEur(v)}},
         x:{border:{display:false},grid:{display:false},ticks:{color:chartTextColor(),maxRotation:0,autoSkip:true,maxTicksLimit:opts.maxXTicks||6,padding:6,font:{size:12,weight:'500'}}}
+      }
+    }
+  });
+}
+
+// Balance neto mes a mes: barras con color según sea positivo o negativo
+function renderBalanceLineChart(canvasId,pts){
+  destroyChart(canvasId);
+  const el=document.getElementById(canvasId);
+  if(!el)return;
+  const many=pts.length>8;
+  const data=pts.map(p=>round2(p.inc-p.exp));
+  chartInstances[canvasId]=new Chart(el,{
+    type:'bar',
+    data:{labels:pts.map(p=>many?MONTHS[p.m].charAt(0):MONTH_SHORT[p.m]),datasets:[{
+      data,
+      backgroundColor:data.map(v=>v>=0?'#22c55e':'#ef4444'),
+      borderRadius:many?3:5,maxBarThickness:many?16:30
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          title:ctx=>`${MONTHS[pts[ctx[0].dataIndex].m]} ${pts[ctx[0].dataIndex].y}`,
+          label:ctx=>`Balance: ${ctx.parsed.y<0?fmtOut(ctx.parsed.y):fmtC(ctx.parsed.y)}`
+        }}
+      },
+      scales:{
+        y:{border:{display:false},grid:{color:chartGridColor(),drawTicks:false},ticks:{color:chartTextColor(),padding:8,maxTicksLimit:5,font:{size:12},callback:v=>kEur(v)}},
+        x:{border:{display:false},grid:{display:false},ticks:{color:chartTextColor(),maxRotation:0,autoSkip:false,padding:6,font:{size:many?12:13,weight:'500'}}}
       }
     }
   });
@@ -1086,7 +1175,10 @@ function setDashBarsRange(r){
   document.querySelectorAll('#dash-bars-tabs .pl-range-tab').forEach(el=>el.classList.toggle('active',parseInt(el.dataset.r)===r));
   const{m,y,all}=getVM('dash-month');
   const cm=all?new Date().getMonth():m, cy=all?new Date().getFullYear():y;
-  getMonthlyBarsData(cm,cy,r).then(pts=>renderMonthlyBarsChart('dash-monthly-bars',pts));
+  getMonthlyBarsData(cm,cy,r).then(pts=>{
+    renderMonthlyBarsChart('dash-monthly-bars',pts);
+    renderBalanceLineChart('dash-balance-line',pts);
+  });
 }
 
 async function renderDashboard(){
@@ -1115,8 +1207,6 @@ async function renderDashboard(){
   const incData=groupByCategory(txs,'ingreso');
 
   const cm=all?new Date().getMonth():m, cy=all?new Date().getFullYear():y;
-  const budget=await dbGet('budget','main')||{};
-  const yearExp=await getYearExpenses(cy);
 
   let kpisHTML=`
     <div class="kpi-grid">
@@ -1129,48 +1219,7 @@ async function renderDashboard(){
     </div>
   `;
 
-  // ── Presupuesto mensual + anual ──
-  const monthlyBudget=budget.total||0;
-  const annualBudget=budget.annual||0;
-  if(monthlyBudget>0||annualBudget>0){
-    kpisHTML+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Presupuesto</div><span class="link" onclick="nav('plan')">Ver plan →</span></div>`;
-    if(monthlyBudget>0){
-      const left=round2(monthlyBudget-expenses);
-      const over=left<0;
-      const pct=Math.min(Math.round((expenses/monthlyBudget)*100),100);
-      kpisHTML+=`<div class="budget-hero">
-        <div class="budget-hero-top">
-          <div><div class="budget-hero-label">Mensual · ${MONTHS[cm]}</div><div class="budget-hero-val" style="color:${over?'var(--negative)':'var(--text)'}">${over?fmtOut(Math.abs(left))+' de más':fmtC(left)}</div></div>
-          <div style="font-size:14px;color:var(--text3);text-align:right">${over?'te has pasado':'disponible'}</div>
-        </div>
-        <div class="prog-bar"><div class="prog-fill ${over?'red':'accent'}" data-w="${pct}"></div></div>
-        <div class="budget-hero-sub"><span>Gastado ${fmtC(expenses)}</span><span>Presupuesto ${fmtC(monthlyBudget)}</span></div>
-      </div>`;
-    }
-    if(annualBudget>0){
-      const leftY=round2(annualBudget-yearExp.total);
-      const overY=leftY<0;
-      const pctY=Math.min(Math.round((yearExp.total/annualBudget)*100),100);
-      kpisHTML+=`<div class="budget-hero">
-        <div class="budget-hero-top">
-          <div><div class="budget-hero-label">Anual · ${cy}</div><div class="budget-hero-val" style="color:${overY?'var(--negative)':'var(--text)'}">${overY?fmtOut(Math.abs(leftY))+' de más':fmtC(leftY)}</div></div>
-          <div style="font-size:14px;color:var(--text3);text-align:right">${overY?'te has pasado':'disponible'}</div>
-        </div>
-        <div class="prog-bar"><div class="prog-fill ${overY?'red':'accent'}" data-w="${pctY}"></div></div>
-        <div class="budget-hero-sub"><span>Acumulado ${fmtC(yearExp.total)}</span><span>Presupuesto ${fmtC(annualBudget)}</span></div>
-      </div>`;
-    }
-  }
-
-  // ── Gastos por categoría: filas a todo el ancho con divisores e iconos ──
-  if(expData.length>0){
-    kpisHTML+=`<div class="sec-label">Gastos por categoría</div>${categoryBreakdownHTML(expData,{negative:true})}`;
-  }
-  if(incData.length>0){
-    kpisHTML+=`<div class="sec-label">Ingresos por categoría</div>${categoryBreakdownHTML(incData)}`;
-  }
-
-  // ── Ingresos vs gastos: 6 o 12 meses ──
+  // ── Ingresos vs gastos + balance neto: 6 o 12 meses ──
   kpisHTML+=`<div class="sec-label">Ingresos vs gastos</div>
     <div class="pl-range-tabs" id="dash-bars-tabs">
       <div class="pl-range-tab${dashBarsRange===6?' active':''}" data-r="6" onclick="setDashBarsRange(6)">6 meses</div>
@@ -1178,11 +1227,26 @@ async function renderDashboard(){
     </div>
     ${chartBlockHTML('dash-monthly-bars')}`;
 
+  kpisHTML+=`<div class="sec-label">Evolución del balance</div>
+    <div class="sec-note">Lo que te queda cada mes tras restar los gastos a los ingresos.</div>
+    ${chartBlockHTML('dash-balance-line')}`;
+
+  // ── Reparto por categoría: filas a todo el ancho con divisores e iconos ──
+  if(expData.length>0){
+    kpisHTML+=`<div class="sec-label">Gastos por categoría</div>${categoryBreakdownHTML(expData,{negative:true})}`;
+  }
+  if(incData.length>0){
+    kpisHTML+=`<div class="sec-label">Ingresos por categoría</div>${categoryBreakdownHTML(incData)}`;
+  }
+
   const cont=document.getElementById('dash-kpis');
   cont.innerHTML=kpisHTML;
   animateBars(cont);
 
-  getMonthlyBarsData(cm,cy,dashBarsRange).then(pts=>renderMonthlyBarsChart('dash-monthly-bars',pts));
+  getMonthlyBarsData(cm,cy,dashBarsRange).then(pts=>{
+    renderMonthlyBarsChart('dash-monthly-bars',pts);
+    renderBalanceLineChart('dash-balance-line',pts);
+  });
 }
 
 function txItemHTML(t,swipeable=true,showDate=false){
@@ -1320,53 +1384,61 @@ async function renderCartera(){
 
   let html='';
 
+  const valRow=(label,group,key,raw)=>
+    `<div class="val-row"><div class="val-label">${label}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="${group}" data-k="${escAttr(key)}" value="${raw?fmtInput(raw):carteraEditing?'':'—'}" ${ro}></div>`;
+
   // Liquidez
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Liquidez — Saldos bancarios</div><span class="link" onclick="openConfigModal()">Editar bancos</span></div><div class="val-section">`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Liquidez</div><span class="link" onclick="openConfigModal()">Editar bancos</span></div>`;
   let totalLiq=0;
+  html+=`<div class="val-card">`;
   CONFIG.banks.forEach(b=>{
     const v=vals.bancos?.[b]??'';
     if(v)totalLiq+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${b}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="bancos" data-k="${b}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
+    html+=valRow(b,'bancos',b,v);
   });
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total liquidez</div><div class="val-total">${fmtC(totalLiq)}</div></div></div>`;
+  html+=`</div><div class="val-summary"><span>Total liquidez</span><b>${fmtC(totalLiq)}</b></div>`;
 
   // Inversiones aportado
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Dinero aportado</div><span class="link" onclick="openConfigModal()">Editar fondos</span></div><div class="cart-hint">Cuánto dinero has metido en total en cada fondo.</div><div class="val-section">`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Dinero aportado</div><span class="link" onclick="openConfigModal()">Editar fondos</span></div>`;
+  html+=`<div class="sec-note">Cuánto has metido en total en cada fondo.</div>`;
   let totalAp=0;
+  html+=`<div class="val-card">`;
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_aportado?.[t]??'';
     if(v)totalAp+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_aportado" data-k="${t}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
+    html+=valRow(t,'inv_aportado',t,v);
   });
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total aportado</div><div class="val-total">${fmtC(totalAp)}</div></div></div>`;
+  html+=`</div><div class="val-summary"><span>Total aportado</span><b>${fmtC(totalAp)}</b></div>`;
 
-  // Inversiones escenario 1
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Escenario 1</div></div><div class="cart-hint">Estimación manual de a cuánto podría valer cada fondo hoy.</div><div class="val-section">`;
+  // Escenario 1
+  html+=`<div class="sec-label">Escenario 1</div><div class="sec-note">Estimación de a cuánto podría valer cada fondo hoy.</div>`;
   let totalReal=0;
+  html+=`<div class="val-card">`;
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_valor_real?.[t]??'';
     if(v)totalReal+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_valor_real" data-k="${t}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
+    html+=valRow(t,'inv_valor_real',t,v);
   });
+  html+=`</div>`;
   const rentPct=totalAp>0?round2(((totalReal-totalAp)/totalAp)*100):0;
   const ganancia=round2(totalReal-totalAp);
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total Escenario 1</div><div class="val-total">${fmtC(totalReal)}</div></div>`;
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Ganancia / Pérdida</div><div class="val-total" style="color:${ganancia>=0?'var(--positive)':'var(--negative)'}">${ganancia>=0?'+':''}${fmtC(ganancia)}</div></div>`;
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Rentabilidad</div><div class="val-total" style="color:${rentPct>=0?'var(--positive)':'var(--negative)'}">${rentPct>=0?'+':''}${rentPct.toFixed(2)}%</div></div></div>`;
+  html+=`<div class="val-summary"><span>Total</span><b>${fmtC(totalReal)}</b></div>`;
+  html+=`<div class="val-summary"><span>Ganancia / Pérdida</span><b style="color:${ganancia>=0?'var(--positive)':'var(--negative)'}">${ganancia>=0?'+':''}${fmtC(ganancia)} · ${rentPct>=0?'+':''}${rentPct.toFixed(2)}%</b></div>`;
 
-  // Inversiones escenario 2
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Inversiones — Escenario 2</div></div><div class="cart-hint">Una segunda estimación alternativa, para comparar.</div><div class="val-section">`;
+  // Escenario 2
+  html+=`<div class="sec-label">Escenario 2</div><div class="sec-note">Una segunda estimación alternativa, para comparar.</div>`;
   let totalReal2=0;
+  html+=`<div class="val-card">`;
   CONFIG.inv_types.forEach(t=>{
     const v=vals.inv_escenario2?.[t]??'';
     if(v)totalReal2+=parseFloat(v)||0;
-    html+=`<div class="val-row"><div class="val-label">${t}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="inv_escenario2" data-k="${t}" value="${v?fmtInput(v):carteraEditing?'':'—'}" ${ro}></div>`;
+    html+=valRow(t,'inv_escenario2',t,v);
   });
+  html+=`</div>`;
   const rentPct2=totalAp>0?round2(((totalReal2-totalAp)/totalAp)*100):0;
   const ganancia2=round2(totalReal2-totalAp);
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Total Escenario 2</div><div class="val-total">${fmtC(totalReal2)}</div></div>`;
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Ganancia / Pérdida</div><div class="val-total" style="color:${ganancia2>=0?'var(--positive)':'var(--negative)'}">${ganancia2>=0?'+':''}${fmtC(ganancia2)}</div></div>`;
-  html+=`<div class="val-row"><div class="val-label" style="font-weight:700">Rentabilidad</div><div class="val-total" style="color:${rentPct2>=0?'var(--positive)':'var(--negative)'}">${rentPct2>=0?'+':''}${rentPct2.toFixed(2)}%</div></div></div>`;
+  html+=`<div class="val-summary"><span>Total</span><b>${fmtC(totalReal2)}</b></div>`;
+  html+=`<div class="val-summary"><span>Ganancia / Pérdida</span><b style="color:${ganancia2>=0?'var(--positive)':'var(--negative)'}">${ganancia2>=0?'+':''}${fmtC(ganancia2)} · ${rentPct2>=0?'+':''}${rentPct2.toFixed(2)}%</b></div>`;
 
   // Patrimonio (basado en Escenario 1)
   const patrimonio=round2(totalLiq+totalReal);
@@ -1438,15 +1510,9 @@ async function renderCartera(){
   html+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="cart-pat-line-wrap"><div class="tx-empty" style="padding:20px">Cargando…</div></div>`;
   html+=`<div class="sec-label">Evolución inversiones</div><div class="chart-section" id="cart-inv-line-wrap"><div class="tx-empty" style="padding:20px">Cargando…</div></div>`;
 
-  if(carteraEditing){
-    html+=`<button class="btn-primary btn-accent" style="margin-top:16px" onclick="saveCarteraValues()">Guardar valores</button>`;
-    html+=`<button class="btn-secondary" onclick="cancelCarteraEdit()">Cancelar</button>`;
-  }else{
-    html+=`<button class="btn-primary" style="margin-top:16px" onclick="startCarteraEdit()">Editar valores</button>`;
-  }
-
   const cartCont=document.getElementById('cart-content');
   cartCont.innerHTML=html;
+  updateCarteraEditUI();
   animateBars(cartCont);
   if(patDonutData.length>0)renderDonutChart('cart-comp-donut',patDonutData);
   if(invDonutData.length>0)renderDonutChart('cart-fund-donut',invDonutData);
@@ -1454,22 +1520,27 @@ async function renderCartera(){
   renderPatLineSection();
 }
 
+// El control de edición vive en la cabecera y en una barra fija, no al final de la página
+function updateCarteraEditUI(){
+  const bar=document.getElementById('cart-edit-bar');
+  const btn=document.getElementById('cart-edit-btn');
+  if(bar)bar.classList.toggle('show',carteraEditing);
+  if(btn){
+    btn.classList.toggle('active',carteraEditing);
+    btn.setAttribute('aria-label',carteraEditing?'Editando valores':'Editar valores');
+  }
+}
+
 function startCarteraEdit(){
+  if(carteraEditing)return;
   carteraEditing=true;
   document.querySelectorAll('#cart-content .val-input').forEach(inp=>{
     inp.removeAttribute('readonly');
     if(inp.value==='—')inp.value='';
   });
-  const btns=document.querySelector('#cart-content .btn-primary');
-  if(btns){
-    btns.textContent='Guardar valores';
-    btns.classList.add('btn-accent');
-    btns.setAttribute('onclick','saveCarteraValues()');
-    const cancel=document.createElement('button');
-    cancel.className='btn-secondary';cancel.textContent='Cancelar';
-    cancel.setAttribute('onclick','cancelCarteraEdit()');
-    btns.parentNode.insertBefore(cancel,btns.nextSibling);
-  }
+  updateCarteraEditUI();
+  const first=document.querySelector('#cart-content .val-input');
+  if(first)first.focus({preventScroll:true});
 }
 function cancelCarteraEdit(){carteraEditing=false;renderCartera()}
 
@@ -1490,9 +1561,7 @@ async function saveCarteraValues(){
   toast('Valores guardados');
   carteraEditing=false;
   if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
-  const btn=document.querySelector('#cart-content .btn-primary');
-  if(btn){btn.textContent='Guardado ✓';btn.style.background='var(--positive)';setTimeout(()=>renderCartera(),800);}
-  else renderCartera();
+  renderCartera();
 }
 
 // ═══════ PLAN (PRESUPUESTO + OBJETIVOS) ═══════
@@ -1791,40 +1860,59 @@ function setType(type){
   updateAddModal();
 }
 
+const escAttr=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
 function updateAddModal(){
   document.querySelectorAll('.type-tab').forEach(t=>{
     t.classList.toggle('active',t.classList.contains(currentType));
   });
 
-  let cats,bankLabel,banks;
+  let cats,bankLabel,banks,catLabel='Categoría';
   if(currentType==='gasto'){
     cats=CONFIG.exp_categories;bankLabel='Banco';banks=CONFIG.banks;
-    document.getElementById('cat-label').textContent='Categoría';
   }else if(currentType==='ingreso'){
     cats=CONFIG.inc_categories;bankLabel='Banco';banks=CONFIG.banks;
-    document.getElementById('cat-label').textContent='Categoría';
   }else{
     cats=CONFIG.inv_types;bankLabel='Plataforma';banks=CONFIG.platforms;
-    document.getElementById('cat-label').textContent='Tipo de inversión';
+    catLabel='Tipo de inversión';
   }
+  document.getElementById('cat-label').textContent=catLabel;
   document.getElementById('bank-label').textContent=bankLabel;
 
-  let catHTML='';
-  cats.forEach(c=>{
-    const icon=CAT_ICONS[c]?`<span class="emoji">${CAT_ICONS[c]}</span>`:'';
-    catHTML+=`<div class="chip ${selectedCat===c?'selected':''}" onclick="pickCat('${c.replace(/'/g,"\\'")}')">${icon}${c}</div>`;
-  });
-  document.getElementById('add-cats').innerHTML=catHTML;
+  // Selector nativo: en móvil abre la rueda del sistema, mucho más usable que una pared de chips
+  const catSel=document.getElementById('add-cat-select');
+  catSel.innerHTML=`<option value="">Sin categoría</option>`+cats.map(c=>{
+    const ico=CAT_ICONS[c]?CAT_ICONS[c]+' ':'';
+    return`<option value="${escAttr(c)}"${selectedCat===c?' selected':''}>${ico}${c}</option>`;
+  }).join('');
+  catSel.value=selectedCat&&cats.includes(selectedCat)?selectedCat:'';
 
-  let bankHTML='';
-  banks.forEach(b=>{
-    bankHTML+=`<div class="chip ${selectedBank===b?'selected':''}" onclick="pickBank('${b.replace(/'/g,"\\'")}')">${b}</div>`;
-  });
-  document.getElementById('add-banks').innerHTML=bankHTML;
+  const bankSel=document.getElementById('add-bank-select');
+  bankSel.innerHTML=`<option value="">Selecciona…</option>`+banks.map(b=>
+    `<option value="${escAttr(b)}"${selectedBank===b?' selected':''}>${b}</option>`
+  ).join('');
+  bankSel.value=selectedBank&&banks.includes(selectedBank)?selectedBank:'';
+
+  syncAddDateQuick();
 }
 
-function pickCat(c){selectedCat=selectedCat===c?null:c;updateAddModal()}
-function pickBank(b){selectedBank=b;updateAddModal()}
+function pickCat(c){selectedCat=c||null}
+function pickBank(b){selectedBank=b||null}
+
+function setAddDateQuick(daysAgo){
+  const d=new Date();d.setDate(d.getDate()-daysAgo);
+  document.getElementById('add-date').value=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  syncAddDateQuick();
+}
+function syncAddDateQuick(){
+  const val=document.getElementById('add-date').value;
+  const btns=document.querySelectorAll('#add-date-quick .date-chip');
+  btns.forEach((b,i)=>{
+    const d=new Date();d.setDate(d.getDate()-i);
+    const s=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    b.classList.toggle('active',s===val);
+  });
+}
 
 async function saveTransaction(){
   const amtStr=document.getElementById('add-amount').value;
