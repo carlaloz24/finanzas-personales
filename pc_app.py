@@ -3,6 +3,7 @@
 
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -25,6 +26,9 @@ MONTHS = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
 SYNC_FILE = "finanzas-data.json"
 SYNC_FOLDER = "Finanzas"
 EXCEL_FOLDER = "Excel"
+# Copia local del Excel maestro, para poder consultarlo sin depender de que
+# la app de escritorio de Google Drive esté abierta y sincronizada
+LOCAL_EXCEL_DIR = Path.home() / "Desktop" / "Fivvo Excel"
 
 # Estilos
 BOLD = Font(name="Calibri", size=10, bold=True)
@@ -558,8 +562,21 @@ def build_master_workbook(year, data, output_path):
     return True
 
 
+def sync_local_copy(filepath, filename):
+    """Copia el maestro a LOCAL_EXCEL_DIR, sustituyendo la copia anterior.
+    Permite consultarlo sin depender de que Google Drive este sincronizando."""
+    try:
+        LOCAL_EXCEL_DIR.mkdir(parents=True, exist_ok=True)
+        local_path = LOCAL_EXCEL_DIR / filename
+        if filepath.exists() and (not local_path.exists() or local_path.stat().st_mtime < filepath.stat().st_mtime):
+            shutil.copy2(filepath, local_path)
+    except Exception as e:
+        print(f"  Aviso: no se pudo copiar {filename} a la carpeta local: {e}")
+
+
 def check_and_generate(drive_path):
-    """Revisa cambios y regenera el/los Excel maestros (uno por año con datos)."""
+    """Revisa cambios y regenera el/los Excel maestros (uno por año con datos).
+    Cada maestro se copia ademas a LOCAL_EXCEL_DIR, reemplazando la version anterior."""
     json_path = drive_path / SYNC_FILE
     if not json_path.exists():
         print(f"No se encuentra {SYNC_FILE} en {drive_path}")
@@ -584,6 +601,8 @@ def check_and_generate(drive_path):
                 generated += 1
             except Exception as e:
                 print(f"  Error generando {filename}: {e}")
+                continue
+        sync_local_copy(filepath, filename)
 
     return generated
 
@@ -677,7 +696,10 @@ def run_gui():
                     generated += 1
                 except Exception as e:
                     log_msg(f"Error: {filename} — {e}")
+                    continue
+            sync_local_copy(filepath, filename)
 
+        log_msg(f"Copia local en: {LOCAL_EXCEL_DIR}")
         if generated == 0:
             log_msg("El Excel ya está actualizado")
         else:
