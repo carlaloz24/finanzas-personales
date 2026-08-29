@@ -620,17 +620,65 @@ def run_gui():
 
     root = tk.Tk()
     root.title("Finanzas — Generador de Excel")
-    root.geometry("550x400")
+    root.geometry("550x420")
     root.configure(bg="#f5f5eb")
 
     frame = tk.Frame(root, bg="#f5f5eb", padx=20, pady=20)
     frame.pack(fill=tk.BOTH, expand=True)
 
-    tk.Label(frame, text="Finanzas — Excel", font=("Calibri", 18, "bold"),
-             bg="#f5f5eb", fg="#14140f").pack(anchor="w")
+    def open_excel_folder():
+        LOCAL_EXCEL_DIR.mkdir(parents=True, exist_ok=True)
+        try:
+            os.startfile(str(LOCAL_EXCEL_DIR))
+        except Exception as e:
+            log_msg(f"No se pudo abrir la carpeta: {e}")
 
-    tk.Label(frame, text="Genera un Excel maestro completo desde Google Drive",
+    def show_info_modal():
+        win = tk.Toplevel(root)
+        win.title("Cómo se usa")
+        win.configure(bg="#f5f5eb")
+        win.geometry("400x330")
+        win.resizable(False, False)
+        win.transient(root)
+        win.grab_set()
+
+        pad = tk.Frame(win, bg="#f5f5eb", padx=22, pady=20)
+        pad.pack(fill=tk.BOTH, expand=True)
+
+        tk.Label(pad, text="Cómo se usa", font=("Calibri", 15, "bold"),
+                 bg="#f5f5eb", fg="#14140f").pack(anchor="w", pady=(0, 12))
+
+        steps = [
+            "1. Abre la app de Google Drive de escritorio y espera a que sincronice.",
+            "2. Pulsa \"Generar Excel\".",
+            "3. El maestro se guarda en Drive (Finanzas → Excel) y también en tu Escritorio, en la carpeta Fivvo Excel — ábrela con el icono 📁.",
+            "4. \"Vigilar cambios\" lo regenera solo cuando cambien tus datos, sin que tengas que volver a pulsar nada.",
+        ]
+        for s in steps:
+            tk.Label(pad, text=s, font=("Calibri", 10), bg="#f5f5eb", fg="#14140f",
+                     wraplength=350, justify="left").pack(anchor="w", pady=(0, 10))
+
+        tk.Button(pad, text="Entendido", command=win.destroy, font=("Calibri", 10, "bold"),
+                  bg="#14140f", fg="white", padx=14, pady=6, cursor="hand2").pack(anchor="e", pady=(6, 0))
+
+    header = tk.Frame(frame, bg="#f5f5eb")
+    header.pack(fill=tk.X)
+
+    title_col = tk.Frame(header, bg="#f5f5eb")
+    title_col.pack(side=tk.LEFT, fill=tk.X, expand=True)
+    tk.Label(title_col, text="Finanzas — Excel", font=("Calibri", 18, "bold"),
+             bg="#f5f5eb", fg="#14140f").pack(anchor="w")
+    tk.Label(title_col, text="Genera un Excel maestro completo desde Google Drive",
              font=("Calibri", 11), bg="#f5f5eb", fg="#6e6e64").pack(anchor="w", pady=(0, 12))
+
+    icons_col = tk.Frame(header, bg="#f5f5eb")
+    icons_col.pack(side=tk.RIGHT, anchor="n")
+    tk.Button(icons_col, text="📁", command=open_excel_folder, font=("Calibri", 13),
+              bg="#f5f5eb", fg="#14140f", relief="flat", cursor="hand2", width=3,
+              activebackground="#ededdf").pack(side=tk.LEFT)
+    tk.Button(icons_col, text="ⓘ", command=show_info_modal, font=("Calibri", 13, "bold"),
+              bg="#f5f5eb", fg="#14140f", relief="flat", cursor="hand2", width=3,
+              activebackground="#ededdf").pack(side=tk.LEFT)
 
     path_frame = tk.Frame(frame, bg="#f5f5eb")
     path_frame.pack(fill=tk.X, pady=(0, 8))
