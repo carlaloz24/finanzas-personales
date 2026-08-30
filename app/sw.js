@@ -1,4 +1,4 @@
-const CACHE = 'fivvo-v26';
+const CACHE = 'fivvo-v30';
 const ASSETS = [
   './index.html',
   './sync.js',

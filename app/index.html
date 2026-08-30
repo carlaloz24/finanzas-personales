@@ -21,7 +21,7 @@
 :root{
   --bg:#f5f5eb;--bg-card:#ffffff;--bg-input:#fafaf5;--bg-dark:#14140f;--bg-section:#ededdf;
   --accent:#beff50;--accent-text:#14140f;
-  --text:#14140f;--text2:#6e6e64;--text3:#a0a096;
+  --text:#14140f;--text2:#57574d;--text3:#84847a;
   --positive:#22c55e;--negative:#ef4444;--invest:#7c6ef6;
   --border:rgba(25,25,15,0.08);--border-strong:rgba(25,25,15,0.15);
   --shadow:0 1px 3px rgba(0,0,0,0.03),0 1px 2px rgba(0,0,0,0.04);
@@ -106,7 +106,7 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 .tx-day-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden}
 /* Divisor opaco: si fuera translúcido dejaría ver el rojo del botón de borrar que hay detrás */
 .tx-day-card .tx-swipe-wrap+.tx-swipe-wrap .tx-item{border-top:1px solid #ebebe9}
-.hist-total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 2px 4px;border-top:1px solid var(--border);margin:4px 0 76px;font-size:16px;color:var(--text2)}
+.hist-total{display:flex;justify-content:space-between;align-items:baseline;padding:14px 2px 4px;border-top:1px solid var(--border);margin:4px 0 18px;font-size:16px;color:var(--text2)}
 .hist-total b{font-size:18px;color:var(--text);font-weight:700}
 
 /* SWIPE TO DELETE */
@@ -192,7 +192,7 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--text2);box-shadow:0 0 0 3px rgba(25,25,15,0.05)}
 .field textarea{resize:vertical;min-height:80px}
 .field-hint{font-size:13px;color:var(--text3);margin-top:6px}
-input[type="date"]{width:100%;min-height:52px}
+input[type="date"]{width:100%;max-width:230px;min-height:52px}
 /* Selector nativo con apariencia propia (abre la rueda del sistema en móvil) */
 .select-lg{-webkit-appearance:none;appearance:none;min-height:52px;padding-right:40px!important;cursor:pointer;
   background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L6 6L10.5 1.5' stroke='%236e6e64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
@@ -240,10 +240,14 @@ input[type="date"]{width:100%;min-height:52px}
 .budget-nums span{font-weight:600;color:var(--text)}
 .budget-left{font-size:14px;color:var(--text3);margin-top:6px}
 .budget-hero{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:14px}
-.budget-hero-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:10px}
-.budget-hero-label{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--text2)}
-.budget-hero-val{font-size:26px;font-weight:700;letter-spacing:-0.02em;line-height:1.1}
+.budget-hero-label{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--text2);margin-bottom:6px}
+.budget-hero-val{letter-spacing:-0.02em;line-height:1.1;margin-bottom:10px}
+.budget-hero-spent{font-size:16px;font-weight:500;color:var(--text2)}
+.budget-hero-max{font-size:22px;font-weight:700;color:var(--text)}
 .budget-hero-sub{display:flex;justify-content:space-between;font-size:14px;color:var(--text3);margin-top:8px;gap:10px}
+.budget-over{font-size:13px;font-weight:600;color:var(--negative)}
+/* Diferenciación sutil entre presupuesto mensual y anual: solo la palabra en negro/negrita */
+.budget-hero-label b{color:var(--text);font-weight:700}
 
 /* GOAL CARD */
 .goal-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:12px}
@@ -265,7 +269,7 @@ input[type="date"]{width:100%;min-height:52px}
 .goal-need-ico{flex-shrink:0;font-size:17px}
 
 /* SETTINGS */
-.set-group{margin-bottom:8px}
+.set-group{margin-bottom:8px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:0 16px}
 .set-item{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity .18s var(--ease-soft)}
 .set-item:active{opacity:.55}
 .set-item:last-child{border-bottom:none}
@@ -326,6 +330,9 @@ input[type="date"]{width:100%;min-height:52px}
 .dca-btn svg{width:20px;height:20px;stroke-width:2}
 .dca-btn:active{background:var(--bg-section);transform:scale(0.93)}
 .dca-btn.del{color:var(--negative);border-color:rgba(239,68,68,0.3)}
+.dca-edit-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;padding:8px 2px;flex-shrink:0}
+.dca-edit-btn svg{width:16px;height:16px;stroke-width:2}
+.dca-edit-btn:active{opacity:.6}
 
 /* HEADER ACTIONS + BOTÓN ICONO */
 .header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -355,6 +362,73 @@ input[type="date"]{width:100%;min-height:52px}
 .val-summary{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:12px 2px 0;font-size:15px;color:var(--text2)}
 .val-summary b{font-size:17px;color:var(--text);font-weight:700}
 
+/* SUPERFICIE GENÉRICA (evita contenido flotando directamente sobre el fondo) */
+.card-block{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:16px}
+.card-block .sec-label{margin-top:0}
+.card-block:last-child{margin-bottom:0}
+
+/* BOTÓN DE EDICIÓN CONTEXTUAL (icono lápiz junto al contenido que modifica) */
+.sec-edit-btn{width:34px;height:34px;flex-shrink:0;border-radius:var(--r-sm);border:1.5px solid var(--border-strong);background:var(--bg-card);color:var(--text2);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .18s var(--ease-soft),transform .18s var(--ease-out)}
+.sec-edit-btn svg{width:16px;height:16px;stroke-width:2}
+.sec-edit-btn:active{transform:scale(0.92);background:var(--bg-section)}
+
+/* SEGMENTED CONTROL (p.ej. Escenario 1 / Escenario 2) */
+.seg-control{display:flex;gap:4px;background:var(--bg-section);border-radius:var(--r-pill);padding:3px;margin:8px 0 12px}
+.seg-btn{flex:1;text-align:center;padding:8px 10px;border-radius:var(--r-pill);font-size:14px;font-weight:500;cursor:pointer;color:var(--text2);transition:background .22s var(--ease-out),color .22s var(--ease-out),box-shadow .22s var(--ease-out)}
+.seg-btn.active{background:var(--bg-card);color:var(--text);box-shadow:var(--shadow);font-weight:600}
+
+/* LEYENDAS DE GRÁFICOS (una fila por elemento, a todo el ancho, con porcentaje) */
+.chart-legend{margin-top:8px}
+.legend-row{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.legend-row:last-child{border-bottom:none}
+.legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:14px}
+.legend-name{flex:1;min-width:0;font-size:14px;font-weight:500;color:var(--text);line-height:1.35;overflow-wrap:anywhere}
+.legend-pct{font-size:14px;font-weight:600;color:var(--text2);flex-shrink:0;margin-left:12px;white-space:nowrap}
+
+/* SELECT DE ORDENACIÓN (Movimientos) */
+.sort-select{-webkit-appearance:none;appearance:none;background:var(--bg-card);border:1.5px solid var(--border-strong);border-radius:var(--r-pill);padding:8px 34px 8px 15px;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;font-family:inherit;
+  background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2357574d' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center}
+
+/* ESTADÍSTICAS DE GRÁFICO (filas jerarquizadas en vez de un párrafo gris) */
+.chart-stats{margin-top:12px;border-top:1px solid var(--border);padding-top:8px}
+.chart-stat-row{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;font-size:14px}
+.chart-stat-label{color:var(--text2)}
+.chart-stat-val{font-weight:600;color:var(--text)}
+
+/* EDITOR DE CHIPS (añadir/quitar bancos, fondos, categorías… en Ajustes) */
+.chip-editor{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip-item{display:inline-flex;align-items:center;gap:7px;background:var(--bg-input);border:1.5px solid var(--border-strong);border-radius:var(--r-pill);padding:7px 8px 7px 14px;font-size:14px;font-weight:500;color:var(--text)}
+.chip-x{width:19px;height:19px;flex-shrink:0;border-radius:50%;border:none;background:var(--border);color:var(--text2);font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;transition:background .18s var(--ease-soft),color .18s var(--ease-soft)}
+.chip-x:active{background:var(--negative);color:#fff}
+.chip-empty{font-size:13px;color:var(--text3)}
+.chip-add-row{display:flex;gap:8px}
+.chip-add-row input{flex:1;padding:11px 14px;border:1.5px solid var(--border-strong);border-radius:var(--r-sm);font-size:15px;background:var(--bg-input);color:var(--text);outline:none;font-family:inherit}
+.chip-add-btn{width:44px;flex-shrink:0;border:none;border-radius:var(--r-sm);background:var(--bg-dark);color:var(--accent);font-size:22px;font-weight:400;cursor:pointer;line-height:1;transition:transform .18s var(--ease-out)}
+.chip-add-btn:active{transform:scale(0.92)}
+
+/* BOTÓN DE TEXTO SIN CONTORNO (acciones destructivas discretas, p.ej. eliminar dentro de un modal) */
+.btn-text-danger{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:none;border:none;color:var(--negative);font-size:16px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:4px}
+.btn-text-danger svg{width:18px;height:18px;stroke-width:2}
+.btn-text-danger:active{opacity:.6}
+
+/* LISTA DE CHECKBOXES (selección múltiple de fuentes de progreso en Objetivos) */
+.chk-list{border:1.5px solid var(--border-strong);border-radius:var(--r-sm);overflow:hidden;background:var(--bg-input)}
+.chk-row{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--border);font-size:15px;cursor:pointer}
+.chk-row:last-child{border-bottom:none}
+.chk-row input{width:20px;height:20px;flex-shrink:0;accent-color:var(--text)}
+.chk-row.sub{padding-left:32px;color:var(--text2)}
+
+/* MINI DONUTS (resumen de Home, detalle completo en Movimientos) */
+.mini-donut-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.mini-donut-col{text-align:center;min-width:0}
+.mini-donut-title{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:6px}
+.chart-block.mini{height:130px;margin:0 0 4px;max-width:100%}
+.chart-block.mini canvas{max-width:100%}
+.mini-donut-col .chart-legend{text-align:left}
+.mini-donut-col .legend-name{font-size:12.5px}
+.mini-donut-col .legend-pct{font-size:12.5px}
+
 /* RESPONSIVE */
 @media(min-width:600px){
   #app{max-width:480px;margin:0 auto}
@@ -383,6 +457,7 @@ input[type="date"]{width:100%;min-height:52px}
   </div>
   <div id="hist-filters"></div>
   <div id="hist-list"></div>
+  <div id="hist-cat-analysis" style="margin-top:8px;margin-bottom:90px"></div>
 </div>
 
 <!-- ═══ CARTERA ═══ -->
@@ -391,13 +466,10 @@ input[type="date"]{width:100%;min-height:52px}
     <h1>Cartera</h1>
     <div class="header-actions">
       <button class="mp-btn" id="cart-month" onclick="openMonthPicker(this)"></button>
-      <button class="icon-btn" id="cart-edit-btn" onclick="startCarteraEdit()" aria-label="Editar valores">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-      </button>
     </div>
   </div>
   <div class="edit-bar" id="cart-edit-bar">
-    <span class="edit-bar-txt">Editando</span>
+    <span class="edit-bar-txt" id="cart-edit-bar-txt">Editando</span>
     <div class="edit-bar-actions">
       <button class="btn-bar ghost" onclick="cancelCarteraEdit()">Cancelar</button>
       <button class="btn-bar solid" onclick="saveCarteraValues()">Guardar</button>
@@ -523,7 +595,7 @@ input[type="date"]{width:100%;min-height:52px}
         <button type="button" class="date-chip" onclick="setAddDateQuick(1)">Ayer</button>
         <button type="button" class="date-chip" onclick="setAddDateQuick(2)">Anteayer</button>
       </div>
-      <input type="date" id="add-date" lang="es-ES" onchange="syncAddDateQuick()">
+      <input type="date" id="add-date" lang="es-ES" placeholder="dd/mm/aaaa" onchange="syncAddDateQuick()">
     </div>
     <input type="hidden" id="add-edit-id">
     <button class="btn-primary" onclick="saveTransaction()">Guardar</button>
@@ -537,12 +609,13 @@ input[type="date"]{width:100%;min-height:52px}
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Configuración</div>
-    <div class="field"><label class="field-label">Bancos / Cuentas <span style="font-weight:400;text-transform:none;letter-spacing:0">(uno por línea)</span></label><textarea id="cfg-banks" rows="4"></textarea></div>
-    <div class="field"><label class="field-label">Plataformas de inversión</label><textarea id="cfg-platforms" rows="2"></textarea></div>
-    <div class="field"><label class="field-label">Tipos de inversión</label><textarea id="cfg-invtypes" rows="4" onblur="renderAssetTypeFields()"></textarea></div>
+    <div id="cfg-chip-banks"></div>
+    <div id="cfg-chip-platforms"></div>
+    <div id="cfg-chip-inv_types"></div>
+    <div id="cfg-chip-asset_types"></div>
     <div class="field"><label class="field-label">Tipo de activo por fondo <span style="font-weight:400;text-transform:none;letter-spacing:0">(para el gráfico de distribución)</span></label><div id="cfg-assettypes"></div></div>
-    <div class="field"><label class="field-label">Categorías de ingresos</label><textarea id="cfg-inccat" rows="3"></textarea></div>
-    <div class="field"><label class="field-label">Categorías de gastos</label><textarea id="cfg-expcat" rows="6"></textarea></div>
+    <div id="cfg-chip-inc_categories"></div>
+    <div id="cfg-chip-exp_categories"></div>
     <button class="btn-primary" onclick="saveConfig()">Guardar configuración</button>
     <button class="btn-secondary" onclick="closeModal('config-modal')">Cancelar</button>
   </div>
@@ -578,6 +651,17 @@ input[type="date"]{width:100%;min-height:52px}
     <div class="modal-title" id="goal-modal-title">Nuevo objetivo</div>
     <div class="field"><label class="field-label">Nombre</label><input type="text" id="goal-name" placeholder="Ej: Fondo emergencia"></div>
     <div class="field"><label class="field-label">Cantidad objetivo (€)</label><input type="text" id="goal-target" inputmode="decimal" placeholder="0,00"></div>
+    <div class="field">
+      <label class="field-label">Origen del progreso</label>
+      <div class="chips" id="goal-source-mode-chips">
+        <div class="chip selected" data-mode="total" onclick="setGoalSourceMode('total')">Patrimonio total</div>
+        <div class="chip" data-mode="custom" onclick="setGoalSourceMode('custom')">Fuentes concretas</div>
+      </div>
+      <div id="goal-source-picker" style="display:none;margin-top:10px">
+        <div class="field-hint" style="margin:0 0 8px">Marca una o varias cuentas/fondos: se suman para medir el progreso de este objetivo.</div>
+        <div id="goal-source-list" class="chk-list"></div>
+      </div>
+    </div>
     <div class="field">
       <label class="field-label">Fecha límite</label>
       <input type="date" id="goal-deadline" lang="es-ES" placeholder="dd/mm/aaaa" onchange="updateGoalDeadlineHint()">
@@ -650,6 +734,7 @@ input[type="date"]{width:100%;min-height:52px}
     <input type="hidden" id="dca-edit-id">
     <button class="btn-primary" onclick="saveDCA()">Guardar</button>
     <button class="btn-secondary" onclick="closeModal('dca-modal')">Cancelar</button>
+    <button class="btn-text-danger" id="dca-delete-btn" style="display:none" onclick="deleteDCAFromModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M7 6V4a2 2 0 012-2h6a2 2 0 012 2v2"/></svg> Eliminar aportación</button>
   </div>
 </div>
 
@@ -666,9 +751,11 @@ const DEFAULT_CONFIG={
   inv_types:["Fidelity MSCI World P-ACC-EUR","Vanguard Small-Cap EUR Acc","Vanguard Emerging Mkts EUR Acc","Nueva Expresión Textil (NEXTIL)"],
   inc_categories:["Nómina","Trabajo extra","Ventas online","Bizum","Devolución","Otros"],
   exp_categories:["Comida","Ocio","Ropa","Viajes","Transporte","Belleza","Salud","Formación","Suscripciones","Eventos","Regalos","Bizum","Otros"],
-  inv_asset_types:{"Fidelity MSCI World P-ACC-EUR":"Indexado","Vanguard Small-Cap EUR Acc":"Indexado","Vanguard Emerging Mkts EUR Acc":"Indexado","Nueva Expresión Textil (NEXTIL)":"Acciones"}
+  inv_asset_types:{"Fidelity MSCI World P-ACC-EUR":"Indexado","Vanguard Small-Cap EUR Acc":"Indexado","Vanguard Emerging Mkts EUR Acc":"Indexado","Nueva Expresión Textil (NEXTIL)":"Acciones"},
+  // Lista de tipos de activo editable por el usuario (Ajustes → Configuración): permite
+  // añadir cualquier tipo nuevo (p.ej. otro tipo de cripto, inmuebles, etc.), no solo los de fábrica.
+  asset_types:['Indexado','Acciones','Liquidez','Monetario','Cuenta remunerada','Oro','Cripto (BTC)','Otros']
 };
-const ASSET_TYPES=['Indexado','Acciones','Liquidez','Monetario','Cuenta remunerada','Oro','Cripto (BTC)','Otros'];
 
 let DB,CONFIG={...DEFAULT_CONFIG},currentScreen='dashboard',currentType='gasto',selectedCat=null,selectedBank=null,editTxId=null,planTab='budget',goalTypeVal='corto';
 
@@ -730,18 +817,20 @@ function savingsGauge(rate){
 }
 const CHART_COLORS=['#f97316','#3b82f6','#ec4899','#14b8a6','#6b7280','#a855f7','#6366f1','#06b6d4','#f59e0b','#ef4444','#84cc16','#8b5cf6'];
 const INV_COLORS=['#3b82f6','#14b8a6','#f59e0b','#ec4899','#6366f1','#06b6d4','#84cc16','#f97316'];
+const PENCIL_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+const TRASH_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M7 6V4a2 2 0 012-2h6a2 2 0 012 2v2"/></svg>';
 
 // ═══════ CHART.JS HELPERS ═══════
 const chartInstances={};
 function destroyChart(id){if(chartInstances[id]){chartInstances[id].destroy();delete chartInstances[id]}}
-function chartTextColor(){return'#6e6e64'}
+function chartTextColor(){return'#57574d'}
 function chartGridColor(){return'rgba(25,25,15,0.07)'}
 const kEur=v=>Math.abs(v)>=1000?(v/1000).toFixed(Math.abs(v)>=10000?0:1).replace('.',',')+'k':String(Math.round(v));
 
 // Personalización global de Chart.js (coherente con la identidad de la app)
 Chart.defaults.font.family="'Saans',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif";
 Chart.defaults.font.size=13;
-Chart.defaults.color='#6e6e64';
+Chart.defaults.color='#57574d';
 Chart.defaults.animation.duration=560;
 Chart.defaults.animation.easing='easeOutQuart';
 Chart.defaults.plugins.legend.labels.usePointStyle=true;
@@ -809,11 +898,32 @@ function renderDonutChart(canvasId,data,label){
       responsive:true,maintainAspectRatio:false,cutout:'68%',
       layout:{padding:4},
       plugins:{
-        legend:{position:'bottom',labels:{color:chartTextColor()}},
+        // La leyenda propia de Chart.js se sustituye por una leyenda HTML a todo el ancho
+        // (una fila por elemento, con porcentaje) vía chartLegendHTML().
+        legend:{display:false},
         tooltip:{callbacks:{title:ctx=>ctx[0].label,label:ctx=>{const pct=Math.round((ctx.parsed/total)*100);return`${fmtC(ctx.parsed)} · ${pct}%`}}}
       }
     }
   });
+}
+
+// Leyenda propia a todo el ancho: una fila por elemento, con nombre completo y porcentaje
+function chartLegendHTML(data){
+  const filtered=data.filter(d=>d.value>0);
+  if(filtered.length===0)return'';
+  const total=filtered.reduce((s,d)=>s+d.value,0);
+  return'<div class="chart-legend">'+filtered.map(d=>{
+    const pct=total>0?(d.value/total*100):0;
+    return`<div class="legend-row"><span class="legend-dot" style="background:${d.color}"></span><span class="legend-name">${d.name}</span><span class="legend-pct">${pct.toFixed(1).replace('.',',')}%</span></div>`;
+  }).join('')+'</div>';
+}
+// Leyenda para gráficos de línea con varias series (sin porcentaje, solo nombre + color),
+// con el mismo lenguaje visual que chartLegendHTML: ancho completo, un elemento por fila.
+function seriesLegendHTML(items){
+  if(!items||items.length===0)return'';
+  return'<div class="chart-legend">'+items.map(d=>
+    `<div class="legend-row"><span class="legend-dot" style="background:${d.color}"></span><span class="legend-name">${d.name}</span></div>`
+  ).join('')+'</div>';
 }
 
 async function getMonthlyBarsData(currentM,currentY,months=6){
@@ -846,8 +956,9 @@ function renderMonthlyBarsChart(canvasId,pts){
       layout:{padding:{top:4}},
       categoryPercentage:many?0.82:0.68,barPercentage:many?0.92:0.86,
       plugins:{
-        // padding alto = más aire entre el punto de "Ingresos" y el de "Gastos"
-        legend:{position:'bottom',labels:{color:chartTextColor(),padding:28,boxWidth:9}},
+        // Leyenda propia (seriesLegendHTML) en vez de la de Chart.js: punto más pequeño y
+        // con más separación respecto al texto, coherente con el resto de la app.
+        legend:{display:false},
         tooltip:{callbacks:{
           title:ctx=>`${MONTHS[pts[ctx[0].dataIndex].m]} ${pts[ctx[0].dataIndex].y}`,
           label:ctx=>`${ctx.dataset.label}: ${ctx.dataset.label==='Gastos'?fmtOut(ctx.parsed.y):fmtC(ctx.parsed.y)}`
@@ -877,7 +988,9 @@ function renderAreaLineChart(canvasId,labels,datasets,opts={}){
       responsive:true,maintainAspectRatio:false,
       interaction:{mode:'index',intersect:false},
       plugins:{
-        legend:{display:datasets.length>1,position:'bottom',labels:{color:chartTextColor()}},
+        // Leyenda propia (seriesLegendHTML), a todo el ancho debajo del gráfico, en vez de la
+        // leyenda inline de Chart.js — coherente con el resto de gráficos de la app.
+        legend:{display:false},
         tooltip:{callbacks:{title:ctx=>ctx[0].label,label:ctx=>`${datasets.length>1?ctx.dataset.label+': ':''}${fmtC(ctx.parsed.y)}`}}
       },
       scales:{
@@ -957,6 +1070,14 @@ async function getPatrimonioSeries(){
   return series;
 }
 
+// Último registro de valores disponible (independiente del mes seleccionado): el patrimonio
+// es una foto del presente, no un dato que deba depender del periodo elegido en el selector.
+async function getLatestValues(){
+  const allVals=await dbAll('values');
+  if(allVals.length===0)return null;
+  return allVals.sort((a,b)=>b.id.localeCompare(a.id))[0];
+}
+
 let patLineRange=6;
 async function renderPatLineSection(){
   const wrap=document.getElementById('cart-pat-line-wrap');
@@ -977,7 +1098,8 @@ async function renderPatLineSection(){
   }else{
     chartHTML='<div class="tx-empty" style="padding:20px">Sin datos históricos todavía</div>';
   }
-  wrap.innerHTML=`<div class="pl-range-tabs">
+  wrap.innerHTML=`<div class="sec-label" style="margin-top:0">Evolución patrimonio</div>
+    <div class="pl-range-tabs">
       <div class="pl-range-tab${patLineRange===6?' active':''}" onclick="setPatLineRange(6)">6M</div>
       <div class="pl-range-tab${patLineRange===12?' active':''}" onclick="setPatLineRange(12)">1A</div>
       <div class="pl-range-tab${patLineRange==='all'?' active':''}" onclick="setPatLineRange('all')">Todo</div>
@@ -1008,14 +1130,16 @@ async function renderInvLineSection(){
   if(!wrap)return;
   const series=await getInversionesSeries();
   const data=patLineRange==='all'?series:series.slice(-patLineRange);
-  if(data.length===0){wrap.innerHTML='<div class="tx-empty" style="padding:20px">Aún no hay histórico de inversiones</div>';return}
+  if(data.length===0){wrap.innerHTML='<div class="sec-label" style="margin-top:0">Evolución inversiones</div><div class="tx-empty" style="padding:20px">Aún no hay histórico de inversiones</div>';return}
   const last=data[data.length-1];
   const gain=round2(last.valor-last.aportado);
   const gainColor=gain>=0?'var(--positive)':'var(--negative)';
-  wrap.innerHTML=`<div class="chart-head">
+  wrap.innerHTML=`<div class="sec-label" style="margin-top:0">Evolución inversiones</div>
+    <div class="chart-head">
       <div class="chart-head-val">${fmtC(last.valor)}</div>
       <div class="chart-head-chg" style="color:${gainColor}">${gain>=0?'+':''}${fmtC(gain)}</div>
     </div>${chartBlockHTML('cart-inv-line-canvas')}
+    ${seriesLegendHTML([{name:'Valor estimado',color:'#7c6ef6'},{name:'Aportado',color:'#a0a096'}])}
     <div class="chart-foot">Compara lo que has aportado con el valor estimado del Escenario 1.</div>`;
   renderAreaLineChart('cart-inv-line-canvas',
     data.map(p=>`${MONTH_SHORT[p.m]} '${String(p.y).slice(2)}`),
@@ -1156,6 +1280,14 @@ function groupByCategory(txs,type){
     .sort((a,b)=>b.value-a.value)
     .map((d,i)=>({...d,color:CHART_COLORS[i%CHART_COLORS.length],icon:catIconFor(d.name,type)}));
 }
+// Para resúmenes compactos (Home): deja los N-1 mayores y agrupa el resto en "Otros".
+function capTopN(data,n){
+  if(data.length<=n)return data;
+  const top=data.slice(0,n-1);
+  const restVal=round2(data.slice(n-1).reduce((s,d)=>s+d.value,0));
+  top.push({name:'Otros',value:restVal,color:'#a0a096',icon:'📌'});
+  return top;
+}
 
 // Gasto total de un año natural (para el presupuesto anual acumulativo)
 async function getYearExpenses(year){
@@ -1177,15 +1309,17 @@ function setDashBarsRange(r){
   const cm=all?new Date().getMonth():m, cy=all?new Date().getFullYear():y;
   getMonthlyBarsData(cm,cy,r).then(pts=>{
     renderMonthlyBarsChart('dash-monthly-bars',pts);
-    renderBalanceLineChart('dash-balance-line',pts);
   });
 }
 
+// Home: pantalla de RESUMEN financiero, organizada por niveles de información
+// (general → periodo → inversiones → gastos/ingresos). El análisis detallado
+// de categorías vive en Movimientos.
 async function renderDashboard(){
   const{m,y,all}=getVM('dash-month');
   const rawTxs=all?await dbAll('transactions'):await dbByIdx('transactions','month_year',[m,y]);
   const txs=rawTxs.filter(t=>!t.deleted);
-  const vals=all?null:await dbGet('values',`${y}-${m}`);
+  const latest=await getLatestValues();
 
   let income=0,expenses=0,invested=0;
   txs.forEach(t=>{
@@ -1197,55 +1331,98 @@ async function renderDashboard(){
   const balance=round2(income-expenses);
   const savingsRate=income>0?round2(((income-expenses)/income)*100):0;
 
-  let liquidez=0;
-  if(vals&&vals.bancos)Object.values(vals.bancos).forEach(v=>liquidez+=v||0);
-  let invReal=0;
-  if(vals&&vals.inv_valor_real)Object.values(vals.inv_valor_real).forEach(v=>invReal+=v||0);
+  let liquidez=0,invReal=0,invAportado=0;
+  if(latest?.bancos)Object.values(latest.bancos).forEach(v=>liquidez+=v||0);
+  if(latest?.inv_valor_real)Object.values(latest.inv_valor_real).forEach(v=>invReal+=v||0);
+  if(latest?.inv_aportado)Object.values(latest.inv_aportado).forEach(v=>invAportado+=v||0);
+  liquidez=round2(liquidez);invReal=round2(invReal);invAportado=round2(invAportado);
   const patrimonio=round2(liquidez+invReal);
+  const invGain=round2(invReal-invAportado);
 
   const expData=groupByCategory(txs,'gasto');
   const incData=groupByCategory(txs,'ingreso');
 
   const cm=all?new Date().getMonth():m, cy=all?new Date().getFullYear():y;
+  const patSeries=(await getPatrimonioSeries()).slice(-6);
 
-  let kpisHTML=`
-    <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-label">Ingresos</div><div class="kpi-value pos">${fmtC(income)}</div><div class="kpi-sub">Cobrado este mes</div></div>
-      <div class="kpi"><div class="kpi-label">Gastos</div><div class="kpi-value neg">${fmtOut(expenses)}</div><div class="kpi-sub">Pagado este mes</div></div>
-      <div class="kpi"><div class="kpi-label">Balance</div><div class="kpi-value ${balance>=0?'pos':'neg'}">${fmtC(balance)}</div><div class="kpi-sub">Ingresos menos gastos</div></div>
-      <div class="kpi"><div class="kpi-label">Invertido (mes)</div><div class="kpi-value neg">${fmtOut(invested)}</div><div class="kpi-sub">Aportado este mes</div></div>
-      <div class="kpi"><div class="kpi-label">Patrimonio</div><div class="kpi-value">${fmtC(patrimonio)}</div><div class="kpi-sub">Liquidez más inversiones</div></div>
-      <div class="kpi"><div class="kpi-label">Tasa de ahorro</div>${savingsGauge(savingsRate)}<div class="kpi-sub">Del ingreso que no gastas</div></div>
-    </div>
-  `;
+  // ── Nivel 1: resumen general (patrimonio total y su evolución) ──
+  let html=`<div class="card-block">
+    <div class="kpi-label">Patrimonio total</div>
+    <div class="kpi-value" style="font-size:30px;margin-top:4px">${fmtC(patrimonio)}</div>
+    <div class="kpi-sub">Liquidez ${fmtC(liquidez)} + inversiones ${fmtC(invReal)}</div>
+  </div>`;
 
-  // ── Ingresos vs gastos + balance neto: 6 o 12 meses ──
-  kpisHTML+=`<div class="sec-label">Ingresos vs gastos</div>
+  if(patSeries.length>1){
+    const lastP=patSeries[patSeries.length-1],firstP=patSeries.find(x=>x.total>0)||patSeries[0];
+    const chg=round2(lastP.total-firstP.total);
+    html+=`<div class="card-block">
+      <div class="sec-label" style="margin-top:0">Evolución del patrimonio total</div>
+      <div class="chart-head"><div class="chart-head-val">${fmtC(lastP.total)}</div><div class="chart-head-chg" style="color:${chg>=0?'var(--positive)':'var(--negative)'}">${chg>=0?'+':''}${fmtC(chg)}</div></div>
+      ${chartBlockHTML('dash-pat-line')}
+    </div>`;
+  }
+
+  // ── Nivel 2: resumen del periodo seleccionado ──
+  html+=`<div class="kpi-grid" style="margin-bottom:16px">
+      <div class="kpi"><div class="kpi-label">Ingresos</div><div class="kpi-value pos">${fmtC(income)}</div><div class="kpi-sub">Cobrado</div></div>
+      <div class="kpi"><div class="kpi-label">Gastos</div><div class="kpi-value neg">${fmtOut(expenses)}</div><div class="kpi-sub">Pagado</div></div>
+      <div class="kpi"><div class="kpi-label">Balance</div><div class="kpi-value ${balance>=0?'pos':'neg'}">${fmtC(balance)}</div><div class="kpi-sub">Ingresos − gastos</div></div>
+      <div class="kpi"><div class="kpi-label">Invertido</div><div class="kpi-value neg">${fmtOut(invested)}</div><div class="kpi-sub">Aportado</div></div>
+      <div class="kpi"><div class="kpi-label">Tasa de ahorro</div>${savingsGauge(savingsRate)}<div class="kpi-sub">Ahorrado</div></div>
+    </div>`;
+
+  html+=`<div class="card-block">
+    <div class="sec-label" style="margin-top:0">Ingresos vs gastos</div>
     <div class="pl-range-tabs" id="dash-bars-tabs">
       <div class="pl-range-tab${dashBarsRange===6?' active':''}" data-r="6" onclick="setDashBarsRange(6)">6 meses</div>
       <div class="pl-range-tab${dashBarsRange===12?' active':''}" data-r="12" onclick="setDashBarsRange(12)">12 meses</div>
     </div>
-    ${chartBlockHTML('dash-monthly-bars')}`;
+    ${chartBlockHTML('dash-monthly-bars')}
+    ${seriesLegendHTML([{name:'Ingresos',color:'#22c55e'},{name:'Gastos',color:'#ef4444'}])}
+  </div>`;
 
-  kpisHTML+=`<div class="sec-label">Evolución del balance</div>
-    <div class="sec-note">Lo que te queda cada mes tras restar los gastos a los ingresos.</div>
-    ${chartBlockHTML('dash-balance-line')}`;
+  // ── Nivel 3: inversiones (solo si tiene sentido, es decir, si hay datos) ──
+  if(invAportado>0||invReal>0){
+    html+=`<div class="card-block">
+      <div class="sec-label" style="margin-top:0">Inversiones</div>
+      <div class="val-summary" style="padding-top:0"><span>Aportado</span><b>${fmtC(invAportado)}</b></div>
+      <div class="val-summary"><span>Valor estimado</span><b>${fmtC(invReal)}</b></div>
+      <div class="val-summary"><span>Rendimiento</span><b style="color:${invGain>=0?'var(--positive)':'var(--negative)'}">${invGain>=0?'+':''}${fmtC(invGain)}</b></div>
+    </div>`;
+  }
 
-  // ── Reparto por categoría: filas a todo el ancho con divisores e iconos ──
+  // ── Nivel 4: gastos e ingresos — resumen (top categorías + "Otros"); el detalle vive en Movimientos ──
+  // Dos tarjetas independientes a todo el ancho (no dos columnas apretadas), cada una con
+  // su propio donut y leyenda legible.
+  const expMini=capTopN(expData,4),incMini=capTopN(incData,4);
+  if(expData.length>0||incData.length>0){
+    html+=`<div class="sec-header" style="margin-top:6px"><div class="sec-label" style="margin-top:0">Gastos e ingresos por categoría</div><span class="link" onclick="nav('history')">Ver detalle</span></div>`;
+  }
   if(expData.length>0){
-    kpisHTML+=`<div class="sec-label">Gastos por categoría</div>${categoryBreakdownHTML(expData,{negative:true})}`;
+    html+=`<div class="card-block">
+      <div class="mini-donut-title" style="text-align:left;font-size:14px">Gastos</div>
+      <div class="chart-block mini" style="max-width:200px;margin-left:auto;margin-right:auto"><canvas id="dash-mini-exp-donut"></canvas></div>
+      ${chartLegendHTML(expMini)}
+    </div>`;
   }
   if(incData.length>0){
-    kpisHTML+=`<div class="sec-label">Ingresos por categoría</div>${categoryBreakdownHTML(incData)}`;
+    html+=`<div class="card-block">
+      <div class="mini-donut-title" style="text-align:left;font-size:14px">Ingresos</div>
+      <div class="chart-block mini" style="max-width:200px;margin-left:auto;margin-right:auto"><canvas id="dash-mini-inc-donut"></canvas></div>
+      ${chartLegendHTML(incMini)}
+    </div>`;
   }
 
   const cont=document.getElementById('dash-kpis');
-  cont.innerHTML=kpisHTML;
+  cont.innerHTML=html;
   animateBars(cont);
+
+  if(patSeries.length>1)renderPatLineChart('dash-pat-line',patSeries);
+  if(expData.length>0)renderDonutChart('dash-mini-exp-donut',expMini);
+  if(incData.length>0)renderDonutChart('dash-mini-inc-donut',incMini);
 
   getMonthlyBarsData(cm,cy,dashBarsRange).then(pts=>{
     renderMonthlyBarsChart('dash-monthly-bars',pts);
-    renderBalanceLineChart('dash-balance-line',pts);
   });
 }
 
@@ -1324,10 +1501,18 @@ async function swipeDeleteConfirm(id){
 }
 
 // ═══════ HISTORY ═══════
-let histFilter='all';
+let histFilter='all',histSort='recent',histCatTab='gasto';
+const HIST_SORTS={
+  recent:(a,b)=>b.date.localeCompare(a.date)||String(b.id).localeCompare(String(a.id)),
+  old:(a,b)=>a.date.localeCompare(b.date)||String(a.id).localeCompare(String(b.id)),
+  amount_desc:(a,b)=>b.amount-a.amount,
+  amount_asc:(a,b)=>a.amount-b.amount,
+  category:(a,b)=>(a.category||a.tipo_inv||'').localeCompare(b.category||b.tipo_inv||'','es'),
+  type:(a,b)=>(a.type||'').localeCompare(b.type||'','es')
+};
 async function renderHistory(){
   const{m,y,all}=getVM('hist-month');
-  let txs=(all?await dbAll('transactions'):await dbByIdx('transactions','month_year',[m,y])).filter(t=>!t.deleted);
+  const periodTxs=(all?await dbAll('transactions'):await dbByIdx('transactions','month_year',[m,y])).filter(t=>!t.deleted);
 
   document.getElementById('hist-filters').innerHTML=`
     <div class="filter-tabs">
@@ -1336,59 +1521,123 @@ async function renderHistory(){
       <div class="filter-tab ${histFilter==='gasto'?'active':''}" onclick="setHistFilter('gasto')">Gastos</div>
       <div class="filter-tab ${histFilter==='inversion'?'active':''}" onclick="setHistFilter('inversion')">Inversiones</div>
     </div>
+    <div style="display:flex;justify-content:flex-end;margin:10px 0 4px">
+      <select class="sort-select" id="hist-sort-select" onchange="setHistSort(this.value)" aria-label="Ordenar por">
+        <option value="recent"${histSort==='recent'?' selected':''}>Ordenar: más recientes</option>
+        <option value="old"${histSort==='old'?' selected':''}>Ordenar: más antiguos</option>
+        <option value="amount_desc"${histSort==='amount_desc'?' selected':''}>Ordenar: mayor importe</option>
+        <option value="amount_asc"${histSort==='amount_asc'?' selected':''}>Ordenar: menor importe</option>
+        <option value="category"${histSort==='category'?' selected':''}>Ordenar: por categoría</option>
+        <option value="type"${histSort==='type'?' selected':''}>Ordenar: por tipo</option>
+      </select>
+    </div>
   `;
 
-  if(histFilter!=='all')txs=txs.filter(t=>t.type===histFilter);
-  txs.sort((a,b)=>b.date.localeCompare(a.date));
-
-  if(txs.length===0){
-    document.getElementById('hist-list').innerHTML='<div class="tx-empty">Sin movimientos</div>';
-    return;
-  }
-
-  // Agrupa por día: la fecha aparece una sola vez como encabezado del grupo
-  const groups=[];
-  const byDate={};
-  txs.forEach(t=>{
-    if(!byDate[t.date]){byDate[t.date]={date:t.date,items:[],net:0};groups.push(byDate[t.date])}
-    byDate[t.date].items.push(t);
-    byDate[t.date].net+=isOutflow(t.type)?-t.amount:t.amount;
-  });
-
-  let total=0;
-  txs.forEach(t=>{total+=isOutflow(t.type)?-t.amount:t.amount});
+  let txs=histFilter!=='all'?periodTxs.filter(t=>t.type===histFilter):periodTxs.slice();
+  const byDateOrder=histSort==='recent'||histSort==='old';
+  txs.sort(HIST_SORTS[histSort]||HIST_SORTS.recent);
 
   const listEl=document.getElementById('hist-list');
-  listEl.innerHTML=groups.map(g=>{
-    const net=round2(g.net);
-    return`<div class="tx-day">
-      <div class="tx-day-head">
-        <div class="tx-day-title">${fmtDayHeader(g.date)}</div>
-        <div class="tx-day-sum">${net<0?fmtOut(net):fmtC(net)}</div>
-      </div>
-      <div class="tx-day-card">${g.items.map(t=>txItemHTML(t,true,false)).join('')}</div>
-    </div>`;
-  }).join('')+
-  `<div class="hist-total"><span>Total del periodo</span><b style="color:${total<0?'var(--negative)':'var(--text)'}">${total<0?fmtOut(total):fmtC(total)}</b></div>`;
+  if(txs.length===0){
+    listEl.innerHTML='<div class="tx-empty">Sin movimientos</div>';
+  }else if(byDateOrder){
+    // Ordenado por fecha: agrupar por día, la fecha aparece una sola vez como encabezado
+    const groups=[];
+    const byDate={};
+    txs.forEach(t=>{
+      if(!byDate[t.date]){byDate[t.date]={date:t.date,items:[],net:0};groups.push(byDate[t.date])}
+      byDate[t.date].items.push(t);
+      byDate[t.date].net+=isOutflow(t.type)?-t.amount:t.amount;
+    });
+    let total=0;
+    txs.forEach(t=>{total+=isOutflow(t.type)?-t.amount:t.amount});
+    listEl.innerHTML=groups.map(g=>{
+      const net=round2(g.net);
+      return`<div class="tx-day">
+        <div class="tx-day-head">
+          <div class="tx-day-title">${fmtDayHeader(g.date)}</div>
+          <div class="tx-day-sum">${net<0?fmtOut(net):fmtC(net)}</div>
+        </div>
+        <div class="tx-day-card">${g.items.map(t=>txItemHTML(t,true,false)).join('')}</div>
+      </div>`;
+    }).join('')+
+    `<div class="hist-total"><span>Total del periodo</span><b style="color:${total<0?'var(--negative)':'var(--text)'}">${total<0?fmtOut(total):fmtC(total)}</b></div>`;
+  }else{
+    // Ordenado por importe/categoría/tipo: lista plana con la fecha visible en cada fila
+    let total=0;
+    txs.forEach(t=>{total+=isOutflow(t.type)?-t.amount:t.amount});
+    listEl.innerHTML=`<div class="tx-day-card">${txs.map(t=>txItemHTML(t,true,true)).join('')}</div>
+      <div class="hist-total"><span>Total del periodo</span><b style="color:${total<0?'var(--negative)':'var(--text)'}">${total<0?fmtOut(round2(total)):fmtC(round2(total))}</b></div>`;
+  }
   attachSwipeHandlers(listEl);
+
+  // ── Análisis por categoría (detalle completo; en Home solo aparece un resumen) ──
+  const catData=histCatTab==='gasto'?groupByCategory(periodTxs,'gasto'):groupByCategory(periodTxs,'ingreso');
+  const analysisEl=document.getElementById('hist-cat-analysis');
+  if(analysisEl){
+    if(catData.length===0){
+      analysisEl.innerHTML=`<div class="card-block">
+        <div class="sec-label" style="margin-top:0">Análisis por categoría</div>
+        <div class="filter-tabs">
+          <div class="filter-tab ${histCatTab==='gasto'?'active':''}" onclick="setHistCatTab('gasto')">Gastos</div>
+          <div class="filter-tab ${histCatTab==='ingreso'?'active':''}" onclick="setHistCatTab('ingreso')">Ingresos</div>
+        </div>
+        <div class="tx-empty">Sin datos en este periodo</div>
+      </div>`;
+    }else{
+      analysisEl.innerHTML=`<div class="card-block">
+        <div class="sec-label" style="margin-top:0">Análisis por categoría</div>
+        <div class="filter-tabs">
+          <div class="filter-tab ${histCatTab==='gasto'?'active':''}" onclick="setHistCatTab('gasto')">Gastos</div>
+          <div class="filter-tab ${histCatTab==='ingreso'?'active':''}" onclick="setHistCatTab('ingreso')">Ingresos</div>
+        </div>
+        ${chartBlockHTML('hist-cat-donut')}
+        ${chartLegendHTML(catData)}
+      </div>`;
+      renderDonutChart('hist-cat-donut',catData);
+    }
+    animateBars(analysisEl);
+  }
 }
 function setHistFilter(f){histFilter=f;renderHistory()}
+function setHistSort(s){histSort=s;renderHistory()}
+function setHistCatTab(t){histCatTab=t;renderHistory()}
 
 // ═══════ CARTERA ═══════
-let carteraEditing=false;
+// editingSection: null | 'liquidez' | 'aportado' | 'valor' — edición contextual por apartado,
+// en vez de un único botón general invasivo en la cabecera.
+let editingSection=null;
+let carteraScenario=1; // 1 = Escenario 1, 2 = Escenario 2 (segmented control)
+
+// Valor de un fondo para los gráficos de distribución: si aún no hay estimación (Escenario 1),
+// se usa lo aportado como referencia para que el fondo no desaparezca del gráfico.
+function fundValueFor(t,vals){
+  const real=parseFloat(vals.inv_valor_real?.[t])||0;
+  if(real>0)return real;
+  return parseFloat(vals.inv_aportado?.[t])||0;
+}
+
 async function renderCartera(){
   const{m,y}=getVM('cart-month');
   const vals=await dbGet('values',`${y}-${m}`)||{};
-  const txs=(await dbByIdx('transactions','month_year',[m,y])).filter(t=>!t.deleted);
-  const ro=carteraEditing?'':'readonly';
+  const ro=(g)=>isEditingGroup(g)?'':'readonly';
+
+  function isEditingGroup(g){
+    if(editingSection==='liquidez')return g==='bancos';
+    if(editingSection==='aportado')return g==='inv_aportado';
+    if(editingSection==='valor')return g===(carteraScenario===2?'inv_escenario2':'inv_valor_real');
+    return false;
+  }
+  const valRow=(label,group,key,raw)=>{
+    const editing=isEditingGroup(group);
+    return`<div class="val-row"><div class="val-label">${label}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="${group}" data-k="${escAttr(key)}" value="${raw?fmtInput(raw):editing?'':'—'}" ${editing?'':'readonly'}></div>`;
+  };
+  const editBtn=(section,label)=>`<button class="sec-edit-btn" onclick="startCarteraEdit('${section}')" aria-label="${label}">${PENCIL_SVG}</button>`;
 
   let html='';
 
-  const valRow=(label,group,key,raw)=>
-    `<div class="val-row"><div class="val-label">${label}</div><input type="text" inputmode="decimal" placeholder="0,00" class="val-input" data-g="${group}" data-k="${escAttr(key)}" value="${raw?fmtInput(raw):carteraEditing?'':'—'}" ${ro}></div>`;
-
   // Liquidez
-  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Liquidez</div><span class="link" onclick="openConfigModal()">Editar bancos</span></div>`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Liquidez</div><div style="display:flex;align-items:center;gap:6px"><span class="link" onclick="openConfigModal()">Bancos</span>${editBtn('liquidez','Editar liquidez')}</div></div>`;
   let totalLiq=0;
   html+=`<div class="val-card">`;
   CONFIG.banks.forEach(b=>{
@@ -1399,7 +1648,7 @@ async function renderCartera(){
   html+=`</div><div class="val-summary"><span>Total liquidez</span><b>${fmtC(totalLiq)}</b></div>`;
 
   // Inversiones aportado
-  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Dinero aportado</div><span class="link" onclick="openConfigModal()">Editar fondos</span></div>`;
+  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:10px">Dinero aportado</div><div style="display:flex;align-items:center;gap:6px"><span class="link" onclick="openConfigModal()">Fondos</span>${editBtn('aportado','Editar aportado')}</div></div>`;
   html+=`<div class="sec-note">Cuánto has metido en total en cada fondo.</div>`;
   let totalAp=0;
   html+=`<div class="val-card">`;
@@ -1410,40 +1659,49 @@ async function renderCartera(){
   });
   html+=`</div><div class="val-summary"><span>Total aportado</span><b>${fmtC(totalAp)}</b></div>`;
 
-  // Escenario 1
-  html+=`<div class="sec-label">Escenario 1</div><div class="sec-note">Estimación de a cuánto podría valer cada fondo hoy.</div>`;
-  let totalReal=0;
-  html+=`<div class="val-card">`;
+  // DCA: integrado junto a las aportaciones (dinero que entra), sin competir con la valoración
+  const dcaRules=await getDCAConfig();
+  html+=`<div class="card-block" style="margin-top:16px">
+    <div class="sec-header"><div class="sec-label" style="margin:0">Aportaciones automáticas (DCA)</div><span class="link" onclick="openDCAModal()">+ Añadir</span></div>
+    ${renderDCARules(dcaRules)}
+  </div>`;
+
+  // Escenario 1 / Escenario 2: segmented control compacto (herramienta secundaria de análisis)
+  const groupKey=carteraScenario===2?'inv_escenario2':'inv_valor_real';
+  let totalReal=0,totalReal2=0;
+  CONFIG.inv_types.forEach(t=>{totalReal+=parseFloat(vals.inv_valor_real?.[t])||0});
+  CONFIG.inv_types.forEach(t=>{totalReal2+=parseFloat(vals.inv_escenario2?.[t])||0});
+  totalReal=round2(totalReal);totalReal2=round2(totalReal2);
+  const activeTotal=carteraScenario===2?totalReal2:totalReal;
+  const rentPct=totalAp>0?round2(((activeTotal-totalAp)/totalAp)*100):0;
+  const ganancia=round2(activeTotal-totalAp);
+
+  html+=`<div class="sec-header"><div class="sec-label" style="margin-bottom:0">Estimación de valor</div>${editBtn('valor','Editar estimación')}</div>
+    <div class="seg-control">
+      <div class="seg-btn${carteraScenario===1?' active':''}" onclick="setCarteraScenario(1)">Escenario 1</div>
+      <div class="seg-btn${carteraScenario===2?' active':''}" onclick="setCarteraScenario(2)">Escenario 2</div>
+    </div>
+    <div class="sec-note">${carteraScenario===2?'Una segunda estimación alternativa, para comparar.':'Estimación de a cuánto podría valer cada fondo hoy.'}</div>
+    <div class="val-card">`;
   CONFIG.inv_types.forEach(t=>{
-    const v=vals.inv_valor_real?.[t]??'';
-    if(v)totalReal+=parseFloat(v)||0;
-    html+=valRow(t,'inv_valor_real',t,v);
+    const v=vals[groupKey]?.[t]??'';
+    html+=valRow(t,groupKey,t,v);
   });
   html+=`</div>`;
-  const rentPct=totalAp>0?round2(((totalReal-totalAp)/totalAp)*100):0;
-  const ganancia=round2(totalReal-totalAp);
-  html+=`<div class="val-summary"><span>Total</span><b>${fmtC(totalReal)}</b></div>`;
-  html+=`<div class="val-summary"><span>Ganancia / Pérdida</span><b style="color:${ganancia>=0?'var(--positive)':'var(--negative)'}">${ganancia>=0?'+':''}${fmtC(ganancia)} · ${rentPct>=0?'+':''}${rentPct.toFixed(2)}%</b></div>`;
+  // Si aún no se ha rellenado ningún valor para el escenario activo, se explica por qué
+  // no hay nada que mostrar en vez de dar un "Ganancia/Pérdida" de -100% confuso.
+  const hasActiveData=CONFIG.inv_types.some(t=>{const raw=vals[groupKey]?.[t];return raw!=null&&raw!==''&&parseFloat(raw)>0});
+  if(!hasActiveData){
+    html+=`<div class="sec-note" style="margin-top:2px">Aún no has añadido datos para ${carteraScenario===2?'el Escenario 2':'el Escenario 1'}. Pulsa el lápiz para introducirlos.</div>`;
+  }else{
+    html+=`<div class="val-summary"><span>Total</span><b>${fmtC(activeTotal)}</b></div>
+    <div class="val-summary"><span>Ganancia / Pérdida</span><b style="color:${ganancia>=0?'var(--positive)':'var(--negative)'}">${ganancia>=0?'+':''}${fmtC(ganancia)} · ${rentPct>=0?'+':''}${rentPct.toFixed(2)}%</b></div>`;
+  }
 
-  // Escenario 2
-  html+=`<div class="sec-label">Escenario 2</div><div class="sec-note">Una segunda estimación alternativa, para comparar.</div>`;
-  let totalReal2=0;
-  html+=`<div class="val-card">`;
-  CONFIG.inv_types.forEach(t=>{
-    const v=vals.inv_escenario2?.[t]??'';
-    if(v)totalReal2+=parseFloat(v)||0;
-    html+=valRow(t,'inv_escenario2',t,v);
-  });
-  html+=`</div>`;
-  const rentPct2=totalAp>0?round2(((totalReal2-totalAp)/totalAp)*100):0;
-  const ganancia2=round2(totalReal2-totalAp);
-  html+=`<div class="val-summary"><span>Total</span><b>${fmtC(totalReal2)}</b></div>`;
-  html+=`<div class="val-summary"><span>Ganancia / Pérdida</span><b style="color:${ganancia2>=0?'var(--positive)':'var(--negative)'}">${ganancia2>=0?'+':''}${fmtC(ganancia2)} · ${rentPct2>=0?'+':''}${rentPct2.toFixed(2)}%</b></div>`;
-
-  // Patrimonio (basado en Escenario 1)
+  // Patrimonio (basado en Escenario 1, que es la estimación de referencia)
   const patrimonio=round2(totalLiq+totalReal);
   html+=`<div class="sec-label">Patrimonio total</div>
-    <div class="kpi" style="margin-bottom:12px"><div class="kpi-value" style="font-size:28px">${fmtC(patrimonio)}</div>
+    <div class="kpi" style="margin-bottom:16px"><div class="kpi-value" style="font-size:28px">${fmtC(patrimonio)}</div>
     <div class="kpi-sub">Liquidez ${fmtC(totalLiq)} + Inversiones (Escenario 1) ${fmtC(totalReal)}</div>
     ${totalReal2>0?`<div class="kpi-sub">Con Escenario 2: ${fmtC(round2(totalLiq+totalReal2))}</div>`:''}</div>`;
 
@@ -1452,63 +1710,39 @@ async function renderCartera(){
   if(totalLiq>0)patDonutData.push({name:'Liquidez',value:totalLiq,color:'#beff50'});
   if(totalReal>0)patDonutData.push({name:'Inversiones',value:totalReal,color:'#7c6ef6'});
   if(patDonutData.length>0){
-    html+=`<div class="sec-label">Composición patrimonio</div>${chartBlockHTML('cart-comp-donut')}`;
+    html+=`<div class="card-block"><div class="sec-label" style="margin-top:0">Composición patrimonio</div>${chartBlockHTML('cart-comp-donut')}${chartLegendHTML(patDonutData)}</div>`;
   }
 
-  // Portfolio allocation donut (por fondo)
+  // Distribución por fondo — nombre completo (sin truncar) y con aportado como respaldo
+  // cuando aún no hay valor estimado (Escenario 1), para que ningún fondo con posición
+  // real desaparezca del gráfico.
   const invDonutData=[];
   CONFIG.inv_types.forEach((t,i)=>{
-    const v=parseFloat(vals.inv_valor_real?.[t])||0;
-    if(v>0)invDonutData.push({name:t.split(' ')[0],value:round2(v),color:INV_COLORS[i%INV_COLORS.length]});
+    const v=round2(fundValueFor(t,vals));
+    if(v>0)invDonutData.push({name:t,value:v,color:INV_COLORS[i%INV_COLORS.length]});
   });
   if(invDonutData.length>0){
-    html+=`<div class="sec-label">Distribución por fondo</div>${chartBlockHTML('cart-fund-donut')}`;
+    html+=`<div class="card-block"><div class="sec-label" style="margin-top:0">Distribución por fondo</div>${chartBlockHTML('cart-fund-donut')}${chartLegendHTML(invDonutData)}</div>`;
   }
 
-  // Portfolio allocation donut (por tipo de activo)
+  // Distribución por tipo de activo — recorre TODOS los tipos configurados (no solo Indexado)
+  // y usa el mismo respaldo por aportado, para que acciones u otros tipos con posición real
+  // no queden fuera del gráfico solo por no tener aún un Escenario 1 relleno.
   const typeMap={};
   CONFIG.inv_types.forEach(t=>{
-    const v=parseFloat(vals.inv_valor_real?.[t])||0;
+    const v=fundValueFor(t,vals);
     if(v<=0)return;
     const type=CONFIG.inv_asset_types?.[t]||'Otros';
     typeMap[type]=round2((typeMap[type]||0)+v);
   });
   const typeDonutData=Object.entries(typeMap).map(([name,value],i)=>({name,value,color:INV_COLORS[i%INV_COLORS.length]}));
   if(typeDonutData.length>0){
-    html+=`<div class="sec-label">Distribución por tipo de activo</div>${chartBlockHTML('cart-type-donut')}`;
+    html+=`<div class="card-block"><div class="sec-label" style="margin-top:0">Distribución por tipo de activo</div>${chartBlockHTML('cart-type-donut')}${chartLegendHTML(typeDonutData)}</div>`;
   }
-
-  // Rendimiento por fondo
-  const invPerf=[];
-  CONFIG.inv_types.forEach(t=>{
-    const a=parseFloat(vals.inv_aportado?.[t])||0;
-    const r=parseFloat(vals.inv_valor_real?.[t])||0;
-    if(a>0)invPerf.push({fund:t,aportado:round2(a),real:round2(r),gain:round2(r-a),pct:round2(((r-a)/a)*100)});
-  });
-  if(invPerf.length>0){
-    html+=`<div class="sec-label">Rendimiento por fondo (Escenario 1)</div>`;
-    invPerf.forEach(p=>{
-      const color=p.gain>=0?'var(--positive)':'var(--negative)';
-      const sign=p.gain>=0?'+':'';
-      const maxV=Math.max(p.aportado,p.real,1);
-      const wAp=Math.max(2,Math.round((p.aportado/maxV)*100));
-      const wReal=Math.max(2,Math.round((p.real/maxV)*100));
-      html+=`<div class="perf-row">
-        <div class="perf-top"><span class="perf-name">${p.fund}</span><span class="perf-pct" style="color:${color}">${sign}${fmtC(p.gain)} (${sign}${p.pct.toFixed(1).replace('.',',')}%)</span></div>
-        <div class="perf-bar-row"><span class="perf-bar-tag">Aportado</span><div class="perf-bar-track"><div class="perf-bar-fill" data-w="${wAp}" style="background:var(--text3)"></div></div><span class="perf-bar-num">${fmtC(p.aportado)}</span></div>
-        <div class="perf-bar-row"><span class="perf-bar-tag">Escenario 1</span><div class="perf-bar-track"><div class="perf-bar-fill" data-w="${wReal}" style="background:${color}"></div></div><span class="perf-bar-num">${fmtC(p.real)}</span></div>
-      </div>`;
-    });
-  }
-
-  // DCA section
-  const dcaRules=await getDCAConfig();
-  html+=`<div class="sec-header"><div class="sec-label" style="margin:0">Aportaciones automáticas (DCA)</div><span class="link" onclick="openDCAModal()">+ Añadir</span></div>`;
-  html+=`<div style="margin-bottom:16px">${renderDCARules(dcaRules)}</div>`;
 
   // Evolución patrimonio + evolución inversiones (línea/área, async)
-  html+=`<div class="sec-label">Evolución patrimonio</div><div class="chart-section" id="cart-pat-line-wrap"><div class="tx-empty" style="padding:20px">Cargando…</div></div>`;
-  html+=`<div class="sec-label">Evolución inversiones</div><div class="chart-section" id="cart-inv-line-wrap"><div class="tx-empty" style="padding:20px">Cargando…</div></div>`;
+  html+=`<div class="chart-section card-block" id="cart-pat-line-wrap"><div class="tx-empty" style="padding:20px">Cargando…</div></div>`;
+  html+=`<div class="chart-section card-block" id="cart-inv-line-wrap"><div class="tx-empty" style="padding:20px">Cargando…</div></div>`;
 
   const cartCont=document.getElementById('cart-content');
   cartCont.innerHTML=html;
@@ -1520,29 +1754,28 @@ async function renderCartera(){
   renderPatLineSection();
 }
 
-// El control de edición vive en la cabecera y en una barra fija, no al final de la página
+function setCarteraScenario(n){carteraScenario=n;renderCartera()}
+
+// El control de edición vive de forma contextual (icono lápiz junto a cada apartado)
+// y en una barra fija compacta mientras se edita, no en un botón general en la cabecera.
 function updateCarteraEditUI(){
   const bar=document.getElementById('cart-edit-bar');
-  const btn=document.getElementById('cart-edit-btn');
-  if(bar)bar.classList.toggle('show',carteraEditing);
-  if(btn){
-    btn.classList.toggle('active',carteraEditing);
-    btn.setAttribute('aria-label',carteraEditing?'Editando valores':'Editar valores');
+  const txt=document.getElementById('cart-edit-bar-txt');
+  if(bar)bar.classList.toggle('show',!!editingSection);
+  if(txt){
+    const label={liquidez:'Editando liquidez',aportado:'Editando aportado',valor:'Editando estimación de valor'};
+    txt.textContent=label[editingSection]||'Editando';
   }
 }
 
-function startCarteraEdit(){
-  if(carteraEditing)return;
-  carteraEditing=true;
-  document.querySelectorAll('#cart-content .val-input').forEach(inp=>{
-    inp.removeAttribute('readonly');
-    if(inp.value==='—')inp.value='';
-  });
-  updateCarteraEditUI();
-  const first=document.querySelector('#cart-content .val-input');
+async function startCarteraEdit(section){
+  editingSection=section;
+  await renderCartera();
+  const g=section==='liquidez'?'bancos':section==='aportado'?'inv_aportado':(carteraScenario===2?'inv_escenario2':'inv_valor_real');
+  const first=document.querySelector(`#cart-content .val-input[data-g="${g}"]`);
   if(first)first.focus({preventScroll:true});
 }
-function cancelCarteraEdit(){carteraEditing=false;renderCartera()}
+function cancelCarteraEdit(){editingSection=null;renderCartera()}
 
 async function saveCarteraValues(){
   const{m,y}=getVM('cart-month');
@@ -1559,7 +1792,7 @@ async function saveCarteraValues(){
   });
   await dbPutTS('values',existing);
   toast('Valores guardados');
-  carteraEditing=false;
+  editingSection=null;
   if(typeof scheduleSyncAfterWrite==='function')scheduleSyncAfterWrite();
   renderCartera();
 }
@@ -1576,17 +1809,20 @@ async function renderPlan(){
   else await renderGoals();
 }
 
+// Jerarquía: 1) título del periodo, 2) valor gastado (dato principal), 3) barra de progreso,
+// 4) información secundaria. El exceso ("X € de más") se muestra pequeño, sin competir con
+// el importe principal, y sin el texto "Te has pasado".
 function budgetHeroHTML(label,spent,limit,spentLabel){
   const left=round2(limit-spent);
   const over=left<0;
   const pct=limit>0?Math.min(Math.round((spent/limit)*100),100):0;
   return`<div class="budget-hero">
-    <div class="budget-hero-top">
-      <div><div class="budget-hero-label">${label}</div><div class="budget-hero-val" style="color:${over?'var(--negative)':'var(--text)'}">${over?fmtOut(Math.abs(left))+' de más':fmtC(left)}</div></div>
-      <div style="font-size:14px;color:var(--text3);text-align:right">${over?'te has pasado':'disponible'}</div>
-    </div>
+    <div class="budget-hero-label">${label}</div>
+    <div class="budget-hero-val"><span class="budget-hero-spent">${fmtC(spent)}</span> / <span class="budget-hero-max">${fmtC(limit)}</span></div>
     <div class="prog-bar"><div class="prog-fill ${over?'red':'accent'}" data-w="${pct}"></div></div>
-    <div class="budget-hero-sub"><span>${spentLabel} ${fmtC(spent)}</span><span>Presupuesto ${fmtC(limit)}</span></div>
+    <div class="budget-hero-sub">
+      <span>${over?`<span class="budget-over">${fmtOut(Math.abs(left))} de más</span>`:`${fmtC(left)} disponible`}</span>
+    </div>
   </div>`;
 }
 
@@ -1613,23 +1849,30 @@ async function renderBudget(){
   }
 
   if(monthlyBudget>0){
-    html+=budgetHeroHTML(`Mensual · ${MONTHS[m]} ${y}`,totalReal,monthlyBudget,'Gastado');
+    html+=budgetHeroHTML(`<b>Mensual</b> · ${MONTHS[m]} ${y}`,totalReal,monthlyBudget,'Gastado');
   }
 
   // Presupuesto anual acumulativo: suma de todos los meses del año
   if(annualBudget>0){
-    html+=budgetHeroHTML(`Anual · ${y}`,yearExp.total,annualBudget,'Acumulado');
+    html+=budgetHeroHTML(`<b>Anual</b> · ${y}`,yearExp.total,annualBudget,'Acumulado');
     const monthsElapsed=yearExp.byMonth.filter(v=>v>0).length||1;
     const avg=round2(yearExp.total/monthsElapsed);
     const projected=round2(avg*12);
     const remainingMonths=Math.max(0,11-new Date().getMonth());
     const perMonthLeft=remainingMonths>0?round2(Math.max(0,annualBudget-yearExp.total)/remainingMonths):0;
-    html+=`<div class="sec-label" style="margin:16px 0 6px">Acumulado mes a mes</div>`;
-    html+=chartBlockHTML('plan-annual-chart');
-    html+=`<div class="chart-foot">Media mensual ${fmtC(avg)} · Proyección a 12 meses ${fmtC(projected)}${remainingMonths>0?` · Puedes gastar ${fmtC(perMonthLeft)}/mes el resto del año`:''}</div>`;
+    html+=`<div class="card-block">
+      <div class="sec-label" style="margin-top:0">Acumulado mes a mes</div>
+      ${chartBlockHTML('plan-annual-chart')}
+      ${seriesLegendHTML([{name:'Gasto acumulado',color:'#ef4444'},{name:'Ritmo del presupuesto',color:'#a0a096'}])}
+      <div class="chart-stats">
+        <div class="chart-stat-row"><span class="chart-stat-label">Media mensual</span><span class="chart-stat-val">${fmtC(avg)}</span></div>
+        <div class="chart-stat-row"><span class="chart-stat-label">Proyección a 12 meses</span><span class="chart-stat-val">${fmtC(projected)}</span></div>
+        ${remainingMonths>0?`<div class="chart-stat-row"><span class="chart-stat-label">Disponible el resto del año</span><span class="chart-stat-val">${fmtC(perMonthLeft)}/mes</span></div>`:''}
+      </div>
+    </div>`;
   }
 
-  html+=`<div class="sec-label" style="margin-top:22px">Límite por categoría</div>`;
+  html+=`<div class="sec-label" style="margin-top:22px">Límite por categoría</div><div class="card-block">`;
   const cats=CONFIG.exp_categories.slice().sort((a,b)=>{
     const pa=budget.gastos?.[a]||0,pb=budget.gastos?.[b]||0;
     if(pa>0&&pb<=0)return-1;
@@ -1648,9 +1891,10 @@ async function renderBudget(){
         <div class="budget-nums"><span style="${over?'color:var(--negative)':'color:var(--text2);font-weight:400'}">${fmtC(real)}</span> / <span>${planned>0?fmtC(planned):'—'}</span></div>
       </div>
       <div class="prog-bar"><div class="prog-fill ${over?'red':'accent'}" data-w="${pct}"></div></div>
-      ${planned>0?`<div class="budget-left">${over?`Te has pasado ${fmtC(Math.abs(left))}`:`Quedan ${fmtC(left)}`}</div>`:''}
+      ${planned>0?`<div class="budget-left">${over?`<span class="budget-over">${fmtOut(Math.abs(left))} de más</span>`:`Quedan ${fmtC(left)}`}</div>`:''}
     </div>`;
   });
+  html+='</div>';
 
   const cont=document.getElementById('plan-content');
   cont.innerHTML=html;
@@ -1703,33 +1947,88 @@ async function saveBudget(){
 }
 
 // ═══════ GOALS ═══════
+// Un objetivo guarda `sources`: un array de fuentes que se SUMAN para medir su progreso.
+// Valores posibles: 'total' (patrimonio total, excluyente con el resto), 'liquidez' (todas
+// las cuentas), 'inversiones' (todos los fondos), 'bank:<nombre>' o 'fund:<nombre>' (uno
+// concreto). Así un objetivo puede depender de varias cuentas/fondos a la vez —p.ej. "toda
+// mi liquidez en Cuenta remunerada" o "mis fondos de MyInvestor y Trade Republic juntos".
+// Compatibilidad: los objetivos antiguos guardaban un único `source` (string) en vez de
+// `sources` (array); se sigue leyendo ese campo si `sources` no existe.
+function goalSourcesOf(g){
+  if(g.sources&&g.sources.length>0)return g.sources;
+  if(g.source)return[g.source];
+  return['total'];
+}
+// Etiqueta legible del origen de progreso elegido para un objetivo.
+function goalSourcesLabel(sources){
+  if(!sources||sources.length===0||sources.includes('total'))return'Patrimonio total';
+  const one=s=>{
+    if(s==='liquidez')return'Liquidez';
+    if(s==='inversiones')return'Inversiones';
+    if(s.startsWith('bank:'))return s.slice(5);
+    if(s.startsWith('fund:'))return s.slice(5);
+    return s;
+  };
+  const parts=sources.map(one);
+  if(parts.length===1)return parts[0];
+  if(parts.length===2)return parts.join(' + ');
+  return`${parts[0]} +${parts.length-1} más`;
+}
+// Valor actual relevante para un objetivo: suma de todas sus fuentes seleccionadas,
+// evitando contar dos veces cuando se marca "Liquidez"/"Inversiones" completas junto con
+// una cuenta o fondo que ya queda incluido en ellas.
+function computeGoalSourcesValue(sources,latest){
+  if(!latest||!sources||sources.length===0)return 0;
+  if(sources.includes('total')){
+    let t=0;
+    if(latest.bancos)Object.values(latest.bancos).forEach(x=>t+=x||0);
+    if(latest.inv_valor_real)Object.values(latest.inv_valor_real).forEach(x=>t+=x||0);
+    return round2(t);
+  }
+  const allLiq=sources.includes('liquidez'),allInv=sources.includes('inversiones');
+  let v=0;
+  if(allLiq&&latest.bancos)Object.values(latest.bancos).forEach(x=>v+=x||0);
+  if(allInv&&latest.inv_valor_real)Object.values(latest.inv_valor_real).forEach(x=>v+=x||0);
+  sources.forEach(s=>{
+    if(s==='liquidez'||s==='inversiones')return;
+    if(s.startsWith('bank:')){
+      if(allLiq)return; // ya sumado en el total de liquidez
+      v+=parseFloat(latest.bancos?.[s.slice(5)])||0;
+    }else if(s.startsWith('fund:')){
+      if(allInv)return; // ya sumado en el total de inversiones
+      const name=s.slice(5);
+      const real=parseFloat(latest.inv_valor_real?.[name])||0;
+      v+=real>0?real:(parseFloat(latest.inv_aportado?.[name])||0);
+    }
+  });
+  return round2(v);
+}
+
 async function renderGoals(){
   const goals=(await dbAll('goals')).filter(g=>!g.deleted);
-  const allVals=await dbAll('values');
+  const latest=await getLatestValues();
 
-  let totalPatrimonio=0;
-  if(allVals.length>0){
-    const latest=allVals.sort((a,b)=>b.id.localeCompare(a.id))[0];
-    if(latest.bancos)Object.values(latest.bancos).forEach(v=>totalPatrimonio+=v||0);
-    if(latest.inv_valor_real)Object.values(latest.inv_valor_real).forEach(v=>totalPatrimonio+=v||0);
-  }
+  // El botón "Nuevo objetivo" vive asociado al encabezado de la sección, no al final de la página.
+  let html=`<div class="sec-label" style="margin:0 0 10px">Objetivos</div>
+    <button class="btn-primary btn-accent" style="margin-bottom:18px" onclick="openGoalModal()">+ Nuevo objetivo</button>`;
 
-  let html='';
   if(goals.length===0){
-    html='<div class="tx-empty">Sin objetivos definidos.<br>Añade tu primera meta financiera.</div>';
+    html+='<div class="tx-empty">Sin objetivos definidos.<br>Añade tu primera meta financiera.</div>';
   }else{
     const typeLabel={corto:'Corto plazo',medio:'Medio plazo',largo:'Largo plazo'};
     const typeColor={corto:'green',medio:'accent',largo:'purple'};
     goals.sort((a,b)=>(a.type||'').localeCompare(b.type||''));
     goals.forEach(g=>{
-      const pct=g.target>0?Math.min(round2((totalPatrimonio/g.target)*100),100):0;
-      const reached=totalPatrimonio>=g.target&&g.target>0;
-      const falta=round2(Math.max(0,g.target-totalPatrimonio));
+      const gSources=goalSourcesOf(g);
+      const current=computeGoalSourcesValue(gSources,latest);
+      const pct=g.target>0?Math.min(round2((current/g.target)*100),100):0;
+      const reached=current>=g.target&&g.target>0;
+      const falta=round2(Math.max(0,g.target-current));
       const months=monthsUntil(g.deadline);
-      // Aportación mensual necesaria = lo que falta / meses restantes
+      // Aportación mensual necesaria = lo que falta / meses restantes, según la fuente elegida
       let needHTML='';
       if(reached){
-        needHTML=`<div class="goal-need done"><span class="goal-need-ico">🎉</span><span>¡Objetivo alcanzado! Ya tienes <b>${fmtC(totalPatrimonio)}</b>.</span></div>`;
+        needHTML=`<div class="goal-need done"><span class="goal-need-ico">🎉</span><span>¡Objetivo alcanzado! Ya tienes <b>${fmtC(current)}</b>.</span></div>`;
       }else if(months===null){
         needHTML=`<div class="goal-need"><span class="goal-need-ico">📅</span><span>Te faltan <b>${fmtC(falta)}</b>. Añade una fecha límite para calcular cuánto ahorrar al mes.</span></div>`;
       }else if(months===0){
@@ -1748,10 +2047,10 @@ async function renderGoals(){
         <div class="goal-meta">
           <span class="goal-tag">${typeLabel[g.type]||g.type}</span>
           <span class="goal-tag">📅 ${g.deadline?fmtD(g.deadline):'Sin fecha límite'}</span>
-          <span class="goal-tag">Meta <b>${fmtC(g.target)}</b></span>
+          <span class="goal-tag">🎯 ${goalSourcesLabel(gSources)}</span>
         </div>
         <div class="goal-prog-head">
-          <div><span class="goal-current">${fmtC(totalPatrimonio)}</span> <span class="goal-target">de ${fmtC(g.target)}</span></div>
+          <div><span class="goal-current">${fmtC(current)}</span> <span class="goal-target">de ${fmtC(g.target)}</span></div>
           <div class="goal-pct" style="color:${pct>=100?'var(--positive)':'var(--text2)'}">${pct.toFixed(0)}%</div>
         </div>
         <div class="prog-bar"><div class="prog-fill ${typeColor[g.type]||'accent'}" data-w="${pct}"></div></div>
@@ -1759,10 +2058,37 @@ async function renderGoals(){
       </div>`;
     });
   }
-  html+=`<button class="btn-primary btn-accent" style="margin-top:12px" onclick="openGoalModal()">+ Nuevo objetivo</button>`;
   const cont=document.getElementById('plan-content');
   cont.innerHTML=html;
   animateBars(cont);
+}
+
+// Selector de origen de progreso: "Patrimonio total" (excluyente) o "Fuentes concretas",
+// donde se pueden marcar varias cuentas/fondos a la vez y se suman entre sí.
+let goalSourceMode='total';
+function setGoalSourceMode(mode){
+  goalSourceMode=mode;
+  document.querySelectorAll('#goal-source-mode-chips .chip').forEach(c=>c.classList.toggle('selected',c.dataset.mode===mode));
+  document.getElementById('goal-source-picker').style.display=mode==='custom'?'block':'none';
+}
+function populateGoalSourcePicker(selectedSources){
+  const list=document.getElementById('goal-source-list');
+  if(!list)return;
+  const sel=new Set(selectedSources||[]);
+  let html=`<label class="chk-row"><input type="checkbox" class="goal-src-chk" value="liquidez"${sel.has('liquidez')?' checked':''}> Liquidez (todas las cuentas)</label>`;
+  CONFIG.banks.forEach(b=>{
+    html+=`<label class="chk-row sub"><input type="checkbox" class="goal-src-chk" value="bank:${escAttr(b)}"${sel.has('bank:'+b)?' checked':''}> ${b}</label>`;
+  });
+  html+=`<label class="chk-row"><input type="checkbox" class="goal-src-chk" value="inversiones"${sel.has('inversiones')?' checked':''}> Inversiones (todos los fondos)</label>`;
+  CONFIG.inv_types.forEach(t=>{
+    html+=`<label class="chk-row sub"><input type="checkbox" class="goal-src-chk" value="fund:${escAttr(t)}"${sel.has('fund:'+t)?' checked':''}> ${t}</label>`;
+  });
+  list.innerHTML=html;
+}
+function collectGoalSources(){
+  if(goalSourceMode==='total')return['total'];
+  const checked=[...document.querySelectorAll('.goal-src-chk:checked')].map(c=>c.value);
+  return checked.length>0?checked:['total'];
 }
 
 function updateGoalDeadlineHint(){
@@ -1778,6 +2104,10 @@ function openGoalModal(goal){
   document.getElementById('goal-modal-title').textContent=goal?'Editar objetivo':'Nuevo objetivo';
   document.getElementById('goal-name').value=goal?.name||'';
   document.getElementById('goal-target').value=goal?.target?fmtInput(goal.target):'';
+  const initSources=goal?goalSourcesOf(goal):['total'];
+  goalSourceMode=(initSources.length===1&&initSources[0]==='total')?'total':'custom';
+  setGoalSourceMode(goalSourceMode);
+  populateGoalSourcePicker(initSources);
   document.getElementById('goal-deadline').value=goal?.deadline||'';
   document.getElementById('goal-id').value=goal?.id||'';
   goalTypeVal=goal?.type||'corto';
@@ -1800,6 +2130,7 @@ async function saveGoal(){
   const goal={
     id:document.getElementById('goal-id').value||uuid(),
     name,target:round2(target),
+    sources:collectGoalSources(),
     deadline:document.getElementById('goal-deadline').value||null,
     type:goalTypeVal
   };
@@ -1963,24 +2294,81 @@ async function deleteFromEditModal(){
 }
 
 // ═══════ CONFIG ═══════
+// Editor de chips: añadir/quitar bancos, fondos, categorías… escribiendo y pulsando "+"
+// (o Intro), en vez de editar una lista en texto plano. Mucho más cómodo en móvil.
+const CFG_CHIP_FIELDS=[
+  {key:'banks',label:'Bancos / Cuentas',placeholder:'Añadir banco o cuenta…'},
+  {key:'platforms',label:'Plataformas de inversión',placeholder:'Añadir plataforma…'},
+  {key:'inv_types',label:'Tipos de inversión',hint:'fondos, acciones, cripto…',placeholder:'Añadir fondo, acción, cripto…'},
+  {key:'asset_types',label:'Tipos de activo',hint:'para agrupar la cartera: Oro, BTC, Inmuebles…',placeholder:'Añadir tipo de activo…'},
+  {key:'inc_categories',label:'Categorías de ingresos',placeholder:'Añadir categoría…'},
+  {key:'exp_categories',label:'Categorías de gastos',placeholder:'Añadir categoría…'}
+];
+let cfgChips={};
+
+function chipFieldHTML(f){
+  return`<div class="field"><label class="field-label">${f.label}${f.hint?` <span style="font-weight:400;text-transform:none;letter-spacing:0">(${f.hint})</span>`:''}</label>
+    <div class="chip-editor" id="chips-${f.key}"></div>
+    <div class="chip-add-row">
+      <input type="text" id="chip-input-${f.key}" placeholder="${escAttr(f.placeholder)}" onkeydown="if(event.key==='Enter'){event.preventDefault();addChipItem('${f.key}')}">
+      <button type="button" class="chip-add-btn" onclick="addChipItem('${f.key}')" aria-label="Añadir">+</button>
+    </div>
+  </div>`;
+}
+function renderChipField(key){
+  const el=document.getElementById('chips-'+key);
+  if(!el)return;
+  const items=cfgChips[key]||[];
+  el.innerHTML=items.length>0
+    ?items.map((v,i)=>`<span class="chip-item">${escAttr(v)}<button type="button" class="chip-x" onclick="removeChipItem('${key}',${i})" aria-label="Eliminar ${escAttr(v)}">×</button></span>`).join('')
+    :'<span class="chip-empty">Sin elementos todavía</span>';
+}
+function addChipItem(key){
+  const inp=document.getElementById('chip-input-'+key);
+  const v=inp.value.trim();
+  if(!v)return;
+  if(!cfgChips[key])cfgChips[key]=[];
+  if(cfgChips[key].includes(v)){inp.value='';return}
+  cfgChips[key].push(v);
+  inp.value='';
+  renderChipField(key);
+  if(key==='inv_types'||key==='asset_types')renderAssetTypeFields();
+}
+function removeChipItem(key,idx){
+  cfgChips[key].splice(idx,1);
+  renderChipField(key);
+  if(key==='inv_types'||key==='asset_types')renderAssetTypeFields();
+}
+
 function openConfigModal(){
-  document.getElementById('cfg-banks').value=CONFIG.banks.join('\n');
-  document.getElementById('cfg-platforms').value=CONFIG.platforms.join('\n');
-  document.getElementById('cfg-invtypes').value=CONFIG.inv_types.join('\n');
-  document.getElementById('cfg-inccat').value=CONFIG.inc_categories.join('\n');
-  document.getElementById('cfg-expcat').value=CONFIG.exp_categories.join('\n');
+  cfgChips={
+    banks:CONFIG.banks.slice(),
+    platforms:CONFIG.platforms.slice(),
+    inv_types:CONFIG.inv_types.slice(),
+    asset_types:(CONFIG.asset_types||DEFAULT_CONFIG.asset_types).slice(),
+    inc_categories:CONFIG.inc_categories.slice(),
+    exp_categories:CONFIG.exp_categories.slice()
+  };
+  CFG_CHIP_FIELDS.forEach(f=>{
+    document.getElementById('cfg-chip-'+f.key).innerHTML=chipFieldHTML(f);
+    renderChipField(f.key);
+  });
   renderAssetTypeFields();
   openModal('config-modal');
 }
 
+// Los tipos de activo (Indexado, Acciones, Oro, BTC…) son totalmente editables: se leen de
+// los chips en vivo, así que cualquier tipo nuevo que el usuario añada aparece al momento
+// en el desplegable de cada fondo, sin necesidad de guardar antes.
 function renderAssetTypeFields(){
   const container=document.getElementById('cfg-assettypes');
   if(!container)return;
-  const funds=parseLines(document.getElementById('cfg-invtypes').value);
+  const funds=cfgChips.inv_types||[];
+  const typeList=(cfgChips.asset_types&&cfgChips.asset_types.length>0)?cfgChips.asset_types:(CONFIG.asset_types||DEFAULT_CONFIG.asset_types);
   if(funds.length===0){container.innerHTML='<div style="font-size:12px;color:var(--text3)">Añade fondos arriba primero.</div>';return}
   container.innerHTML=funds.map(t=>{
     const cur=CONFIG.inv_asset_types?.[t]||'Otros';
-    const opts=ASSET_TYPES.map(a=>`<option value="${a}"${a===cur?' selected':''}>${a}</option>`).join('');
+    const opts=typeList.map(a=>`<option value="${escAttr(a)}"${a===cur?' selected':''}>${a}</option>`).join('');
     return`<div style="margin-bottom:10px"><div style="font-size:13px;font-weight:500;margin-bottom:4px">${t}</div><select data-fund="${t.replace(/"/g,'&quot;')}" class="cfg-asset-select">${opts}</select></div>`;
   }).join('');
 }
@@ -1988,11 +2376,12 @@ function renderAssetTypeFields(){
 function parseLines(val){return val.split('\n').map(s=>s.trim()).filter(Boolean)}
 
 async function saveConfig(){
-  CONFIG.banks=parseLines(document.getElementById('cfg-banks').value);
-  CONFIG.platforms=parseLines(document.getElementById('cfg-platforms').value);
-  CONFIG.inv_types=parseLines(document.getElementById('cfg-invtypes').value);
-  CONFIG.inc_categories=parseLines(document.getElementById('cfg-inccat').value);
-  CONFIG.exp_categories=parseLines(document.getElementById('cfg-expcat').value);
+  CONFIG.banks=cfgChips.banks||[];
+  CONFIG.platforms=cfgChips.platforms||[];
+  CONFIG.inv_types=cfgChips.inv_types||[];
+  if(cfgChips.asset_types&&cfgChips.asset_types.length>0)CONFIG.asset_types=cfgChips.asset_types;
+  CONFIG.inc_categories=cfgChips.inc_categories||[];
+  CONFIG.exp_categories=cfgChips.exp_categories||[];
   const assetTypes={};
   document.querySelectorAll('.cfg-asset-select').forEach(sel=>{assetTypes[sel.dataset.fund]=sel.value});
   CONFIG.inv_asset_types=assetTypes;
@@ -2495,7 +2884,17 @@ function openDCAModal(rule){
   fundSel.innerHTML=CONFIG.inv_types.map(t=>`<option value="${t}"${rule?.fund===t?' selected':''}>${t}</option>`).join('');
   const platSel=document.getElementById('dca-platform');
   platSel.innerHTML=CONFIG.platforms.map(p=>`<option value="${p}"${rule?.platform===p?' selected':''}>${p}</option>`).join('');
+  const delBtn=document.getElementById('dca-delete-btn');
+  if(delBtn)delBtn.style.display=rule?'flex':'none';
   openModal('dca-modal');
+}
+
+async function deleteDCAFromModal(){
+  const id=document.getElementById('dca-edit-id').value;
+  if(!id)return;
+  if(!confirm('¿Eliminar esta aportación automática?'))return;
+  closeModal('dca-modal');
+  await deleteDCA(id);
 }
 
 async function saveDCA(){
@@ -2553,11 +2952,12 @@ async function runDCACheck(){
 
 function renderDCARules(rules){
   if(!rules||rules.length===0)return`<div style="font-size:13px;color:var(--text3);padding:8px 0">Sin aportaciones automáticas configuradas.</div>`;
+  // Un único botón (Editar) por fila; eliminar vive dentro del propio modal de edición.
   return rules.map(r=>`<div class="dca-rule">
     <div class="dca-icon">📅</div>
     <div class="dca-info"><div class="dca-fund">${r.fund}</div><div class="dca-detail">Día ${r.day} · ${r.platform}</div></div>
     <div class="dca-amount">${fmtC(r.amount)}</div>
-    <div class="dca-actions"><button class="dca-btn" onclick="openDCAModal(${JSON.stringify(r).replace(/"/g,'&quot;')})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button><button class="dca-btn del" onclick="deleteDCA('${r.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <button class="dca-edit-btn" onclick="openDCAModal(${JSON.stringify(r).replace(/"/g,'&quot;')})">${PENCIL_SVG} Editar</button>
   </div>`).join('');
 }
 
@@ -2613,6 +3013,7 @@ async function init(){
     CONFIG.inc_categories=fixTildes(saved.inc_categories||DEFAULT_CONFIG.inc_categories);
     CONFIG.exp_categories=fixTildes(saved.exp_categories||DEFAULT_CONFIG.exp_categories);
     CONFIG.inv_asset_types=saved.inv_asset_types||DEFAULT_CONFIG.inv_asset_types;
+    CONFIG.asset_types=saved.asset_types||DEFAULT_CONFIG.asset_types;
     CONFIG.dca_rules=saved.dca_rules||[];
   }
   initMonthBtns();
