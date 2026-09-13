@@ -626,7 +626,8 @@ input[type="date"]{width:100%;max-width:230px;min-height:52px}
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Revisar importación</div>
-    <div id="csv-import-summary" style="font-size:13px;color:var(--text2);margin-bottom:14px"></div>
+    <div id="csv-import-summary" style="font-size:13px;color:var(--text2);margin-bottom:4px"></div>
+    <div class="field-hint" style="margin-bottom:14px">No hace falta revisar la categoría de cada movimiento: los que dejes sin categoría se importan igualmente como «Otros».</div>
     <div id="csv-import-list"></div>
     <button class="btn-primary" onclick="confirmCSVImport()">Importar seleccionados</button>
     <button class="btn-secondary" onclick="closeModal('csv-import-modal')">Cancelar</button>
@@ -2776,6 +2777,14 @@ async function handleCSVFile(file){
   document.getElementById('import-csv-file').value='';
 }
 
+// Categoría de respaldo cuando no se adivina ninguna: "Otros" si existe en la lista del
+// usuario, para poder importar meses con miles de movimientos sin tener que categorizar
+// cada uno a mano.
+function defaultCategoryFor(type){
+  const cats=type==='gasto'?CONFIG.exp_categories:CONFIG.inc_categories;
+  return cats.includes('Otros')?'Otros':'';
+}
+
 async function prepareCSVImport(rawRows){
   const existing=(await dbAll('transactions')).filter(t=>!t.deleted);
   const existingSet=new Set(existing.map(t=>`${t.date}|${t.amount.toFixed(2)}|${t.type}`));
@@ -2787,7 +2796,8 @@ async function prepareCSVImport(rawRows){
     const sig=`${r.date}|${amount.toFixed(2)}|${type}`;
     const dup=existingSet.has(sig);
     const isTransfer=isTransferConcepto(r.concepto);
-    const category=type==='gasto'?guessExpenseCategory(r.concepto):guessIncomeCategory(r.concepto);
+    const guessed=type==='gasto'?guessExpenseCategory(r.concepto):guessIncomeCategory(r.concepto);
+    const category=guessed||defaultCategoryFor(type);
     csvImportRows.push({_id:idx,date:r.date,type,amount,description:cleanDescription(r.concepto),category,dup,isTransfer,checked:!dup&&!isTransfer});
   });
   csvImportRows.sort((a,b)=>a.date.localeCompare(b.date));
@@ -2824,7 +2834,7 @@ function renderCSVImportList(){
         <div class="imp-row-amount" style="color:${color}">${sign}${fmtC(r.amount)}</div>
       </div>
       <select class="imp-row-cat" onchange="setCSVRowCategory(${r._id},this.value)">
-        <option value="">Sin categoría</option>
+        <option value="">Sin categoría (se importa como Otros)</option>
         ${catOpts}
       </select>
     </div>`;
@@ -2843,7 +2853,9 @@ async function confirmCSVImport(){
     const tx={
       id:uuid(),type:r.type,date:r.date,amount:r.amount,
       month:parseInt(dp[1])-1,year:parseInt(dp[0]),
-      category:r.category,bank:'Banco Santander',tipo_inv:'',platform:'',
+      // Si se dejó sin categoría (a propósito o por no revisarla en un import masivo),
+      // se importa igualmente con "Otros" en vez de bloquear o dejarlo sin categorizar.
+      category:r.category||defaultCategoryFor(r.type),bank:'Banco Santander',tipo_inv:'',platform:'',
       description:r.description
     };
     await dbPutTS('transactions',tx);
