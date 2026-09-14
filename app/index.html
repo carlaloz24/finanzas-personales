@@ -192,7 +192,7 @@ input,textarea,select,button{font-family:var(--font);font-size:17px}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--text2);box-shadow:0 0 0 3px rgba(25,25,15,0.05)}
 .field textarea{resize:vertical;min-height:80px}
 .field-hint{font-size:13px;color:var(--text3);margin-top:6px}
-input[type="date"]{width:100%;max-width:230px;min-height:52px}
+input[type="date"]{width:100%;min-height:52px}
 /* Selector nativo con apariencia propia (abre la rueda del sistema en móvil) */
 .select-lg{-webkit-appearance:none;appearance:none;min-height:52px;padding-right:40px!important;cursor:pointer;
   background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5 1.5L6 6L10.5 1.5' stroke='%236e6e64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
@@ -507,7 +507,7 @@ input[type="date"]{width:100%;max-width:230px;min-height:52px}
     <div class="set-item" onclick="shareBackup()"><span class="label">Compartir backup</span><span class="arrow">→</span></div>
     <div class="set-item" onclick="document.getElementById('import-file').click()"><span class="label">Importar backup</span><span class="arrow">→</span></div>
     <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(this.files[0])">
-    <div class="set-item" onclick="document.getElementById('import-csv-file').click()"><span class="label">Importar movimientos Santander (Excel/CSV)</span><span class="arrow">→</span></div>
+    <div class="set-item" onclick="document.getElementById('import-csv-file').click()"><span class="label">Importar movimientos (CSV/Excel)</span><span class="arrow">→</span></div>
     <input type="file" id="import-csv-file" accept=".xlsx,.csv,.txt" style="display:none" onchange="handleCSVFile(this.files[0])">
   </div>
   <div class="sec-label">Exportar</div>
@@ -806,6 +806,14 @@ function monthsUntil(dateStr){
   if(target<=now)return 0;
   const months=(target.getFullYear()-now.getFullYear())*12+(target.getMonth()-now.getMonth());
   return Math.max(1,months+(target.getDate()>=now.getDate()?0:0));
+}
+// Formatea un número de meses como "X años y Y meses" en vez de un número de meses grande
+// difícil de leer (p.ej. "160 meses" → "13 años y 4 meses").
+function fmtMonthsSpan(n){
+  if(n<12)return`${n} ${n===1?'mes':'meses'}`;
+  const years=Math.floor(n/12),rem=n%12;
+  const yearsStr=`${years} ${years===1?'año':'años'}`;
+  return rem===0?yearsStr:`${yearsStr} y ${rem} ${rem===1?'mes':'meses'}`;
 }
 const getVM=id=>{const btn=document.getElementById(id);if(!btn)return{m:new Date().getMonth(),y:new Date().getFullYear(),all:false};if(btn.dataset.val==='all')return{m:null,y:null,all:true};const m=parseInt(btn.dataset.m);const y=parseInt(btn.dataset.y);if(isNaN(m)||isNaN(y))return{m:new Date().getMonth(),y:new Date().getFullYear(),all:false};return{m,y,all:false}};
 const round2=n=>Math.round(n*100)/100;
@@ -1369,7 +1377,7 @@ async function renderDashboard(){
       <div class="kpi"><div class="kpi-label">Gastos</div><div class="kpi-value neg">${fmtOut(expenses)}</div><div class="kpi-sub">Pagado</div></div>
       <div class="kpi"><div class="kpi-label">Balance</div><div class="kpi-value ${balance>=0?'pos':'neg'}">${fmtC(balance)}</div><div class="kpi-sub">Ingresos − gastos</div></div>
       <div class="kpi"><div class="kpi-label">Invertido</div><div class="kpi-value neg">${fmtOut(invested)}</div><div class="kpi-sub">Aportado</div></div>
-      <div class="kpi"><div class="kpi-label">Tasa de ahorro</div>${savingsGauge(savingsRate)}<div class="kpi-sub">Ahorrado</div></div>
+      <div class="kpi" style="grid-column:1/-1"><div class="kpi-label">Tasa de ahorro</div>${savingsGauge(savingsRate)}<div class="kpi-sub">Ahorrado</div></div>
     </div>`;
 
   html+=`<div class="card-block">
@@ -2036,7 +2044,7 @@ async function renderGoals(){
         needHTML=`<div class="goal-need"><span class="goal-need-ico">⏰</span><span>La fecha límite ya ha pasado y aún faltan <b>${fmtC(falta)}</b>.</span></div>`;
       }else{
         const perMonth=round2(falta/months);
-        needHTML=`<div class="goal-need"><span class="goal-need-ico">🎯</span><span>Aportación mensual necesaria: <b>${fmtC(perMonth)}/mes</b> durante ${months} ${months===1?'mes':'meses'}.</span></div>`;
+        needHTML=`<div class="goal-need"><span class="goal-need-ico">🎯</span><span>Aportación mensual necesaria: <b>${fmtC(perMonth)}/mes</b> durante ${fmtMonthsSpan(months)}.</span></div>`;
       }
       html+=`<div class="goal-card">
         <div class="goal-head">
@@ -2098,7 +2106,7 @@ function updateGoalDeadlineHint(){
   if(!el||!hint)return;
   if(!el.value){hint.textContent='Sin fecha límite';return}
   const months=monthsUntil(el.value);
-  hint.textContent=months===0?`${fmtD(el.value)} · la fecha ya ha pasado`:`${fmtD(el.value)} · faltan ${months} ${months===1?'mes':'meses'}`;
+  hint.textContent=months===0?`${fmtD(el.value)} · la fecha ya ha pasado`:`${fmtD(el.value)} · faltan ${fmtMonthsSpan(months)}`;
 }
 
 function openGoalModal(goal){
@@ -2798,7 +2806,9 @@ async function prepareCSVImport(rawRows){
     const isTransfer=isTransferConcepto(r.concepto);
     const guessed=type==='gasto'?guessExpenseCategory(r.concepto):guessIncomeCategory(r.concepto);
     const category=guessed||defaultCategoryFor(type);
-    csvImportRows.push({_id:idx,date:r.date,type,amount,description:cleanDescription(r.concepto),category,dup,isTransfer,checked:!dup&&!isTransfer});
+    // Todas las filas empiezan marcadas por defecto (incluidos posibles duplicados/transferencias,
+    // que ya se avisan en el resumen): con meses de miles de movimientos, desmarcar es la excepción.
+    csvImportRows.push({_id:idx,date:r.date,type,amount,description:cleanDescription(r.concepto),category,dup,isTransfer,checked:true});
   });
   csvImportRows.sort((a,b)=>a.date.localeCompare(b.date));
   renderCSVImportList();
@@ -2809,8 +2819,8 @@ function renderCSVImportList(){
   const dupCount=csvImportRows.filter(r=>r.dup).length;
   const transferCount=csvImportRows.filter(r=>r.isTransfer&&!r.dup).length;
   let summary=`${csvImportRows.length} movimiento${csvImportRows.length===1?'':'s'} detectado${csvImportRows.length===1?'':'s'}`;
-  if(transferCount>0)summary+=` · ${transferCount} posible${transferCount===1?'':'s'} transferencia${transferCount===1?'':'s'} (sin marcar)`;
-  if(dupCount>0)summary+=` · ${dupCount} posible${dupCount===1?'':'s'} duplicado${dupCount===1?'':'s'} (sin marcar)`;
+  if(transferCount>0)summary+=` · ${transferCount} posible${transferCount===1?'':'s'} transferencia${transferCount===1?'':'s'}`;
+  if(dupCount>0)summary+=` · ${dupCount} posible${dupCount===1?'':'s'} duplicado${dupCount===1?'':'s'}`;
   document.getElementById('csv-import-summary').textContent=summary;
 
   if(csvImportRows.length===0){
