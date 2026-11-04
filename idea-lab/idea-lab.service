@@ -1,0 +1,13 @@
+[Unit]
+Description=Idea Lab (bot de Telegram -> Obsidian)
+After=network-online.target
+
+[Service]
+WorkingDirectory=/opt/idea-lab
+ExecStart=/opt/idea-lab/.venv/bin/python bot.py
+Restart=always
+RestartSec=5
+User=idealab
+
+[Install]
+WantedBy=multi-user.target
