@@ -7,6 +7,7 @@ Flujo: audio/texto -> transcripcion (Groq Whisper) -> clasificacion (Groq LLM)
 
 Solo necesita `requests`. Todo configurable por variables de entorno (.env).
 """
+import hashlib
 import json
 import os
 import re
@@ -370,6 +371,168 @@ def top_ideas(n: int = 5) -> str:
         f"{i}. {t} ({c}) · prio {pr}" for i, (pr, t, c) in enumerate(rows[:n], 1))
 
 
+# --------------------------------------------------------------------------- #
+# Consultar ideas desde Telegram: lista, detalle y acciones
+# --------------------------------------------------------------------------- #
+
+ARCHIVO = "🗄️ Archivo"
+PAGE = 8
+# (etiqueta del boton, carpeta). None = todas las activas.
+FILTROS = [("Todas", None)] + [(v.split(" ", 1)[0], v) for v in CATEGORIAS.values()] + [
+    ("📥", INBOX), ("🗄️", ARCHIVO)]
+QUERY: dict[int, str] = {}  # ultima busqueda por chat
+
+
+def norm(text: str) -> str:
+    text = text.lower().strip().lstrip("/").rstrip(".!?¡¿ ")
+    for a, b in zip("áéíóúü", "aeiouu"):
+        text = text.replace(a, b)
+    return re.sub(r"@\w+$", "", text).strip()
+
+
+def parse_note(path: Path) -> dict | None:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    m = re.match(r"---\n(.*?)\n---\n(.*)", text, re.S)
+    if not m:
+        return None
+    meta = {}
+    for line in m.group(1).splitlines():
+        k, _, v = line.partition(":")
+        v = v.strip()
+        try:
+            v = json.loads(v)
+        except ValueError:
+            pass
+        meta[k.strip()] = v
+    rel = str(path.relative_to(IDEAS_DIR))
+    meta.update(path=path, folder=path.parent.name, titulo=path.stem, body=m.group(2).strip(),
+                id=hashlib.sha1(rel.encode()).hexdigest()[:8])
+    return meta
+
+
+def all_ideas() -> list[dict]:
+    out = []
+    for p in IDEAS_DIR.rglob("*.md"):
+        if "_Config" in p.parts or p.name.startswith("🏠"):
+            continue
+        n = parse_note(p)
+        if n:
+            out.append(n)
+    return out
+
+
+def filter_ideas(cat: int, query: str) -> list[dict]:
+    folder = FILTROS[cat][1]
+    ideas = all_ideas()
+    if folder:
+        ideas = [i for i in ideas if i["folder"] == folder]
+    else:  # "Todas" = activas (sin archivo)
+        ideas = [i for i in ideas if i["folder"] != ARCHIVO]
+    if query:
+        words = norm(query).split()
+        def hay(i):
+            blob = norm(" ".join([i["titulo"], str(i.get("resumen", "")),
+                                  " ".join(i.get("tags") or []), str(i.get("area", ""))]))
+            return all(w in blob for w in words)
+        ideas = [i for i in ideas if hay(i)]
+    ideas.sort(key=lambda i: float(i.get("prioridad") or 0), reverse=True)
+    return ideas
+
+
+def list_view(chat_id: int, cat: int = 0, page: int = 0) -> tuple[str, dict]:
+    query = QUERY.get(chat_id, "")
+    ideas = filter_ideas(cat, query)
+    pages = max(1, -(-len(ideas) // PAGE))
+    page = max(0, min(page, pages - 1))
+    head = f"💡 Tus ideas ({len(ideas)})"
+    if query:
+        head += f" · busqueda: “{query}”"
+    if not ideas:
+        head += "\n\nNo hay nada aqui todavia."
+    rows = [[{"text": f"{'⭐' if float(i.get('prioridad') or 0) >= 6 else '•'} {i['titulo'][:40]} · P{i.get('potencial', '?')} E{i.get('esfuerzo', '?')}",
+              "callback_data": f"d:{i['id']}:{cat}:{page}"}]
+            for i in ideas[page * PAGE:(page + 1) * PAGE]]
+    if pages > 1:
+        rows.append([
+            {"text": "◀", "callback_data": f"l:{cat}:{max(0, page - 1)}"},
+            {"text": f"{page + 1}/{pages}", "callback_data": "noop"},
+            {"text": "▶", "callback_data": f"l:{cat}:{min(pages - 1, page + 1)}"}])
+    rows.append([{"text": ("• " if i == cat else "") + label, "callback_data": f"l:{i}:0"}
+                 for i, (label, _) in enumerate(FILTROS)])
+    return head, {"inline_keyboard": rows}
+
+
+def detail_view(idea_id: str, cat: int, page: int) -> tuple[str, dict]:
+    idea = next((i for i in all_ideas() if i["id"] == idea_id), None)
+    if not idea:
+        return "No encuentro esa idea (¿la moviste o borraste?).", {
+            "inline_keyboard": [[{"text": "⬅️ Volver", "callback_data": f"l:{cat}:{page}"}]]}
+    body = re.sub(r"^# .*\n+", "", idea["body"])
+    text = (f"{idea['folder']}\n{idea['titulo']}\n"
+            f"Estado: {idea.get('estado', '?')} · Potencial {idea.get('potencial')}/5 · "
+            f"Esfuerzo {idea.get('esfuerzo')}/5 · Encaje {idea.get('encaje')}/5 · Prio {idea.get('prioridad')}\n\n"
+            f"{body}")[:3900]
+    base = f"a:{idea_id}"
+    if idea["folder"] == ARCHIVO:
+        acciones = [{"text": "♻️ Reactivar", "callback_data": f"{base}:r:{cat}:{page}"}]
+    else:
+        acciones = [{"text": "🔍 Validando", "callback_data": f"{base}:v:{cat}:{page}"},
+                    {"text": "🚀 Empezada", "callback_data": f"{base}:e:{cat}:{page}"},
+                    {"text": "🗑️ Descartar", "callback_data": f"{base}:d:{cat}:{page}"}]
+    return text, {"inline_keyboard": [acciones, [{"text": "⬅️ Volver", "callback_data": f"l:{cat}:{page}"}]]}
+
+
+def apply_action(idea_id: str, action: str) -> str:
+    idea = next((i for i in all_ideas() if i["id"] == idea_id), None)
+    if not idea:
+        return "No encuentro esa idea."
+    estado = {"v": "validando", "e": "empezada", "d": "descartada", "r": "sin-desarrollar"}[action]
+    path: Path = idea["path"]
+    text = path.read_text(encoding="utf-8")
+    text = re.sub(r"^estado: .*$", f"estado: {estado}", text, count=1, flags=re.M)
+    if action in ("e", "d"):
+        dest = ARCHIVO
+    elif action == "r":
+        dest = CATEGORIAS.get(idea.get("categoria"), INBOX)
+    else:
+        dest = idea["folder"]
+    new_path = path if dest == idea["folder"] else unique_path(IDEAS_DIR / dest, path.stem)
+    path.write_text(text, encoding="utf-8")
+    if new_path != path:
+        path.rename(new_path)
+    return f"Hecho: {idea['titulo']} → {estado}"
+
+
+def send_list(chat_id: int, query: str = "") -> None:
+    QUERY[chat_id] = query
+    text, kb = list_view(chat_id)
+    tg("sendMessage", chat_id=chat_id, text=text, reply_markup=kb)
+
+
+def edit(cq: dict, text: str, kb: dict) -> None:
+    try:
+        tg("editMessageText", chat_id=cq["message"]["chat"]["id"],
+           message_id=cq["message"]["message_id"], text=text, reply_markup=kb)
+    except requests.HTTPError as exc:  # "message is not modified" no es un error real
+        print("edit:", exc, file=sys.stderr)
+
+
+def handle_callback(cq: dict) -> None:
+    if ALLOWED_USER_ID and cq["from"]["id"] != ALLOWED_USER_ID:
+        return
+    chat_id = cq["message"]["chat"]["id"]
+    parts = cq.get("data", "").split(":")
+    toast = None
+    if parts[0] == "l":  # lista: l:cat:page
+        edit(cq, *list_view(chat_id, int(parts[1]), int(parts[2])))
+    elif parts[0] == "d":  # detalle: d:id:cat:page
+        edit(cq, *detail_view(parts[1], int(parts[2]), int(parts[3])))
+    elif parts[0] == "a":  # accion: a:id:accion:cat:page
+        toast = apply_action(parts[1], parts[2])
+        edit(cq, *list_view(chat_id, int(parts[3]), int(parts[4])))
+    tg("answerCallbackQuery", callback_query_id=cq["id"], **({"text": toast} if toast else {}))
+
+
 def process_idea(chat_id: int, transcript: str) -> None:
     try:
         data = classify(transcript)
@@ -394,7 +557,13 @@ def process_idea(chat_id: int, transcript: str) -> None:
     reply(chat_id, msg)
 
 
+LISTA_VOZ = {"ideas", "mis ideas", "lista de ideas", "ver ideas", "dame las ideas", "muestrame las ideas"}
+
+
 def handle(update: dict) -> None:
+    if update.get("callback_query"):
+        handle_callback(update["callback_query"])
+        return
     msg = update.get("message") or {}
     chat_id = (msg.get("chat") or {}).get("id")
     user_id = (msg.get("from") or {}).get("id")
@@ -407,8 +576,12 @@ def handle(update: dict) -> None:
         return
 
     text = (msg.get("text") or "").strip()
+    n = norm(text)
+    if n == "ideas" or n in LISTA_VOZ or n.startswith("ideas "):
+        send_list(chat_id, n[len("ideas"):].strip() if n.startswith("ideas ") else "")
+        return
     if text.startswith("/start") or text.startswith("/ayuda"):
-        reply(chat_id, "🎙️ Mandame una nota de voz (o texto) con tu idea y la guardo clasificada en Obsidian.\n/top → tus 5 mejores ideas")
+        reply(chat_id, "🎙️ Mandame una nota de voz (o texto) con tu idea y la guardo clasificada en Obsidian.\n\n💡 /ideas → lista con botones (toca una para ver el detalle)\n🔎 /ideas palabra → buscar\n🔥 /top → tus 5 mejores")
         return
     if text.startswith("/top"):
         reply(chat_id, top_ideas())
@@ -431,6 +604,9 @@ def handle(update: dict) -> None:
     else:
         return
 
+    if norm(transcript) in LISTA_VOZ:  # dijiste "ideas" por voz
+        send_list(chat_id)
+        return
     process_idea(chat_id, transcript)
 
 

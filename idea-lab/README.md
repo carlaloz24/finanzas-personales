@@ -49,7 +49,13 @@ Cada idea es una nota de ~10 líneas con propiedades (`potencial`, `esfuerzo`, `
 - **Nunca pierde una idea**: si falla la IA, se guarda el texto en Inbox.
 - **Aviso de duplicados**: si se parece a una ya guardada, lo dice y la enlaza (`[[…]]`).
 - **Confianza baja → Inbox** para que la revises tú.
-- **`/top`** en Telegram devuelve tus 5 mejores ideas.
+- **Consultar desde Telegram** (sin abrir Obsidian):
+  - `/ideas` (o escribir/decir solo "ideas") → lista con botones, ordenada por prioridad, con paginación.
+  - Filtros por categoría con un toque (📱 🧰 🛍️ 💼 🎬 🧪 📥 🗄️).
+  - Tocar una idea → su ficha completa + botones **🔍 Validando · 🚀 Empezada · 🗑️ Descartar**
+    (mueve la nota a `🗄️ Archivo` y cambia `estado` por ti). En Archivo hay **♻️ Reactivar**.
+  - `/ideas palabra` → busca en título, resumen, tags y área.
+  - `/top` → tus 5 mejores ideas.
 - También vale texto o reenviar mensajes, no solo voz.
 
 ## Ciclo de vida
