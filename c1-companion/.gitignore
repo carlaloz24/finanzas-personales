@@ -1,0 +1,6 @@
+# La raíz del repo ignora *.json (datos financieros); aquí sí se versionan los de configuración.
+!package.json
+!package-lock.json
+!tsconfig.json
+node_modules/
+dist/
