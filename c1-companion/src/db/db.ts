@@ -15,10 +15,11 @@ export class C1Database extends Dexie {
 
   constructor(name = "c1-companion") {
     super(name);
-    // &termKey = índice único: IndexedDB rechaza un segundo término igual.
+    // &[termKey+type] = índice único: IndexedDB rechaza el mismo término con
+    // el mismo tipo. El mismo término con otro tipo sí se permite.
     // Nunca modificar una versión publicada; añadir version(2) con upgrade().
     this.version(1).stores({
-      entries: "id, &termKey, type, *topicIds, *personalCategoryIds, learningStatus, createdAt",
+      entries: "id, &[termKey+type], termKey, type, *topicIds, *personalCategoryIds, learningStatus, createdAt",
       topics: "id, name",
       categories: "id, name",
       exams: "id, date",

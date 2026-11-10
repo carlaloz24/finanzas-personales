@@ -7,7 +7,7 @@ import type {
 
 export class DuplicateTermError extends Error {
   constructor(public readonly existing: VocabularyEntry) {
-    super(`«${existing.term}» ya está en tu vocabulario.`);
+    super(`«${existing.term}» (${existing.type}) ya está en tu vocabulario.`);
     this.name = "DuplicateTermError";
   }
 }
@@ -64,20 +64,25 @@ function build(input: EntryInput): Omit<VocabularyEntry, "id" | "createdAt" | "u
   };
 }
 
-/** Devuelve la entrada existente con el mismo término, si la hay. */
+/** Todas las entradas con ese término, de cualquier tipo. */
 export function findByTerm(db: C1Database, term: string) {
-  return db.entries.where("termKey").equals(termKey(term)).first();
+  return db.entries.where("termKey").equals(termKey(term)).toArray();
 }
 
-async function guardUnique(db: C1Database, key: string, selfId?: string) {
-  const existing = await db.entries.where("termKey").equals(key).first();
+/** La entrada con ese término y ese tipo, si existe. */
+export function findByTermAndType(db: C1Database, term: string, type: EntryType) {
+  return db.entries.where("[termKey+type]").equals([termKey(term), type]).first();
+}
+
+async function guardUnique(db: C1Database, key: string, type: EntryType, selfId?: string) {
+  const existing = await db.entries.where("[termKey+type]").equals([key, type]).first();
   if (existing && existing.id !== selfId) throw new DuplicateTermError(existing);
 }
 
 /** Si dos escrituras compiten, el índice único de IndexedDB hace de red de seguridad. */
-async function rethrowConstraint(db: C1Database, key: string, err: unknown): Promise<never> {
+async function rethrowConstraint(db: C1Database, key: string, type: EntryType, err: unknown): Promise<never> {
   if (err instanceof Dexie.ConstraintError || (err as Error)?.name === "ConstraintError") {
-    const existing = await db.entries.where("termKey").equals(key).first();
+    const existing = await db.entries.where("[termKey+type]").equals([key, type]).first();
     if (existing) throw new DuplicateTermError(existing);
   }
   throw err;
@@ -85,7 +90,7 @@ async function rethrowConstraint(db: C1Database, key: string, err: unknown): Pro
 
 export async function createEntry(db: C1Database, input: EntryInput): Promise<VocabularyEntry> {
   const data = build(input);
-  await guardUnique(db, data.termKey);
+  await guardUnique(db, data.termKey, data.type);
   const now = new Date().toISOString();
   const entry: VocabularyEntry = {
     ...data, id: crypto.randomUUID(), learningStatus: "new", createdAt: now, updatedAt: now,
@@ -93,7 +98,7 @@ export async function createEntry(db: C1Database, input: EntryInput): Promise<Vo
   try {
     await db.entries.add(entry);
   } catch (err) {
-    return rethrowConstraint(db, data.termKey, err);
+    return rethrowConstraint(db, data.termKey, data.type, err);
   }
   return entry;
 }
@@ -102,7 +107,7 @@ export async function updateEntry(db: C1Database, id: string, input: EntryInput)
   const current = await db.entries.get(id);
   if (!current) throw new Error("La entrada no existe.");
   const data = build(input);
-  await guardUnique(db, data.termKey, id);
+  await guardUnique(db, data.termKey, data.type, id);
   // Se reemplaza el registro completo para descartar campos de un tipo anterior.
   const entry: VocabularyEntry = {
     ...data,
@@ -114,7 +119,7 @@ export async function updateEntry(db: C1Database, id: string, input: EntryInput)
   try {
     await db.entries.put(entry);
   } catch (err) {
-    return rethrowConstraint(db, data.termKey, err);
+    return rethrowConstraint(db, data.termKey, data.type, err);
   }
   return entry;
 }
@@ -132,13 +137,11 @@ export async function deleteEntry(db: C1Database, id: string) {
 }
 
 /**
- * Candidatas para enlazar un sinónimo. Con índice único solo puede haber una
- * coincidencia exacta; se devuelve como lista para que la interfaz ofrezca
- * elegir si en el futuro se amplía la búsqueda (p. ej. «give» → «give up»).
+ * Candidatas para enlazar un sinónimo. Puede haber varias (mismo término con
+ * distinto tipo); la interfaz deja elegir cuál enlazar.
  */
 export async function synonymCandidates(db: C1Database, text: string, excludeId?: string) {
-  const match = await findByTerm(db, text);
-  return match && match.id !== excludeId ? [match] : [];
+  return (await findByTerm(db, text)).filter((e) => e.id !== excludeId);
 }
 
 export async function setLearningStatus(db: C1Database, id: string, status: VocabularyEntry["learningStatus"]) {

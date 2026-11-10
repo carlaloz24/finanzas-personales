@@ -6,7 +6,7 @@
 
 > **Cambios del 10/11/2026**
 > 1. Los phrasal verbs se incluyen dentro del tipo **Verb**. Al añadir un verbo habrá una casilla opcional **Phrasal verb**. Si no se marca, se considera un verbo estándar (apartado 5.1).
-> 2. **No se puede introducir un término dos veces** (apartado 5.1.1).
+> 2. **No se puede introducir un término dos veces con el mismo tipo.** Con tipos distintos sí (apartado 5.1.1).
 
 ---
 
@@ -63,7 +63,7 @@ Inicio: accesos rápidos y una visión general pequeña (número de entradas, ú
 
 | Campo | Requisito | Detalle |
 | --- | --- | --- |
-| Término | Obligatorio | Palabra, expresión o estructura. **Único** (5.1.1) |
+| Término | Obligatorio | Palabra, expresión o estructura. **Único por tipo** (5.1.1) |
 | Tipo | Obligatorio | Una de las opciones de abajo |
 | Significado | Opcional | Traducción o explicación en español |
 | Sinónimos | Opcional | Lista de sinónimos |
@@ -102,11 +102,12 @@ Los campos específicos no aparecen en el formulario si no corresponden al tipo 
 
 #### 5.1.1. Términos únicos
 
-- **No se puede introducir un término dos veces.**
+- **No se puede introducir un término dos veces con el mismo tipo.** Con tipos distintos sí: *record* (noun) y *record* (verb) son dos fichas.
 - La comparación ignora mayúsculas, espacios sobrantes y el tipo de apóstrofo: *Give up* = *give up* = * give   UP *.
-- Se comprueba al crear una entrada y al cambiar el término de una existente.
+- Se comprueba al crear una entrada y al cambiar el término o el tipo de una existente.
 - Si el término ya existe, no se guarda. Se avisa a la usuaria y se ofrece abrir la ficha existente para completarla.
-- La regla vale aunque el tipo sea distinto (*record* noun / *record* verb comparten ficha). Términos que solo comparten raíz son distintos: *give* y *give up*.
+- Términos que solo comparten raíz son distintos: *give* y *give up*.
+- Al enlazar un sinónimo que existe con varios tipos, se elige cuál enlazar.
 
 ### 5.2. Temas Cambridge
 
@@ -244,7 +245,7 @@ Evitar dashboards complejos, gráficas inútiles, exceso de etiquetas, formulari
 
 El modelo vigente está en [`src/domain/types.ts`](../src/domain/types.ts). Cambios respecto al orientativo:
 
-- `VocabularyEntry.termKey`: término normalizado con índice único (5.1.1).
+- `VocabularyEntry.termKey`: término normalizado; índice único `[termKey+type]` (5.1.1).
 - `VocabularyEntry.verb.isPhrasalVerb: boolean`, `false` por defecto.
 - Detalles específicos tipados por tipo (`noun`, `verb`, `connector`, `grammar`) en lugar de `Record<string,string>`.
 - `Mistake` y `Attachment` en tablas propias, con `attemptId`; cada `Attachment` lleva su bloque (`original` o `correction`).
@@ -261,7 +262,7 @@ El modelo vigente está en [`src/domain/types.ts`](../src/domain/types.ts). Camb
 
 ## 13. Criterios de aceptación
 
-**Vocabulario:** crear en segundos; guardar con término y tipo; editar y eliminar; buscar por palabra y significado; filtrar por tipo, tema y categoría; enlazar sinónimos; los vínculos sobreviven a cambios de término; **marcar un verbo como phrasal verb (por defecto estándar)**; **no se puede guardar un término repetido**.
+**Vocabulario:** crear en segundos; guardar con término y tipo; editar y eliminar; buscar por palabra y significado; filtrar por tipo, tema y categoría; enlazar sinónimos; los vínculos sobreviven a cambios de término; **marcar un verbo como phrasal verb (por defecto estándar)**; **no se puede guardar un término repetido con el mismo tipo**.
 
 **Repaso:** elegir colección, revelar, marcar aprendida o pendiente y conservar el progreso al cerrar.
 

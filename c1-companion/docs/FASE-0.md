@@ -48,7 +48,7 @@ soporte nativo de `Blob`. Base de datos `c1-companion`, versión 1:
 
 | Tabla | Índices |
 | --- | --- |
-| `entries` | `id`, **`&termKey` (único)**, `type`, `*topicIds`, `*personalCategoryIds`, `learningStatus`, `createdAt` |
+| `entries` | `id`, **`&[termKey+type]` (único)**, `termKey`, `type`, `*topicIds`, `*personalCategoryIds`, `learningStatus`, `createdAt` |
 | `topics` | `id`, `name` |
 | `categories` | `id`, `name` |
 | `exams` | `id`, `date` |
@@ -73,11 +73,11 @@ Cambios respecto al modelo orientativo:
 casilla opcional «Phrasal verb»; si no se marca, el verbo es estándar
 (`verb.isPhrasalVerb = false` por defecto). Los errores ya tenían un tipo «Phrasal verb».
 
-**Sin duplicados.** No se puede introducir el mismo término dos veces.
+**Sin duplicados.** No se puede introducir el mismo término dos veces con el mismo tipo. Con tipos distintos sí.
 
 - La comparación ignora mayúsculas, espacios sobrantes y el tipo de apóstrofo: `Give up`, ` give   UP ` y `give up` cuentan como uno.
-- Se comprueba al crear y al renombrar una entrada. Hay dos capas: una comprobación previa con un mensaje claro («ya está en tu vocabulario», con acceso a la ficha existente) y el índice único de IndexedDB como red de seguridad.
-- La regla vale **sea cual sea el tipo**: `record` (noun) y `record` (verb) se guardan en una sola ficha. Si prefieres permitir el mismo término con tipos distintos, se cambia el índice a `[termKey+type]`.
+- Se comprueba al crear una entrada y al cambiar su término o su tipo. Hay dos capas: una comprobación previa con un mensaje claro («ya está en tu vocabulario», con acceso a la ficha existente) y el índice único de IndexedDB como red de seguridad.
+- `record` (noun) y `record` (verb) son dos fichas distintas. Al enlazar el sinónimo «record» se elige cuál.
 - Los términos son distintos aunque compartan raíz: `give` y `give up` son entradas diferentes.
 
 ## 4. Adjuntos

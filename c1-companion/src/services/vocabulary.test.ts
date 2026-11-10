@@ -21,11 +21,23 @@ describe("vocabulario", () => {
     expect(await db.categories.count()).toBe(15);
   });
 
-  it("no permite introducir el mismo término dos veces", async () => {
+  it("no permite el mismo término dos veces con el mismo tipo", async () => {
     await createEntry(db, { term: "Give up", type: "verb" });
     await expect(createEntry(db, { term: "  give   UP", type: "verb" })).rejects.toBeInstanceOf(DuplicateTermError);
-    await expect(createEntry(db, { term: "give up", type: "expression" })).rejects.toBeInstanceOf(DuplicateTermError);
     expect(await db.entries.count()).toBe(1);
+  });
+
+  it("permite el mismo término con distinto tipo", async () => {
+    await createEntry(db, { term: "record", type: "noun" });
+    await createEntry(db, { term: "Record", type: "verb" });
+    expect(await db.entries.count()).toBe(2);
+    expect(await synonymCandidates(db, "RECORD")).toHaveLength(2);
+  });
+
+  it("no permite cambiar el tipo si choca con otra entrada", async () => {
+    await createEntry(db, { term: "record", type: "noun" });
+    const v = await createEntry(db, { term: "record", type: "verb" });
+    await expect(updateEntry(db, v.id, { term: "record", type: "noun" })).rejects.toBeInstanceOf(DuplicateTermError);
   });
 
   it("el índice único bloquea también escrituras simultáneas", async () => {

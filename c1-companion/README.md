@@ -8,7 +8,7 @@ App personal y local (sin backend ni cuentas) para preparar Cambridge C1 Advance
 ## Estado
 
 Hecho: la capa de datos (IndexedDB con Dexie): modelo, temas y categorías
-iniciales, vocabulario con términos únicos, phrasal verbs, sinónimos
+iniciales, vocabulario sin términos repetidos dentro de un mismo tipo, phrasal verbs, sinónimos
 enlazados y borrado seguro de categorías.
 
 Pendiente: la interfaz. Espera a la skill `anti-ai-design`.
